@@ -8,7 +8,7 @@ NESTE CICLO: escolha a próxima ação útil (comece pela base: `./atende serve`
 
 SVGs (seção 7.1): figura humana esquemática fazendo o exercício, animação SÓ por CSS (`<style>` com @keyframes + animation ... infinite; toda duração 1s, 2s ou 4s), SEM SMIL (`<animate`, `<animateTransform`, `<set`: o render do HyperFrames não avança SMIL), `viewBox`, `<title>` em português, sem `<script>`, `<image>`, `<foreignObject>`, `@import`, sem http fora do xmlns, href/url só com `#`, ≤ 60 KB. Desenhe à mão no código; nenhum gerador de imagem.
 
-tools/render-exercicios (seção 7.4): escreva o script (Python 3 + subprocess; detecta com `npx --no-install hyperframes --version` e sai com código 2 e "pulado: hyperframes não instalado" se faltar; composição SÓ CSS — sem GSAP, sem <script>, sem CDN — com data-width/data-height 720 e data-duration 4 e o SVG inline; `npx hyperframes render <pasta> --output <id>.mp4 --fps 30`; conferência por ffprobe), mas NÃO o execute: `npx hyperframes` baixa pacote e é lento — é passo de build do humano.
+tools/render-exercicios (seção 7.4): escreva o script (Python 3 + subprocess; detecta com `npx --no-install hyperframes --version` e sai com código 2 e "pulado: hyperframes não instalado" se faltar; composição SÓ CSS — sem GSAP, sem <script>, sem CDN — com data-width/data-height 720 e data-duration 4 e o SVG inline; `npx --no-install hyperframes render <pasta> --output <id>.mp4 --fps 30`, sem `--strict`; conferência por ffprobe), mas NÃO o execute: `npx hyperframes` baixa pacote e é lento — é passo de build do humano.
 
 AO TERMINAR O CICLO (obrigatório):
 - reescreva state.md (Funciona / Falta / Como retomar) e plan.md (próximos 3 passos);

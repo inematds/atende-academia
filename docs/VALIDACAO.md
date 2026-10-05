@@ -3,9 +3,9 @@
 Validador independente do planejador (briefing `BRIEF-VALIDACAO.md` + adendo `BRIEF-SAUDE-MOVIMENTO.md`). Nada implementado, nada
 enviado, nenhuma API chamada, `congelar.sh` rodado só em clone temporário. Commits: `794f5f6` (correções) e o seguinte (este arquivo).
 
-**Problemas achados: 9** — bloqueia a execução: 2 · atrapalha: 4 · cosmético: 3. Todos corrigidos nos arquivos do projeto;
+**Problemas achados: 10** — bloqueia a execução: 2 · atrapalha: 5 · cosmético: 3. Todos corrigidos nos arquivos do projeto;
 o que é decisão do dono está na última seção. Contagem de testes: **99 → 99** (um teste mudou de conteúdo, nenhum foi
-criado ou removido).
+criado ou removido). Commits: `794f5f6`, `eb800ec`, `ab8a266` e o seguinte.
 
 | Gravidade | Problema | Correção |
 |---|---|---|
@@ -15,6 +15,7 @@ criado ou removido).
 | atrapalha | `verificar-independente.py` dava **falha falsa ou traceback** nesta máquina: glob `chromium-*/chrome-linux/chrome` não casa `chrome-linux-arm64`; screenshot em `/tmp` com o chromium do snap = PNG vazio; `docker`/`npx` ausentes ou `subir()` falhando = traceback | candidatos **calibrados** (SVG estático + SVG CSS animado conhecido) numa pasta dentro do repo (`.verif-svg-*`, no `.gitignore`), glob `chrome-linux*`, guardas `shutil.which` + `try` → `PULADO:` explícito; última linha `INDEPENDENTE OK (movimento, hyperframes, docker)` |
 | atrapalha | `verificar-limites.sh` liberava `cdn.jsdelivr.net/npm/gsap` em `tools/` (e nada mais — a regex era exata); com a composição só CSS a exceção virou brecha sem função | exceção removida; `tools/` entra no mesmo grep de URL externa do código |
 | atrapalha | `tools/render-exercicios` "sai com código 2 sem HyperFrames" mas `npx hyperframes` baixa o pacote sozinho — o script não tinha como saber que "não está instalado" | §7.4: detecta com `npx --no-install hyperframes --version`, nunca baixa; README diz como instalar (`npm install hyperframes`, `node_modules/` ignorado) |
+| atrapalha | (regressão minha, apanhada na revisão) o README mandava `npm install hyperframes` na raiz: `package.json`/`package-lock.json` ficariam **não rastreados** e o `verificar-limites.sh` acusaria "arquivos fora do escopo" | `/package.json` e `/package-lock.json` no `.gitignore` (`node_modules/` já estava); README/§7.4: instalar depois do loop ou `npm install -g`; prova na seção 6 (`LIMITES OK` com os três na raiz) |
 | cosmético | `trancar` de matrícula já trancada / `destrancar` de não trancada sem regra | §3.3 → 409 |
 | cosmético | `goal.md` dizia "14 testes de SVG ... e o teste estático de `tools/render-exercicios`" — o estático está em `test_docker.py` | texto corrigido |
 | cosmético | README não dizia que o verificador só usa HyperFrames já instalado (`--no-install` sempre daria "pulado") nem que `docker` ausente é `PULADO` | README "Pré-requisitos" e "Verificação independente" |
@@ -64,7 +65,25 @@ inline é o **`waapi`** via `document.getAnimations()`. O resultado é o mesmo (
 Antes, o `verificar-limites.sh` liberava exatamente `https?://cdn.jsdelivr.net/npm/gsap…` e nada mais (regex); hoje `tools/` entra
 no grep geral (prova na seção 6: CDN em `tools/` → `LIMITE VIOLADO`).
 
-**Medição nesta máquina (spark-922b, arm64), SVG CSS animado de 2 s, instantes 250/1150/2450 ms, flag `--disable-threaded-animation`:**
+**Medição com o render real (não só leitura de código)** — HyperFrames 0.7.109 instalado em `~/projetos/hyperframes-student-kit`
+(`npx --no-install hyperframes render <pasta> --output x.mp4 --fps 30`, nada baixado), duas composições idênticas à §7.4
+(root `data-duration="4"`, 720×720, SVG inline, sem script): bolinha que sobe 200 px e volta em **2 s**, uma com `@keyframes`,
+outra com `<animateTransform … dur="2s" repeatCount="indefinite">`. Quadros extraídos com `ffmpeg -ss` e comparados em cinza
+32×32 (diferença média por pixel):
+
+```
+ffprobe (os dois): codec_type=video width=720 height=720 duration=4.000000 — só 1 stream, sem áudio
+css:  diff(0,25 s, 1,25 s) = 27,9  (fase oposta: grande)   diff(0,25 s, 2,25 s) = 0,0  (mesma fase: idêntico → seekado)
+smil: diff(0,25 s, 1,25 s) = 0,5   (fase oposta: PARADO)   diff(0,25 s, 2,25 s) = 8,7  (mesma fase: fora de fase)
+log: captureMode "screenshot" (probe do beginFrame falhou → fallback), HeadlessChrome/153 headless-shell, gl=swiftshader;
+     lint: "✗ missing_timeline_registry: Missing window.__timelines registration. Continuing render despite lint issues.
+     Use --strict to block errors."
+```
+Leitura: no modo `screenshot` (o pior caso) o CSS sai determinístico e fecha o ciclo em 4 s; o SMIL sai errado (não é o relógio
+que o render busca). O comando da §7.4 funciona com `infinite` + `data-duration` e **não pode levar `--strict`** (o lint
+`missing_timeline_registry` é erro tolerado) — escrito na §7.4 e no prompt.
+
+**Medição dos navegadores para a prova de movimento (spark-922b, arm64), SVG CSS animado de 2 s, instantes 250/1150/2450 ms, flag `--disable-threaded-animation`:**
 chromium do snap com PNG em `/tmp` → `VAZIO`; com PNG em pasta dentro do repo → 3 hashes distintos; `chrome` do Playwright
 (`chromium-1243/chrome-linux-arm64/chrome`) → 3 distintos; `chrome-headless-shell` → 3 distintos (a fisio mediu quadros iguais
 **sem** a flag). O verificador segue usando só o chrome completo, como a fisio.
@@ -153,6 +172,9 @@ LIMITE VIOLADO: hash do contrato mudou (c240c7b8b6fd6768 ≠ a49f6cc245e3ac4d)  
 LIMITES OK (hash a49f6cc245e3ac4d, 99 testes, escopo ok, sem API/rede)   rc=0
 ## 8 teste de SVG: CSS passa / SMIL falha / duração 1.5s falha
 1 passed · 1 failed (tests/test_exercicios_svg.py:31 AssertionError: <animate) · 1 failed (:35 duração fora de 1/2/4 s)
+## 8b stub honesto + package.json, package-lock.json e node_modules/ na raiz (sobras de `npm install hyperframes`)
+untracked vistos pelo git: .env.exemplo Dockerfile atende docker-compose.yml src/x.py tools/render-exercicios web/exercicios/prancha.svg
+LIMITES OK (hash 8bb775d0f6abb553, 99 testes, escopo ok, sem API/rede)   rc=0
 ```
 
 ## 7. Harness — OK (saída real)
@@ -174,6 +196,8 @@ INDEPENDENTE FALHOU:
 processos do clone vivos no fim: 0 · pastas .verif-svg- sobrando: 0
 ```
 O `Externo` falso grava cada pedido e injeta 500 por `externo.falhas` (usado em `test_saida_pela_evolution_com_reenvio`).
+Limitação conhecida do verificador: na etapa 2 um `except Exception` para na primeira resposta sem JSON e pula o resto do bloco
+(vira um item da lista, não traceback) — aceitável porque a §10 exige JSON em toda resposta de uma implementação honesta.
 
 ## 8. Tamanho e fechamento — OK
 
@@ -213,6 +237,9 @@ sessões que apareceram de passagem durante a validação não foram tocados).
 - **CREF/CONFEF** (decisão 5) e **crédito por reserva × por check-in** (pergunta aberta): a spec decide sem ambiguidade
   (desconta na reserva, devolve só em `cancelada`/`cancelada_pela_academia`; check-in não consome), mas é política do dono.
 - Qualidade da figura nos 12 SVGs: só o humano abrindo `/exercicios/<id>` (decisão 11).
+- A lição da fisio diz que o `chrome-headless-shell` dá quadros iguais; aqui, **com** `--disable-threaded-animation`, ele deu
+  quadros distintos (a diferença é a flag). O verificador da academia segue usando só o chrome completo; se quiser unificar as
+  duas lições, é "sem a flag: iguais; com a flag: funciona".
 
 ## Contagem final
 
