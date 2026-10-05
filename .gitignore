@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+*.db
+*.sqlite*
+/dados/
+.loop.lock
+.env
+/backups/
+node_modules/
+renders/
+/web/exercicios/*.mp4

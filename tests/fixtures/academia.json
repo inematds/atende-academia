@@ -1,0 +1,93 @@
+{
+  "nome": "Academia Movimento Teste",
+  "token": "segredo-teste",
+  "passo_min": 30,
+  "avaliacao_duracao_min": 30,
+  "avaliacao_antecedencia_horas": 2,
+  "avaliacao_lembrete_horas": 24,
+  "reserva_antecedencia_dias": 7,
+  "cancelamento_prazo_horas": 2,
+  "inatividade_dias": 14,
+  "vencimento_aviso_dias": 5,
+  "feriados": ["2026-10-12"],
+  "horarios": {
+    "seg": [["06:00", "22:00"]],
+    "ter": [["06:00", "22:00"]],
+    "qua": [["06:00", "22:00"]],
+    "qui": [["06:00", "22:00"]],
+    "sex": [["06:00", "22:00"]],
+    "sab": [["08:00", "12:00"]],
+    "dom": []
+  },
+  "modalidades": [
+    {"id": "musculacao", "nome": "Musculação"},
+    {"id": "spinning", "nome": "Spinning"},
+    {"id": "pilates", "nome": "Pilates"},
+    {"id": "funcional", "nome": "Funcional"}
+  ],
+  "professores": [
+    {"id": "carla", "nome": "Carla", "avaliacao": true,
+     "horarios": {"seg": [], "ter": [["09:00", "12:00"]], "qua": [["09:00", "12:00"]], "qui": [["09:00", "12:00"]], "sex": [], "sab": [], "dom": []}},
+    {"id": "diego", "nome": "Diego", "avaliacao": false, "horarios": null}
+  ],
+  "salas": [
+    {"id": "sala1", "nome": "Sala 1"},
+    {"id": "sala2", "nome": "Sala 2"}
+  ],
+  "planos": [
+    {"id": "mensal", "nome": "Mensal", "preco": 129.90, "vigencia_dias": 30, "aulas": null},
+    {"id": "trimestral", "nome": "Trimestral", "preco": 329.90, "vigencia_dias": 90, "aulas": null},
+    {"id": "anual", "nome": "Anual", "preco": 1099.00, "vigencia_dias": 365, "aulas": null},
+    {"id": "avulso5", "nome": "5 aulas avulsas", "preco": 99.00, "vigencia_dias": 60, "aulas": 5}
+  ],
+  "grade": [
+    {"id": "func-seg-7", "modalidade": "funcional", "professor": "diego", "sala": "sala1", "dia": "seg", "hora": "07:00", "duracao_min": 60, "vagas": 4},
+    {"id": "spin-ter-7", "modalidade": "spinning", "professor": "diego", "sala": "sala1", "dia": "ter", "hora": "07:00", "duracao_min": 45, "vagas": 3},
+    {"id": "pil-qua-9", "modalidade": "pilates", "professor": "carla", "sala": "sala2", "dia": "qua", "hora": "09:00", "duracao_min": 60, "vagas": 2},
+    {"id": "spin-qua-19", "modalidade": "spinning", "professor": "diego", "sala": "sala1", "dia": "qua", "hora": "19:00", "duracao_min": 45, "vagas": 2},
+    {"id": "func-sex-18", "modalidade": "funcional", "professor": "diego", "sala": "sala1", "dia": "sex", "hora": "18:00", "duracao_min": 60, "vagas": 4}
+  ],
+  "exercicios": [
+    {"id": "agachamento", "nome": "Agachamento", "apelidos": ["agachamento livre", "squat"], "grupo": "pernas",
+     "passos": ["Pés na largura dos ombros, pontas levemente para fora.", "Desça como se fosse sentar, joelhos na direção dos pés.", "Desça até a coxa ficar paralela ao chão.", "Suba empurrando o chão com o pé inteiro."],
+     "erros_comuns": ["Joelho entrando para dentro.", "Calcanhar saindo do chão."], "cuidados": ["Dor no joelho: reduza a amplitude e avise o professor."]},
+    {"id": "flexao", "nome": "Flexão de braço", "apelidos": ["flexao", "flexao de braco", "push-up", "push up"], "grupo": "peito",
+     "passos": ["Mãos no chão um pouco mais abertas que os ombros.", "Corpo reto da cabeça ao calcanhar.", "Desça o peito até quase tocar o chão.", "Empurre o chão e volte com os braços estendidos."],
+     "erros_comuns": ["Quadril caído.", "Cotovelos muito abertos."], "cuidados": ["Dor no punho: apoie nos punhos fechados ou faça com os joelhos no chão."]},
+    {"id": "prancha", "nome": "Prancha", "apelidos": ["prancha abdominal", "plank", "prancha isometrica"], "grupo": "core",
+     "passos": ["Antebraços no chão, cotovelos abaixo dos ombros.", "Corpo reto, abdômen contraído, olhar para o chão.", "Segure a posição respirando normalmente."],
+     "erros_comuns": ["Quadril muito alto ou caído.", "Prender a respiração."], "cuidados": ["Dor na lombar: pare e avise o professor."]},
+    {"id": "remada", "nome": "Remada curvada", "apelidos": ["remada", "remada com halteres", "remada curvada com halteres"], "grupo": "costas",
+     "passos": ["Tronco inclinado à frente, coluna reta, joelhos levemente dobrados.", "Puxe os halteres em direção ao abdômen.", "Aproxime as escápulas no fim do movimento.", "Volte devagar até os braços estendidos."],
+     "erros_comuns": ["Arredondar as costas.", "Puxar com os braços sem mover as escápulas."], "cuidados": ["Coluna sempre neutra; carga leve até dominar o movimento."]},
+    {"id": "supino", "nome": "Supino reto", "apelidos": ["supino", "supino com halteres", "bench press"], "grupo": "peito",
+     "passos": ["Deitado no banco, pés firmes no chão.", "Halteres na altura do peito, cotovelos a cerca de 45 graus.", "Empurre para cima até estender os braços.", "Desça devagar até a altura do peito."],
+     "erros_comuns": ["Tirar o quadril do banco.", "Descer os halteres sobre o pescoço."], "cuidados": ["Peça ajuda do professor para pegar e devolver a carga."]},
+    {"id": "terra-bastao", "nome": "Levantamento terra com bastão", "apelidos": ["levantamento terra", "terra com bastao", "deadlift"], "grupo": "posterior",
+     "passos": ["Bastão à frente das coxas, pés na largura do quadril.", "Leve o quadril para trás mantendo a coluna reta.", "Desça o bastão rente às pernas até a canela.", "Suba contraindo os glúteos até ficar em pé."],
+     "erros_comuns": ["Arredondar a lombar.", "Afastar o bastão das pernas."], "cuidados": ["Dor na lombar: pare e avise o professor."]},
+    {"id": "afundo", "nome": "Afundo", "apelidos": ["avanco", "passada", "lunge", "afundo com halteres"], "grupo": "pernas",
+     "passos": ["Dê um passo à frente com um dos pés.", "Desça até os dois joelhos ficarem em cerca de 90 graus.", "O joelho de trás quase toca o chão.", "Empurre o chão com o pé da frente e volte."],
+     "erros_comuns": ["Joelho da frente passando muito da ponta do pé.", "Tronco inclinado para a frente."], "cuidados": ["Equilíbrio difícil: apoie uma mão na parede."]},
+    {"id": "elevacao-pelvica", "nome": "Elevação pélvica", "apelidos": ["elevacao pelvica", "ponte", "ponte de gluteo", "hip thrust"], "grupo": "gluteos",
+     "passos": ["Deitado de costas, joelhos dobrados e pés no chão.", "Eleve o quadril contraindo os glúteos.", "Pare quando o tronco e as coxas formarem uma linha reta.", "Desça devagar sem encostar o quadril no chão."],
+     "erros_comuns": ["Arquear demais a lombar no topo.", "Empurrar com a ponta dos pés."], "cuidados": ["Força vem do glúteo, não da lombar."]},
+    {"id": "abdominal", "nome": "Abdominal", "apelidos": ["abdominal reto", "crunch", "abdominal supra"], "grupo": "core",
+     "passos": ["Deitado de costas, joelhos dobrados e pés no chão.", "Mãos ao lado da cabeça, sem puxar o pescoço.", "Suba as escápulas do chão contraindo o abdômen.", "Desça devagar."],
+     "erros_comuns": ["Puxar o pescoço com as mãos.", "Subir o tronco inteiro usando o quadril."], "cuidados": ["Dor no pescoço: olhe para o teto e reduza a amplitude."]},
+    {"id": "desenvolvimento", "nome": "Desenvolvimento de ombros", "apelidos": ["desenvolvimento", "press de ombro", "shoulder press"], "grupo": "ombros",
+     "passos": ["Sentado ou em pé, halteres na altura dos ombros.", "Empurre para cima até estender os braços.", "Desça devagar até a altura das orelhas."],
+     "erros_comuns": ["Arquear a lombar.", "Bater os halteres no topo."], "cuidados": ["Dor no ombro: reduza a carga e a amplitude."]},
+    {"id": "puxada", "nome": "Puxada alta", "apelidos": ["puxada", "puxada frontal", "pulldown", "puxada na polia"], "grupo": "costas",
+     "passos": ["Sentado, pegada um pouco mais aberta que os ombros.", "Puxe a barra até a altura do queixo.", "Aproxime as escápulas no fim do movimento.", "Volte devagar até os braços estendidos."],
+     "erros_comuns": ["Puxar a barra atrás da cabeça.", "Balançar o tronco para trás."], "cuidados": ["Dor no ombro: use pegada mais fechada."]},
+    {"id": "polichinelo", "nome": "Polichinelo", "apelidos": ["jumping jack", "polichinelos"], "grupo": "cardio",
+     "passos": ["Em pé, pés juntos e braços ao lado do corpo.", "Salte abrindo as pernas e levando os braços acima da cabeça.", "Salte de volta juntando as pernas e descendo os braços.", "Mantenha um ritmo constante."],
+     "erros_comuns": ["Aterrissar com os joelhos travados.", "Braços sem subir até o alto."], "cuidados": ["Dor no joelho ou tornozelo: faça sem saltar, abrindo um pé de cada vez."]}
+  ],
+  "faq": [
+    {"id": "funcionamento", "perguntas": ["qual o horário de funcionamento", "que horas abre"], "resposta": "Segunda a sexta das 6h às 22h, sábado das 8h às 12h."},
+    {"id": "endereco", "perguntas": ["qual o endereço da academia", "onde fica a academia"], "resposta": "Rua das Palmeiras, 200, Água Verde, Curitiba."},
+    {"id": "estacionamento", "perguntas": ["tem estacionamento"], "resposta": "Temos estacionamento próprio para 20 carros, sem custo."}
+  ]
+}
