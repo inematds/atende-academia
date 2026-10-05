@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atende Academia — kit de plan para la atención de un gimnasio: planes, clases con cupos, check-in, rutina de entrenamiento y ejercicios animados</title>
+<meta name="description" content="Kit de plan abierto para un sistema de atención de gimnasio o estudio: especificación, 99 pruebas de aceptación, salvaguardas y prompts para que un agente (Claude Code o Codex) lo implemente en tu entorno. El sistema todavía no está implementado.">
+<link rel="alternate" hreflang="pt-BR" href="https://inematds.github.io/atende-academia/guia/">
+<link rel="alternate" hreflang="en" href="https://inematds.github.io/atende-academia/guia/en/">
+<link rel="alternate" hreflang="es" href="https://inematds.github.io/atende-academia/guia/es/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0c0c10; --bg2:#14141b; --card:#16161e; --line:#272730;
+    --txt:#e9e9ee; --mut:#9a9aa6; --amb:#E2A23B; --amb2:#f0c070; --sky:#38bdf8; --pro:#cbd5e1;
+    color-scheme:dark;
+  }
+  body.light{
+    --bg:#f6f7f9; --bg2:#eceef2; --card:#ffffff; --line:#e1e3ea;
+    --txt:#1a1a22; --mut:#5b5b68; --amb:#b9791d; --amb2:#a16207; --sky:#0369a1; --pro:#b45309;
+    color-scheme:light;
+  }
+  body.light .hero .glow{opacity:.5}
+  body.light pre{background:#0e0e14;color:#d6d6e0}
+  body.light pre .c{color:#8a8a98}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.65 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:Sora,sans-serif;line-height:1.15;margin:0}
+  a{color:var(--amb);text-decoration:none}
+  code,pre{font-family:"JetBrains Mono",monospace}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 22px}
+  .mut{color:var(--mut)} .amb{color:var(--amb)}
+  .chip{display:inline-block;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--amb);font-weight:600;font-family:Sora}
+  nav{position:sticky;top:0;z-index:30;backdrop-filter:blur(12px);background:rgba(12,12,16,.78);border-bottom:1px solid var(--line)}
+  nav .wrap{display:flex;align-items:center;gap:22px;height:60px}
+  nav .brand{display:flex;align-items:center;gap:8px;font-family:Sora;font-weight:800;letter-spacing:-.02em;color:var(--amb)}
+  nav .brand .emoji{font-size:1.25rem}
+  nav .sep{color:var(--mut);opacity:.45}
+  nav .inema{color:var(--sky);font-weight:600;font-size:.88rem;font-family:Sora}
+  nav .inema:hover{filter:brightness(1.15)}
+  nav .pro{color:var(--pro);font-weight:600;font-size:.88rem;font-family:Sora}
+  nav .pro:hover{filter:brightness(1.15)}
+  nav .clubpro{display:inline-flex;align-items:center;gap:6px}
+  nav .links{margin-left:auto;display:flex;align-items:center;gap:20px;font-size:.92rem}
+  nav .links a.sec{color:var(--mut)} nav .links a.sec:hover{color:var(--txt)}
+  .lang{display:inline-flex;gap:2px;font-family:Sora;font-size:.78rem}
+  .lang a{color:var(--mut);padding:.2em .45em;border-radius:6px} .lang a.on{color:var(--amb);background:rgba(226,162,59,.12)}
+  .tgl{background:var(--bg2);border:1px solid var(--line);color:var(--txt);width:38px;height:38px;border-radius:10px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:1.05rem}
+  .tgl:hover{border-color:var(--amb)}
+  .btn{display:inline-block;background:var(--amb);color:#1a1206;font-weight:600;padding:.6em 1.05em;border-radius:10px;font-family:Sora}
+  .btn.ghost{background:transparent;color:var(--txt);border:1px solid var(--line)}
+  @media(max-width:760px){nav .links a.sec{display:none}}
+  @media(max-width:520px){nav .wrap{gap:8px;padding:8px 14px;height:auto;flex-wrap:wrap} nav .links{gap:8px;margin-left:0;width:100%;justify-content:space-between} nav .btn{padding:.45em .7em;font-size:.82rem} .tgl{width:34px;height:34px}}
+  .hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+  .hero .glow{position:absolute;inset:-40% -20% auto auto;width:70%;height:600px;background:radial-gradient(closest-side,rgba(226,162,59,.22),transparent 70%);pointer-events:none}
+  .hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding:74px 22px}
+  .hero h1{font-size:clamp(2.2rem,5vw,3.5rem);font-weight:800;letter-spacing:-.025em}
+  .hero p.lead{font-size:1.18rem;color:var(--mut);margin:1.1em 0 1.6em;max-width:34ch}
+  .hero .cta{display:flex;gap:12px;flex-wrap:wrap}
+  .hero figure{margin:0;border-radius:16px;overflow:hidden;border:1px solid var(--line);box-shadow:0 30px 80px -30px #000}
+  .hero figure img{width:100%;display:block}
+  @media(max-width:780px){.hero .wrap{grid-template-columns:1fr;padding:48px 22px}}
+  section{padding:62px 0;border-bottom:1px solid var(--line)}
+  section h2{font-size:clamp(1.5rem,3.4vw,2.1rem);font-weight:800;letter-spacing:-.02em}
+  section .sub{color:var(--mut);margin:.6em 0 2em;max-width:62ch}
+  .grid{display:grid;gap:16px}
+  .g3{grid-template-columns:repeat(3,1fr)} .g4{grid-template-columns:repeat(4,1fr)} .g2{grid-template-columns:repeat(2,1fr)}
+  @media(max-width:820px){.g3,.g4{grid-template-columns:1fr 1fr}}
+  @media(max-width:540px){.g2,.g3,.g4{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+  .card h3{font-size:1.05rem;margin-bottom:.4em}
+  .card p{color:var(--mut);font-size:.92rem;margin:0}
+  .num{display:inline-flex;width:30px;height:30px;align-items:center;justify-content:center;border-radius:8px;background:rgba(226,162,59,.14);color:var(--amb);font-family:Sora;font-weight:800;font-size:.9rem;margin-bottom:.7em}
+  .flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+  .flow span{background:var(--bg2);border:1px solid var(--line);border-radius:999px;padding:.45em .9em;font-size:.85rem;font-family:Sora;font-weight:600}
+  .flow .arr{color:var(--amb);border:none;background:none;padding:0 .1em}
+  pre{background:#0a0a0e;border:1px solid var(--line);border-radius:12px;padding:16px 18px;overflow:auto;font-size:.86rem;line-height:1.6;color:#d6d6e0}
+  pre .c{color:#6f6f7c} pre .k{color:var(--amb2)} pre .s{color:#9ece6a}
+  .step{display:grid;grid-template-columns:46px minmax(0,1fr);gap:16px;margin-bottom:26px}
+  .step>div,.card{min-width:0}
+  p code,li code,td code{overflow-wrap:anywhere}
+  .step .b{width:46px;height:46px;border-radius:12px;background:var(--amb);color:#1a1206;font-family:Sora;font-weight:800;font-size:1.25rem;display:flex;align-items:center;justify-content:center}
+  .step h3{font-size:1.12rem;margin-bottom:.3em}
+  .step p{color:var(--mut);margin:.2em 0 .7em}
+  .ex{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:680px){.ex{grid-template-columns:1fr}}
+  .ex figure{margin:0;border-radius:14px;overflow:hidden;border:1px solid var(--line)}
+  .ex figure img{width:100%;display:block}
+  .ex figcaption{padding:12px 14px;font-size:.88rem;color:var(--mut);background:var(--card)}
+  .phase{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--line)}
+  .phase:last-child{border:none}
+  .phase .tag{flex:0 0 92px;font-family:Sora;font-weight:800;color:var(--amb)}
+  .phase .d strong{display:block;margin-bottom:.2em}
+  .phase .d span{color:var(--mut);font-size:.92rem}
+  footer{padding:46px 0;text-align:center;color:var(--mut);font-size:.9rem}
+  .pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:.3em .8em;font-size:.78rem;color:var(--mut);margin:0 4px}
+</style>
+</head>
+
+<body>
+
+<nav><div class="wrap">
+  <a class="brand" href="#top"><span class="emoji">🏋️</span> Atende Academia</a>
+  <span class="sep">|</span>
+  <span class="clubpro">
+    <a class="inema" href="https://inema.club" target="_blank" rel="noopener">INEMA.CLUB</a>
+    <span class="sep">-</span>
+    <a class="pro" href="https://inema.pro" target="_blank" rel="noopener">PRO</a>
+  </span>
+  <div class="links">
+    <a class="sec" href="#oque">Qué es</a>
+    <a class="sec" href="#fluxo">Cómo funciona</a>
+    <a class="sec" href="#guia">Guía de uso</a>
+    <a class="sec" href="#kit">Qué trae el kit</a>
+    <a class="sec" href="#roadmap">Roadmap</a>
+    <span class="lang"><a href="../">PT</a><a href="../en/">EN</a><a class="on" href="./">ES</a></span>
+    <button class="tgl" id="themeToggle" aria-label="Cambiar tema" title="Cambiar tema">🌙</button>
+    <a class="btn" href="https://github.com/inematds/atende-academia" target="_blank" rel="noopener">GitHub</a>
+  </div>
+</div></nav>
+
+<header class="hero" id="top">
+  <div class="glow"></div>
+  <div class="wrap">
+    <div>
+      <span class="chip">Kit de plan · gimnasio y estudio · código abierto</span>
+      <h1>El plan completo para que el alumno <span class="amb">vuelva</span> mañana</h1>
+      <p class="lead">Especificación, 99 pruebas de aceptación, salvaguardas y prompts para que un agente construya, en tu entorno, la atención de un gimnasio o estudio pequeño: planes y matrícula, clases con cupos y lista de espera, check-in, rutina de entrenamiento, ejercicios animados y el equipo en Telegram. <strong>El sistema todavía no está implementado: este repositorio es el plan, y tú ejecutas la implementación.</strong></p>
+      <div class="cta">
+        <a class="btn" href="#guia">Empezar la guía</a>
+        <a class="btn ghost" href="https://github.com/inematds/atende-academia" target="_blank" rel="noopener">Ver en GitHub</a>
+      </div>
+    </div>
+    <figure><img src="../assets/banner-es.jpg" alt="Banner de Atende Academia: planes y matrícula, clases con cupos y lista de espera, check-in, rutina de entrenamiento, ejercicios animados y equipo en Telegram"></figure>
+  </div>
+</header>
+
+<section id="oque"><div class="wrap">
+  <span class="chip">Qué es</span>
+  <h2>Un kit para pedirle al agente: del contrato a las 99 pruebas en verde</h2>
+  <p class="sub">Aquí no hay una aplicación lista. Hay el contrato de lo que la aplicación debe hacer, la batería de pruebas que lo demuestra y las salvaguardas que impiden que el agente haga trampa. Quien construye es Claude Code o Codex, corriendo en tu máquina, con tu suscripción. Su hermano <a href="https://inematds.github.io/atende-fisioterapia/guia/es/" target="_blank" rel="noopener">Atende Fisioterapia</a> sigue el mismo molde, y <code>atende-clinica</code>, que vino antes, se hizo exactamente así y cerró 93 de 93 pruebas.</p>
+  <figure style="margin:0 0 26px;border-radius:16px;overflow:hidden;border:1px solid var(--line);box-shadow:0 30px 80px -30px #000"><img src="../assets/banner-grade-es.jpg" alt="Planes con estado de pago manual, clases grupales con cupos y lista de espera, check-in y reactivación con consentimiento, rutina de entrenamiento, evaluación física como dato sensible y equipo en Telegram" loading="lazy" style="width:100%;display:block"></figure>
+  <div class="grid g3">
+    <div class="card"><h3>🏋️ El sistema que sale del plan</h3><p>Alumnos y planes, clases grupales con reserva, check-in y la rutina de entrenamiento del profesor. En el centro está la <strong>clase con cupos</strong>: reserva con límite, lista de espera con oferta automática y falta automática. Python 3 solo con la biblioteca estándar y SQLite, un gimnasio por instalación.</p></div>
+    <div class="card"><h3>📦 El kit</h3><p>Especificación de 23 secciones (0 a 22), 99 pruebas de caja negra, 20 decisiones ya propuestas, mapa hacia Raio-X, prompts para <code>/goal</code> y para el loop headless, y las salvaguardas que congelan el contrato. Un validador adversarial ya revisó todo y encontró 10 problemas, 2 de los cuales habrían frenado a un implementador honesto.</p></div>
+    <div class="card"><h3>📈 Fuente: Raio-X de Margem</h3><p>La falta sin aviso, el horario ocioso y el alumno que desaparece son las fugas que ataca el plan. El sistema devuelve seis números del mes al panel de <a href="https://inematds.github.io/raio-x-margem/guia/es/" target="_blank" rel="noopener">Raio-X de Margem</a>, que es la fuente de las reglas de negocio. Allí no existe un paquete de gimnasio: el kit usa el modelo genérico de servicios con agenda, y cada mapeo es una premisa.</p></div>
+  </div>
+  <div class="grid g3" style="margin-top:16px">
+    <div class="card"><h3>💳 Plan y matrícula, pago manual</h3><p>Planes mensual, trimestral, anual y clases sueltas, con precio y vigencia. La matrícula es <code>ativa</code>, <code>vencida</code>, <code>trancada</code> o <code>cancelada</code> (activa, vencida, congelada, cancelada). El pago es solo un <strong>estado manual</strong> (<code>pago</code> o <code>pendente</code>, pagado o pendiente) marcado por el equipo, más el aviso de vencimiento. Ningún Pix, tarjeta ni intermediario de pago en la v1.</p></div>
+    <div class="card"><h3>📍 Check-in y reactivación</h3><p>El alumno hace check-in con su código en la recepción o por el chat (<code>cheguei</code>, "llegué"), uno por día. A quien desaparece hace N días le llega un mensaje de reactivación, pero <strong>solo si dio su consentimiento</strong>: la reactivación es marketing, no un aviso del contrato. "PARAR" bloquea todo lo automático.</p></div>
+    <div class="card"><h3>🔒 LGPD y evaluación física</h3><p>Exportar y anonimizar los datos del alumno. El resultado de la <strong>evaluación física</strong> (peso, estatura, medidas) es un dato sensible: solo lo ve el equipo, nunca por la conversación, y se borra junto con el alumno. La LGPD y el <code>192</code> son de Brasil: la LGPD es la ley brasileña de protección de datos y el 192 es el número de la ambulancia en Brasil.</p></div>
+  </div>
+</div></section>
+
+<section id="fluxo"><div class="wrap">
+  <span class="chip">Cómo funciona</span>
+  <h2>De la matrícula al "llegué" de cada día</h2>
+  <p class="sub">Este es el flujo del sistema planificado, lo que el agente va a construir. Servidor Python sin dependencias, SQLite en una carpeta de datos y Docker para el VPS. Evolution y Telegram entran solo por variables de entorno; sin ellas, la bandeja de salida es simulada y no sale ninguna llamada de red.</p>
+  <div class="flow">
+    <span>Chat del sitio o WhatsApp (Evolution)</span><span class="arr">→</span>
+    <span>Plan y matrícula</span><span class="arr">→</span>
+    <span>Reserva de clase, cupo o espera</span><span class="arr">→</span>
+    <span>Check-in y falta automática</span><span class="arr">→</span>
+    <span>Rutina de entrenamiento y ejercicio animado</span><span class="arr">→</span>
+    <span>Reactivación y números para Raio-X</span>
+  </div>
+  <div class="grid g3" style="margin-top:22px">
+    <div class="card"><h3>Alumno</h3><p>Por el chat o por WhatsApp pregunta por las clases, reserva y cancela, ve <code>meu plano</code> (mi plan) y <code>meu treino</code> (mi entrenamiento), pide <code>explica agachamento</code> (explica la sentadilla), escribe <code>cheguei</code>, resuelve dudas con el FAQ, pide un humano y manda "PARAR" cuando no quiere más mensajes. Una palabra de alerta de salud (dolor fuerte, dolor en el pecho, falta de aire, desmayo, mareo, lesión y otras) se responde con <code>192</code> y avisa al profesor. El chat está en portugués en la v1.</p></div>
+    <div class="card"><h3>Equipo en Telegram</h3><p>Avisos de reserva y de cancelación, y los comandos <code>/aulas [fecha]</code>, <code>/fila</code>, <code>/responder</code> y <code>/encerrar</code>, también como respuesta directa al mensaje del alumno.</p></div>
+    <div class="card"><h3>Página /equipe</h3><p>Con token: alumnos, planes y matrículas, grilla, reservas, check-ins, rutinas, evaluaciones, biblioteca de ejercicios, FAQ, registros y la cola humana.</p></div>
+  </div>
+  <div class="grid g3" style="margin-top:16px">
+    <div class="card"><h3>Clases, cupos y espera</h3><p>La grilla semanal tiene modalidad, profesor, sala y cupos. La reserva respeta el límite de cupos y la anticipación; con 10 pedidos para el último cupo, uno recibe 201 y los otros nueve 409. Cuando alguien cancela, el primero de la <strong>lista de espera</strong> recibe la oferta automática.</p></div>
+    <div class="card"><h3>Plazo de cancelación y falta</h3><p>Cancelar dentro del plazo (por defecto 2 h antes) devuelve el crédito. Pasado el plazo, el cupo se libera y se dispara la espera, pero el crédito suelto no vuelve. Una reserva sin check-in el día de la clase pasa a ser <strong>falta automática</strong> en la ronda de tareas, y el equipo puede corregirla.</p></div>
+    <div class="card"><h3>Rutina de entrenamiento</h3><p>El profesor arma la rutina con ejercicios de la biblioteca (series, repeticiones, carga, descanso). El alumno pide <code>meu treino de hoje</code> (mi entrenamiento de hoy) y recibe el entrenamiento que toca, en secuencia con cada check-in. El bot muestra la rutina del profesor y nunca prescribe.</p></div>
+  </div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card"><h3>🎞️ Demostración: ejercicio animado solo con CSS</h3>
+      <p>Cada ejercicio es un SVG con animación <strong>solo en CSS</strong>, sin script y sin SMIL. Medido en un render real, HyperFrames no tiene adaptador SMIL: el movimiento SMIL salió quieto o desfasado en el MP4, y solo el CSS quedó fiel. Esta es la sentadilla: pies fijos en el suelo, rodillas hacia adelante, cadera hacia atrás.</p>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-label="Sentadilla" style="width:100%;max-width:240px;display:block;margin:14px auto 0;background:#fff;border-radius:12px">
+        <title>Sentadilla</title>
+        <style>
+          .fx-perna{d:path("M200 330 L204 250 L200 170 L200 90");animation:fx-perna 2.4s ease-in-out infinite}
+          .fx-braco{d:path("M200 90 L206 168");animation:fx-braco 2.4s ease-in-out infinite}
+          .fx-cab{transform:translate(0px,0px);animation:fx-cab 2.4s ease-in-out infinite}
+          @keyframes fx-perna{0%,12%,95%,100%{d:path("M200 330 L204 250 L200 170 L200 90")}45%,62%{d:path("M200 330 L250 268 L172 258 L223 197")}}
+          @keyframes fx-braco{0%,12%,95%,100%{d:path("M200 90 L206 168")}45%,62%{d:path("M223 197 L292 190")}}
+          @keyframes fx-cab{0%,12%,95%,100%{transform:translate(0px,0px)}45%,62%{transform:translate(48px,100px)}}
+          @media (prefers-reduced-motion:reduce){.fx-perna,.fx-braco,.fx-cab{animation:none}}
+        </style>
+        <rect width="400" height="400" fill="#fff"/>
+        <line x1="40" y1="342" x2="360" y2="342" stroke="#999" stroke-width="4"/>
+        <line x1="182" y1="334" x2="240" y2="334" stroke="#222" stroke-width="8" stroke-linecap="round"/>
+        <path class="fx-braco" d="M200 90 L206 168" fill="none" stroke="#222" stroke-width="7" stroke-linecap="round"/>
+        <path class="fx-perna" d="M200 330 L204 250 L200 170 L200 90" fill="none" stroke="#222" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle class="fx-cab" cx="200" cy="62" r="20" fill="none" stroke="#222" stroke-width="6"/>
+      </svg></div>
+    <div class="card"><h3>Los 12 ejercicios del ejemplo</h3>
+      <p>Sentadilla, flexión de brazos, plancha, remo inclinado, press de banca, peso muerto con bastón, zancada, elevación de pelvis, abdominal, press de hombros, jalón al pecho y salto de tijera (jumping jack).</p>
+      <p style="margin-top:.8em">Cada uno tiene una página pública <code>/exercicios/&lt;id&gt;</code> con el SVG animado, los pasos, los errores comunes y los cuidados. En WhatsApp va un <strong>MP4</strong> de 4 s renderizado por HyperFrames, un paso de build local (<code>tools/render-exercicios</code>); sin el MP4 (o sin <code>PUBLIC_URL</code>) va el enlace de la página. Los 12 SVG los dibuja el implementador, y el movimiento se comprueba en el nivel 4 con <code>verificar-independente.py</code>, que dice <code>PULADO</code> (omitido) cuando falta la herramienta.</p></div>
+  </div>
+</div></section>
+
+<section id="pre"><div class="wrap">
+  <span class="chip">Requisitos</span>
+  <h2>Lo que necesitas</h2>
+  <p class="sub">Para ejecutar el plan basta Python para las pruebas y un agente con sesión iniciada por suscripción. Docker solo entra en la verificación final; Evolution y Telegram son opcionales y tuyos. Para los videos de los ejercicios, Node 22 o más nuevo, HyperFrames y <code>ffprobe</code>.</p>
+  <div class="grid g3">
+    <div class="card"><h3>Python 3.10+ y pytest</h3><p>Las pruebas usan pytest (herramienta de desarrollo). La aplicación en sí no tendrá dependencias.</p><pre><span class="c"># comprobar</span>
+<span class="k">python3</span> --version
+<span class="k">python3</span> -m pip install pytest</pre></div>
+    <div class="card"><h3>Claude Code o Codex</h3><p>Por suscripción, sin API de pago. Para el loop headless, clona <a href="https://github.com/inematds/execucao-longa" target="_blank" rel="noopener">execucao-longa</a> en <code>~/projetos</code>.</p><pre><span class="c"># comprobar</span>
+<span class="k">codex</span> --version   <span class="c"># o: claude --version</span></pre></div>
+    <div class="card"><h3>Docker, Evolution y Telegram</h3><p>Docker hace el build final de la verificación independiente. Una instancia de Evolution y un bot de Telegram solo si quieres los canales; las credenciales quedan en el <code>.env</code>.</p><pre><span class="c"># comprobar</span>
+<span class="k">docker</span> --version</pre></div>
+  </div>
+</div></section>
+
+<section id="guia"><div class="wrap">
+  <span class="chip">Guía de uso · paso a paso</span>
+  <h2>Del clon al sistema implementado, en tu entorno</h2>
+  <p class="sub">Los comandos de abajo son los del repositorio. El ciclo: responder las decisiones, congelar el contrato, ejecutar el agente hasta <code>99 passed</code> y <code>LIMITES OK</code>, comprobar con la verificación independiente, generar los videos y pedir la revisión de un profesional de educación física.</p>
+
+  <div class="step"><div class="b">1</div><div>
+    <h3>Clona el repositorio</h3>
+    <p>Todavía no existe <code>./atende</code>: el repositorio solo tiene el plan. Comprueba que la suite se recolecta sin errores y que aún nada pasa (sin la implementación, las pruebas fallan o dan error, y eso es lo esperado).</p>
+<pre><span class="k">git clone</span> <span class="s">https://github.com/inematds/atende-academia</span> && <span class="k">cd</span> atende-academia
+<span class="k">python3</span> -m pytest -q --collect-only | tail -n 1   <span class="c"># 99 tests collected</span>
+<span class="k">python3</span> -m pytest -q | tail -n 1                  <span class="c"># 30 failed, 69 errors (0 passed)</span></pre>
+  </div></div>
+
+  <div class="step"><div class="b">2</div><div>
+    <h3>Responde las decisiones abiertas</h3>
+    <p>Lee <code>docs/DECISOES-ABERTAS.md</code>: son 20 propuestas por defecto ya aplicadas en la especificación y en las pruebas. Responder "ok en todo" destraba la ejecución. Si cambias algo marcado con ⚠ (por ejemplo la reactivación solo con consentimiento, la falta automática o el plazo de cancelación), edita <code>docs/ESPECIFICACAO.md</code> y <code>tests/</code> antes del paso 3 y revisa el conteo. Para un piloto real, cambia también <code>exemplos/academia.json</code> por tu grilla, planes, profesores, FAQ y ejercicios.</p>
+<pre><span class="k">less</span> docs/DECISOES-ABERTAS.md
+<span class="k">python3</span> -m pytest -q --collect-only | tail -n 1</pre>
+  </div></div>
+
+  <div class="step"><div class="b">3</div><div>
+    <h3>Congela el contrato</h3>
+    <p>Con el <code>git status</code> limpio, el script guarda el hash de <code>tests/</code>, <code>pytest.ini</code>, la especificación y los verificadores en <code>hash-congelado.txt</code> y hace un commit. Desde entonces, cualquier cambio en las pruebas se detecta.</p>
+<pre><span class="k">git status</span>
+<span class="k">bash</span> longrun/2026-10-05-academia-v1/congelar.sh</pre>
+  </div></div>
+
+  <div class="step"><div class="b">4</div><div>
+    <h3>Ejecuta el agente (elige un camino)</h3>
+    <p><strong>a) Loop headless con Codex (recomendado).</strong> El <code>loop.env</code> define 20 ciclos de 30 min, 8 GB por ciclo, parada tras 3 ciclos sin avance, modelo <code>gpt-6-astra</code> y <code>CODEX_ARGS="-c sandbox_workspace_write.network_access=true"</code>: sin eso el sandbox de Codex bloquea el servidor local de las pruebas.</p>
+<pre><span class="k">~/projetos/execucao-longa/tools/loop-longrun.sh</span> longrun/2026-10-05-academia-v1</pre>
+    <p><strong>b) <code>/goal</code> en Claude Code.</strong> Abre una sesión nueva de Claude Code en la carpeta del proyecto y sigue <code>longrun/2026-10-05-academia-v1/prompt-goal-claude.md</code>: pega la condición de <code>/goal</code> (la salida debe mostrar <code>99 passed</code> y <code>LIMITES OK</code>) y, como primer mensaje, el bloque de <code>prompt-goal-codex.md</code>.</p>
+<pre><span class="k">claude</span>   <span class="c"># sesión nueva, dentro de atende-academia</span></pre>
+    <p><strong>c) Codex TUI ya abierto.</strong> Pega todo el contenido de <code>longrun/2026-10-05-academia-v1/prompt-goal-codex.md</code> (empieza con <code>/goal</code>).</p>
+<pre><span class="k">codex</span> -c sandbox_workspace_write.network_access=true</pre>
+  </div></div>
+
+  <div class="step"><div class="b">5</div><div>
+    <h3>Haz el seguimiento</h3>
+    <p>En el loop, <code>loop.log</code> muestra cada ciclo y <code>progress.md</code> trae una línea por checkpoint; <code>state.md</code> dice qué funciona, qué falta y cómo retomar. Una prueba en conflicto con la especificación va a <code>failures.md</code>: es una compuerta humana, y el agente no debe ajustar pruebas ni especificación.</p>
+<pre><span class="k">tail</span> -f longrun/2026-10-05-academia-v1/loop.log
+<span class="k">cat</span> longrun/2026-10-05-academia-v1/state.md</pre>
+  </div></div>
+
+  <div class="step"><div class="b">6</div><div>
+    <h3>Comprueba con la verificación independiente</h3>
+    <p>Cuando el agente diga "terminado", ejecuta los tres comandos. El último el agente nunca lo vio: busca valores del fixture copiados en el código, levanta un gimnasio que nunca apareció (otra grilla, otros planes y plazos, un feriado, otro reloj), abre 3 SVG en un Chromium para probar que se mueven, renderiza un ejercicio con HyperFrames y hace <code>docker build</code> con healthcheck. Sin Chromium, sin HyperFrames o sin Docker, esas etapas salen como <code>PULADO</code>, nunca como OK. Después abre <code>/</code>, <code>/equipe</code> y <code>/exercicios/prancha</code> en el navegador.</p>
+<pre><span class="k">python3</span> -m pytest -q tests/                                         <span class="c"># 99 passed</span>
+<span class="k">bash</span> longrun/2026-10-05-academia-v1/verificar-limites.sh               <span class="c"># LIMITES OK</span>
+<span class="k">python3</span> longrun/2026-10-05-academia-v1/verificar-independente.py      <span class="c"># INDEPENDENTE OK</span></pre>
+  </div></div>
+
+  <div class="step"><div class="b">7</div><div>
+    <h3>Genera los videos MP4 de los ejercicios</h3>
+    <p>Paso humano, después de la implementación: <code>tools/render-exercicios</code> (escrito por el agente) usa solo el HyperFrames ya instalado, no descarga nada, y necesita Node 22 o más nuevo, Chromium y <code>ffprobe</code>. Genera <code>web/exercicios/&lt;id&gt;.mp4</code> (4 s, 720×720, sin audio) a partir de cada SVG. Instala HyperFrames <strong>después</strong> de que el loop termine, porque el agente no debe descargar paquetes. WhatsApp descarga el video desde la URL pública, así que el camino del MP4 exige <code>PUBLIC_URL</code> con HTTPS.</p>
+<pre><span class="k">npm</span> install hyperframes
+<span class="k">tools/render-exercicios</span> --ids agachamento,prancha --saida web/exercicios</pre>
+  </div></div>
+
+  <div class="step"><div class="b">8</div><div>
+    <h3>Ejecuta tu gimnasio</h3>
+    <p>Con el sistema implementado, copia el ejemplo, cambia el token y levanta el servidor. El chat del alumno queda en <code>/</code>, la página del equipo en <code>/equipe</code> (header <code>X-Token</code>) y cada ejercicio en <code>/exercicios/&lt;id&gt;</code>. El despliegue en el VPS es tuyo, con tus credenciales; el guion (Docker, webhooks de Evolution y Telegram, respaldo) lo escribe el agente en el README, sección 22 de la especificación.</p>
+<pre><span class="k">mkdir</span> -p dados && <span class="k">cp</span> exemplos/academia.json dados/academia.json
+<span class="k">./atende</span> serve --porta 8080 --dados dados
+<span class="k">./atende</span> raiox --dados dados --mes 2026-10 --acompanhamento acompanhamento.json</pre>
+  </div></div>
+
+  <div class="card" style="border-color:var(--amb)"><h3>⚠️ Antes de usar con un alumno real: revisión de un profesional de educación física</h3><p>Los 12 SVG son figuras esquemáticas <strong>dibujadas por el implementador</strong>, y los pasos, errores comunes y cuidados de cada ejercicio se escribieron como ejemplo: <strong>un profesional de educación física debe revisar todo</strong> antes de llegar a un alumno real, incluida la lista de palabras de alerta de salud. Las reglas del consejo profesional (CREF/CONFEF, los consejos brasileños de educación física) <strong>no se investigaron</strong>: la salvaguarda de campañas es solo el mínimo seguro (promesa de resultado y "antes y después"), sin citar ningún artículo, y el dueño confirma las reglas antes de publicar cualquier campaña (decisión 5). La base legal de la evaluación física, dato sensible, también la confirma el dueño o un abogado (decisión 6).</p></div>
+</div></section>
+
+<section id="kit"><div class="wrap">
+  <span class="chip">Qué trae el kit</span>
+  <h2>Contrato, pruebas y salvaguardas, con los números reales</h2>
+  <p class="sub">Todo lo que el agente necesita para construir, y todo lo que impide que finja haber construido.</p>
+  <div class="grid g3">
+    <div class="card"><h3>99 pruebas de aceptación</h3><p>Caja negra, por HTTP y por línea de comandos, en 13 archivos.</p><pre>test_integracoes.py           16
+test_exercicios_svg.py        14
+test_aulas.py                 12
+test_alunos_planos.py          9
+test_conversa.py               8
+test_treino.py                 6
+test_cadastros.py              6
+test_basico.py                 6
+test_docker.py                 5
+test_checkin.py                5
+test_campanhas.py              5
+test_avaliacao.py              4
+test_lgpd_raiox.py             3</pre></div>
+    <div class="card"><h3>Especificación de 23 secciones</h3><p><code>docs/ESPECIFICACAO.md</code>, secciones 0 a 22: ejecución, <code>academia.json</code>, alumnos, planes y matrículas, clases grupales, check-in, entrenamiento, explicación animada, evaluación física, API HTTP, conversación, tareas, campañas y la salvaguarda de publicidad, Raio-X, LGPD, Evolution, Telegram y Docker. El cobro por Pix o tarjeta, el torniquete, la app del alumno, las clases personalizadas y varios gimnasios en el mismo servidor están explícitamente fuera (sección 16).</p></div>
+    <div class="card"><h3>Salvaguardas contra atajos</h3><p>Hash congelado de <code>tests/</code>, <code>pytest.ini</code>, la especificación y los verificadores. Alcance de archivos: el agente solo toca el código y sus propios registros. Sin clave de API, sin URL externa en el código, sin <code>0.0.0.0</code> y sin SMIL ni script en los SVG. <code>verificar-limites.sh</code> comprueba todo eso e imprime <code>LIMITES OK</code>.</p></div>
+    <div class="card"><h3>Verificación independiente</h3><p>Nivel 4, oculto para el agente: busca valores del fixture en el código, levanta un gimnasio nunca visto, comprueba el movimiento de los SVG y el MP4 cuando existen las herramientas, y hace <code>docker build</code> y healthcheck. Solo así "99 passed" prueba una lógica general.</p></div>
+    <div class="card"><h3>20 decisiones ya propuestas</h3><p>Lenguaje, canales, cobro solo manual, salvaguarda de campañas, evaluación física como dato sensible, reactivación con consentimiento, falta automática, cancelación tardía, check-in por código, los 12 ejercicios con animación solo CSS y Raio-X. Solo los ítems marcados con ⚠ cambian el contrato.</p></div>
+    <div class="card"><h3>Validado por un agente adversarial</h3><p>Un validador que no vio la planificación comparó pruebas con especificación e intentó burlar las salvaguardas. Encontró y corrigió 10 problemas: 2 bloqueaban la ejecución, 5 estorbaban y 3 eran cosméticos. El principal: la especificación aceptaba SMIL, y el render de HyperFrames no tiene adaptador SMIL, medido en un render real. El relato completo está en <code>docs/VALIDACAO.md</code> y cada corrección tiene una línea en <code>FALHAS.md</code>.</p></div>
+  </div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card"><h3>Las reglas de negocio vienen de Raio-X</h3><p>Falta sin aviso, horario ocioso, alumno que no vuelve y recepción atada a la agenda: <code>docs/MAPA-RAIO-X.md</code> vincula cada fuga del paquete de servicios con una pieza de la v1 o con el motivo de quedar fuera. Raio-X no trae cifras de mercado de gimnasios, así que faltas, ocupación y renovación quedan como premisa para medir en tu propio gimnasio. Detalles en la <a href="https://inematds.github.io/raio-x-margem/guia/es/" target="_blank" rel="noopener">guía de Raio-X de Margem</a>.</p></div>
+    <div class="card"><h3>Reglas brasileñas incorporadas</h3><p>La LGPD (aviso de vencimiento, espera y clase cancelada como ejecución del contrato; reactivación y campaña solo con consentimiento; evaluación física como dato sensible; exportar y anonimizar) y el <code>192</code> para emergencias. La regla del consejo profesional (CREF/CONFEF) todavía no se investigó. Fuera de Brasil, cámbialo por la ley de privacidad, el consejo profesional y el número de emergencia locales.</p></div>
+  </div>
+</div></section>
+
+<section id="roadmap"><div class="wrap">
+  <span class="chip">Roadmap</span>
+  <h2>Dónde está y hacia dónde va</h2>
+  <p class="sub">El plan está listo y validado. La implementación todavía no existe: nace cuando ejecutas el <code>/goal</code> o el loop, con el método <a href="https://inematds.github.io/execucao-longa/guia/es/" target="_blank" rel="noopener">execucao-longa</a>. <code>atende-clinica</code> siguió el mismo camino y cerró 93 de 93.</p>
+  <div class="phase"><div class="tag">Plan ✅</div><div class="d"><strong>Especificación, pruebas y salvaguardas validadas</strong><span>Contrato de 23 secciones, 99 pruebas de aceptación, 20 decisiones propuestas, mapa hacia Raio-X y validación adversarial concluida el 05/10/2026.</span></div></div>
+  <div class="phase"><div class="tag">Implementación</div><div class="d"><strong>Tú ejecutas el /goal o el loop</strong><span>Responder las decisiones, congelar el contrato y dejar que el agente trabaje hasta <code>99 passed</code> y <code>LIMITES OK</code>, y luego la verificación independiente. Hoy el sistema no está implementado.</span></div></div>
+  <div class="phase"><div class="tag">Videos</div><div class="d"><strong>MP4 de los ejercicios, en tu máquina</strong><span>Ejecutar <code>tools/render-exercicios</code> una vez, con HyperFrames instalado, y publicar los archivos junto con <code>PUBLIC_URL</code>.</span></div></div>
+  <div class="phase"><div class="tag">Piloto</div><div class="d"><strong>En un gimnasio real</strong><span>Cambiar el ejemplo por la grilla, planes y ejercicios verdaderos, tener la revisión de un profesional de educación física, confirmar las reglas de CREF/CONFEF, publicar en el VPS y seguir faltas, ocupación, renovación y frecuencia en el Panel de Recuperación de Raio-X.</span></div></div>
+  <div class="phase"><div class="tag">Después</div><div class="d"><strong>Fuera de la v1</strong><span>Cobro, torniquete, app del alumno, clases personalizadas, varios gimnasios, inicio de sesión por usuario, LLM en las respuestas e interfaz en EN/ES quedan para una próxima versión, con compuerta humana.</span></div></div>
+</div></section>
+
+<footer>
+  <div class="wrap">
+    <div class="pill">Python 3 · biblioteca estándar</div><div class="pill">SQLite</div><div class="pill">Docker</div><div class="pill">Evolution API</div><div class="pill">Telegram</div><div class="pill">LGPD</div>
+    <p style="margin-top:18px">Atende Academia · kit de plan abierto ·
+      <a href="https://github.com/inematds/atende-academia">inematds/atende-academia</a> ·
+      <a href="https://inema.club">INEMA.CLUB</a></p>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    var KEY='atende-academia-theme';
+    var b=document.body, t=document.getElementById('themeToggle');
+    if(localStorage.getItem(KEY)==='light'){ b.classList.add('light'); t.textContent='☀️'; }
+    t.addEventListener('click',function(){
+      var light=b.classList.toggle('light');
+      t.textContent=light?'☀️':'🌙';
+      localStorage.setItem(KEY, light?'light':'dark');
+    });
+  })();
+</script>
+</body>
+</html>

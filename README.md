@@ -1,5 +1,13 @@
 # atende-academia
 
+**🇧🇷 [Português](README.md) · 🇺🇸 [English](README.en.md) · 🇪🇸 [Español](README.es.md)**
+
+[![Atende Academia](guia/assets/banner.jpg)](https://inematds.github.io/atende-academia/guia/)
+
+## 📖 Guia de uso
+
+Landing e guia passo a passo (PT/EN/ES): **https://inematds.github.io/atende-academia/guia/** · [English](https://inematds.github.io/atende-academia/guia/en/) · [Español](https://inematds.github.io/atende-academia/guia/es/)
+
 Atendimento ao aluno de uma academia ou estúdio pequeno, em Python 3 só com biblioteca padrão (HTTP + SQLite): alunos e planos, aulas coletivas com reserva e lista de espera, check-in e reativação, ficha de treino, **explicação animada de exercícios**, avaliação física, conversa por chat web e WhatsApp (Evolution API), equipe pelo Telegram, LGPD e exportação para o Painel de Recuperação do Raio-X de Margem.
 
 **Estado (05/10/2026): planejado — contrato, 99 testes e pasta de execução longa prontos; implementação pendente.** Ver "Como rodar no seu ambiente".
