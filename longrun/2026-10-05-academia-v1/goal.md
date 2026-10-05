@@ -12,22 +12,22 @@
 ## Critérios de pronto (verificáveis)
 
 **Função**
-- [ ] `python3 -m pytest -q tests/` → **99 passed**, 0 failed, 0 errors, 0 skipped (inclui os 14 testes de SVG: 12 arquivos válidos, animados, sem script/URL, ≤ 60 KB; rotas `.svg`/`.mp4`; e o teste estático de `tools/render-exercicios`)
+- [ ] `python3 -m pytest -q tests/` → **99 passed**, 0 failed, 0 errors, 0 skipped (inclui os 14 testes de `test_exercicios_svg.py`: 12 arquivos válidos, animados **só por CSS** com durações 1/2/4 s, sem SMIL/script/URL, ≤ 60 KB; catálogo; rotas `.svg`/`.mp4` — e, em `test_docker.py`, o teste estático de `tools/render-exercicios`)
 
 **Regressão**
 - [ ] a mesma suíte inteira no teste final (o loop só fecha se todas passam juntas; teste que passava e voltou a falhar impede o fecho)
 - [ ] `./atende serve` reiniciado com o mesmo `--dados` mantém o estado (coberto por `test_estado_persiste_ao_reiniciar`, `test_semente_so_na_primeira_vez`, `test_reativacao_apos_inatividade`, `test_meu_treino_pelo_chat_rotaciona`, `test_cancelar_dentro_e_fora_do_prazo`, `test_presenca_manual_e_automatica`)
 
 **Limite**
-- [ ] `bash longrun/2026-10-05-academia-v1/verificar-limites.sh` → `LIMITES OK` (hash do contrato = `hash-congelado.txt` — cobre `tests/`, `pytest.ini`, `docs/ESPECIFICACAO.md`, `verificar-limites.sh` e `verificar-independente.py`; nº de testes coletados = 99; só arquivos do escopo — `atende`, `src/`, `web/`, `tools/`, `exemplos/`, `README.md`, `VERSION`, `Dockerfile`, `docker-compose.yml`, `.env.exemplo`, `.dockerignore`, `.gitignore`, `CLAUDE.md`, `FALHAS.md`, esta pasta —; sem SDK/dependência externa; sem chave de API; sem URL externa no código nem na entrega (em `tools/` só o CDN do GSAP é tolerado, por ser passo de build); sem `0.0.0.0` no código; nenhum `.mp4` nem `node_modules` commitado)
+- [ ] `bash longrun/2026-10-05-academia-v1/verificar-limites.sh` → `LIMITES OK` (hash do contrato = `hash-congelado.txt` — cobre `tests/`, `pytest.ini`, `docs/ESPECIFICACAO.md`, `verificar-limites.sh` e `verificar-independente.py`; nº de testes coletados = 99; só arquivos do escopo — `atende`, `src/`, `web/`, `tools/`, `exemplos/`, `README.md`, `VERSION`, `Dockerfile`, `docker-compose.yml`, `.env.exemplo`, `.dockerignore`, `.gitignore`, `CLAUDE.md`, `FALHAS.md`, esta pasta —; sem SDK/dependência externa; sem chave de API; sem URL externa no código, em `tools/` nem na entrega (a composição do render é só CSS, sem GSAP/CDN); sem SMIL em `web/exercicios/`; sem `0.0.0.0` no código; nenhum `.mp4` nem `node_modules` commitado)
 
 **Teste rápido por ciclo**: `python3 -m pytest -q tests/`
 **Teste completo no final**: `python3 -m pytest -q tests/ && bash longrun/2026-10-05-academia-v1/verificar-limites.sh`
 
-**Depois do "concluído" (humano, nível 4):** `python3 longrun/2026-10-05-academia-v1/verificar-independente.py` → `INDEPENDENTE OK` (sem valores do fixture no código + academia nunca vista + prova de que 3 SVGs se mexem num Chromium headless + render de 1 MP4 com HyperFrames conferido por `ffprobe` quando instalado, senão "pulado" + `docker build` e healthcheck do container) e abrir `/`, `/equipe` e `/exercicios/prancha` no navegador.
+**Depois do "concluído" (humano, nível 4):** `python3 longrun/2026-10-05-academia-v1/verificar-independente.py` → `INDEPENDENTE OK (movimento: ..., hyperframes: ..., docker: ...)` (sem valores do fixture no código + academia nunca vista + prova de que 3 SVGs se mexem num Chromium headless + render de 1 MP4 com HyperFrames conferido por `ffprobe` + `docker build` e healthcheck do container; ferramenta ausente = `PULADO` explícito, nunca "ok" silencioso nem traceback) e abrir `/`, `/equipe` e `/exercicios/prancha` no navegador.
 
 ## Restrições
-- só pela assinatura; nenhuma API, nenhuma rede externa, nenhuma dependência fora da biblioteca padrão do Python (decisão 2 de `docs/DECISOES-ABERTAS.md`); nenhum gerador de imagem/vídeo: os SVGs são desenhados à mão no código
+- só pela assinatura; nenhuma API, nenhuma rede externa, nenhuma dependência fora da biblioteca padrão do Python (decisão 2 de `docs/DECISOES-ABERTAS.md`); nenhum gerador de imagem/vídeo: os SVGs são desenhados à mão no código, animados **só por CSS** (`@keyframes`, sem SMIL — seção 7.1)
 - não mexer em: `tests/`, `pytest.ini`, `docs/` (inclusive `ESPECIFICACAO.md`), `goal.md`, `hash-congelado.txt`, `congelar.sh`, `verificar-*.{sh,py}`, `loop.env`, `prompt.md` (o hash congelado cobre `tests/`, `pytest.ini`, a spec e os dois verificadores)
 - `README.md`: acrescentar "Deploy na VPS" sem remover "Como rodar no seu ambiente" (o teste do README exige as duas)
 - `tools/render-exercicios` precisa existir e ser executável (teste estático), mas **não deve ser executado no loop**: `npx hyperframes` baixa pacote (rede) e é lento; é passo de build do humano

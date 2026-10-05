@@ -6,11 +6,18 @@
    antecedência de 3 dias, cancelamento 24 h, inatividade 10 dias, aviso 3 dias, feriado novo, relógio em novembro)
    e confere regras que só passam se a lógica for geral. Tudo explícito: nenhum atalho do conftest com padrão do fixture.
 3. Prova de movimento: 3 SVGs do repo num Chromium headless (Playwright, ou binário do Chromium) em 3 instantes;
-   os quadros têm de diferir. Sem navegador → "pulado" (nunca "OK").
+   os quadros têm de diferir. Cada candidato a navegador é CALIBRADO antes (SVG estático gravado + SVG CSS animado
+   conhecido com quadros diferentes); nenhum calibra → "PULADO" (nunca "OK", nunca falha falsa).
 4. HyperFrames: se `npx --no-install hyperframes` responde, renderiza 1 exercício com tools/render-exercicios e confere
-   720×720, 3,5–4,5 s, sem áudio com ffprobe. Senão → "pulado".
-5. docker build + healthcheck do container.
-Saída: INDEPENDENTE OK (movimento: ..., hyperframes: ...), ou a lista do que falhou.
+   720×720, 3,5–4,5 s, sem áudio com ffprobe. Senão → "PULADO".
+5. docker build + healthcheck do container; sem docker → "PULADO".
+Ferramenta ausente nunca vira traceback nem "ok": vira linha "PULADO: ..." e entra na última linha.
+Saída: INDEPENDENTE OK (movimento: ..., hyperframes: ..., docker: ...), ou a lista do que falhou.
+
+Armadilhas medidas em 05/10/2026 nesta máquina (spark-922b, arm64): o chromium do snap NÃO grava em /tmp (tmp privado)
+→ os quadros vão numa pasta temporária DENTRO do repo (`.verif-svg-*`, no .gitignore); o chrome do Playwright fica em
+`~/.cache/ms-playwright/chromium-*/chrome-linux-arm64/chrome` (glob `chrome-linux*`); animação CSS de `transform` só segue
+`--virtual-time-budget` com `--disable-threaded-animation` (sem a flag, quadros iguais). SMIL não entra (seção 7.1: só CSS).
 """
 import glob
 import json
@@ -43,34 +50,49 @@ INSTANTES_MS = (250, 1150, 2450)   # diferenças 900, 1300, 2200 ms: nenhum per�
 
 PROVA_SVG = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10" width="10" height="10">'
              '<rect width="10" height="10" fill="#fff"/></svg>')
+# SVG CSS animado conhecido (mesmo molde da seção 7.1): calibra o navegador — tem de dar quadros diferentes
+PROVA_ANIMADA = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400"><title>Prova</title>'
+                 '<style>.q{transform-origin:200px 300px;animation:sobe 2s ease-in-out infinite}'
+                 '@keyframes sobe{0%,100%{transform:translateY(0)}50%{transform:translateY(-120px)}}</style>'
+                 '<rect width="400" height="400" fill="#fff"/><g class="q"><circle cx="200" cy="300" r="40" fill="#222"/></g></svg>')
 
 
 def _screenshot_chromium(chrome, svg, ms, png):
     # --disable-threaded-animation: animação CSS de transform roda no compositor e NÃO segue o tempo virtual
-    # (quadro quase aleatório); na thread principal ela acompanha --virtual-time-budget. SMIL já acompanha.
+    # (quadro quase aleatório); na thread principal ela acompanha --virtual-time-budget.
     subprocess.run([chrome, "--headless=new", "--no-sandbox", "--disable-gpu", "--disable-threaded-animation",
                     "--hide-scrollbars", "--window-size=400,400", f"--virtual-time-budget={ms}",
-                    f"--screenshot={png}", f"file://{svg}"], capture_output=True, timeout=120)
+                    f"--screenshot={png}", svg.resolve().as_uri()], capture_output=True, timeout=120)
     return png.read_bytes() if png.exists() else b""
 
 
+def _mexe(quadros):
+    return bool(quadros) and all(quadros) and len(set(quadros)) > 1
+
+
 def _navegador(pasta):
-    """Devolve ("playwright", None), ("chromium", caminho) ou (None, None). Cada candidato é TESTADO com um SVG
-    estático antes de valer (o chromium do snap, por exemplo, não lê /tmp e devolve quadro vazio)."""
+    """Devolve ("playwright", None), ("chromium", caminho) ou (None, None). `pasta` fica DENTRO do repo (o chromium do
+    snap não enxerga /tmp e devolveria PNG vazio = falha falsa). Cada candidato é CALIBRADO antes de valer: grava um SVG
+    estático e mostra quadros diferentes num SVG CSS animado conhecido; quem não calibra é descartado (nunca "não se mexe"
+    por culpa do navegador). Nenhum candidato → (None, None) → PULADO."""
+    animado = pasta / "prova-anim.svg"
+    animado.write_text(PROVA_ANIMADA)
     try:
-        from playwright.sync_api import sync_playwright
-        with sync_playwright() as p:
-            p.chromium.launch().close()
-        return "playwright", None
+        import playwright.sync_api  # noqa: F401
+        if _mexe(_quadros_playwright(animado)):
+            return "playwright", None
     except Exception:
         pass
-    prova = pasta / "prova.svg"
-    prova.write_text(PROVA_SVG)
-    cands = sorted(glob.glob(os.path.expanduser("~/.cache/ms-playwright/chromium-*/chrome-linux/chrome")), reverse=True)
+    estatico = pasta / "prova.svg"
+    estatico.write_text(PROVA_SVG)
+    # chrome completo do Playwright (chrome-linux ou chrome-linux-arm64); o chrome-headless-shell fica de fora
+    cands = sorted(glob.glob(os.path.expanduser("~/.cache/ms-playwright/chromium-*/chrome-linux*/chrome")), reverse=True)
     cands += [p for p in (shutil.which(n) for n in ("chromium", "chromium-browser", "google-chrome", "google-chrome-stable", "chrome")) if p]
     for chrome in cands:
         try:
-            if _screenshot_chromium(chrome, prova, 100, pasta / "prova.png"):
+            if not _screenshot_chromium(chrome, estatico, 100, pasta / "prova.png"):
+                continue
+            if _mexe(_quadros_chromium(chrome, animado, pasta)):
                 return "chromium", chrome
         except Exception:
             continue
@@ -87,7 +109,7 @@ def _quadros_playwright(svg):
     with sync_playwright() as p:
         b = p.chromium.launch()
         pg = b.new_page(viewport={"width": 400, "height": 400})
-        pg.goto(f"file://{svg}")
+        pg.goto(svg.resolve().as_uri())
         t0 = 0
         for ms in INSTANTES_MS:
             pg.wait_for_timeout(ms - t0)
@@ -104,9 +126,16 @@ def prova_movimento(svgs, pasta):
         return None, {}
     res = {}
     for svg in svgs:
-        q = _quadros_playwright(svg) if via == "playwright" else _quadros_chromium(chrome, svg, pasta)
-        res[svg.name] = all(q) and len(set(q)) > 1
+        try:
+            q = _quadros_playwright(svg) if via == "playwright" else _quadros_chromium(chrome, svg, pasta)
+        except Exception:
+            q = []
+        res[svg.name] = _mexe(q)
     return via, res
+
+
+class _Pular(Exception):
+    pass
 
 
 def main():
@@ -141,8 +170,16 @@ def main():
         d = pathlib.Path(tmp)
         (d / "academia.json").write_text(json.dumps(cfg, ensure_ascii=False))
         s = Servidor(d, agora="2026-11-03T06:00")
+        api = None
         try:
             api = s.subir()
+        except (KeyboardInterrupt, SystemExit):
+            raise
+        except BaseException as e:            # pytest.fail levanta uma BaseException: vira item da lista, não traceback
+            confere(False, f"servidor não subiu com a academia nunca vista: {str(e)[:200]}")
+        try:
+            if api is None:
+                raise _Pular()
             T = "outro-token-xyz"
 
             def post(rota, corpo):
@@ -228,82 +265,111 @@ def main():
             st, av = post("/api/avaliacoes", {"aluno_id": A, "inicio": "2026-11-03T07:00", "professor": "lia"})
             confere(st == 201 and av.get("fim") == "2026-11-03T07:40", f"avaliação de 40 min: {st} {av}")
             confere(post("/api/avaliacoes", {"aluno_id": B, "inicio": "2026-11-03T07:20", "professor": "lia"})[0] == 409, "sobreposição de avaliação")
+        except _Pular:
+            pass
+        except Exception as e:                # resposta com formato inesperado etc.: item da lista, não traceback
+            confere(False, f"erro ao conferir a academia nunca vista: {e!r}")
         finally:
             s.parar()
 
-    # 3. prova de movimento (3 SVGs do repo)
+    # 3. prova de movimento (3 SVGs do repo) — pasta temporária DENTRO do repo (chromium do snap não enxerga /tmp)
     svgs = [RAIZ / "web" / "exercicios" / f"{n}.svg" for n in ("agachamento", "prancha", "polichinelo")]
     movimento = "pulado"
     if all(p.exists() for p in svgs):
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory(dir=RAIZ, prefix=".verif-svg-") as tmp:
             via, res = prova_movimento(svgs, pathlib.Path(tmp))
         if via is None:
-            print("MOVIMENTO: pulado (sem Playwright nem Chromium; instale um para provar que os SVGs se mexem)")
+            print("PULADO: movimento dos SVGs (nenhum Chromium calibrou: instale Playwright ou um chrome completo para provar que se mexem)")
         else:
             movimento = via
             for nome, ok in res.items():
                 confere(ok, f"SVG não se mexe (quadros iguais em {INSTANTES_MS} ms, via {via}): {nome}")
             print(f"MOVIMENTO: {via} — {sum(res.values())}/{len(res)} SVGs com quadros diferentes")
     else:
-        confere(False, "faltam SVGs para a prova de movimento")
+        confere(False, "faltam SVGs para a prova de movimento (agachamento, prancha, polichinelo)")
 
     # 4. HyperFrames (render local de 1 exercício) — só se estiver instalado; nunca baixa pacote
     hyper = "pulado"
     ferramenta = RAIZ / "tools" / "render-exercicios"
-    tem_hf = shutil.which("npx") and subprocess.run(["npx", "--no-install", "hyperframes", "--version"],
-                                                    capture_output=True, timeout=120).returncode == 0
-    if tem_hf and shutil.which("ffprobe") and ferramenta.exists():
-        with tempfile.TemporaryDirectory() as tmp:
-            r = subprocess.run([str(ferramenta), "--ids", "prancha", "--saida", tmp], cwd=RAIZ, capture_output=True, text=True, timeout=900)
-            mp4 = pathlib.Path(tmp) / "prancha.mp4"
-            confere(r.returncode == 0 and mp4.exists(), f"render-exercicios falhou: rc={r.returncode} {r.stderr[-300:]}")
-            if mp4.exists():
-                pr = subprocess.run(["ffprobe", "-v", "error", "-print_format", "json", "-show_format", "-show_streams", str(mp4)],
-                                    capture_output=True, text=True)
-                info = json.loads(pr.stdout or "{}")
-                vids = [x for x in info.get("streams", []) if x.get("codec_type") == "video"]
-                auds = [x for x in info.get("streams", []) if x.get("codec_type") == "audio"]
-                dur = float(info.get("format", {}).get("duration", 0))
-                confere(vids and vids[0].get("width") == 720 and vids[0].get("height") == 720, f"mp4 não é 720×720: {vids}")
-                confere(3.5 <= dur <= 4.5, f"duração do mp4 fora de 3,5–4,5 s: {dur}")
-                confere(not auds, "mp4 com stream de áudio")
-                hyper = "ok"
-        print(f"HYPERFRAMES: {hyper}")
+    tem_hf = False
+    if shutil.which("npx"):
+        try:
+            tem_hf = subprocess.run(["npx", "--no-install", "hyperframes", "--version"], capture_output=True, timeout=120).returncode == 0
+        except Exception:
+            tem_hf = False
+    if not shutil.which("npx"):
+        print("PULADO: hyperframes (npx/Node não instalado)")
+    elif not tem_hf:
+        print("PULADO: hyperframes (pacote não instalado: `npx --no-install hyperframes --version` falhou; `npm install hyperframes` na raiz)")
+    elif not shutil.which("ffprobe"):
+        print("PULADO: hyperframes (ffprobe não instalado)")
+    elif not ferramenta.exists():
+        confere(False, "falta tools/render-exercicios (seção 7.4)")
     else:
-        print("HYPERFRAMES: pulado (sem `npx --no-install hyperframes`, ffprobe ou tools/render-exercicios)")
+        with tempfile.TemporaryDirectory() as tmp:
+            try:
+                r = subprocess.run([str(ferramenta), "--ids", "prancha", "--saida", tmp], cwd=RAIZ, capture_output=True, text=True, timeout=900)
+                mp4 = pathlib.Path(tmp) / "prancha.mp4"
+                confere(r.returncode == 0 and mp4.exists(), f"render-exercicios falhou: rc={r.returncode} {r.stderr[-300:]}")
+                if mp4.exists():
+                    pr = subprocess.run(["ffprobe", "-v", "error", "-print_format", "json", "-show_format", "-show_streams", str(mp4)],
+                                        capture_output=True, text=True, timeout=120)
+                    info = json.loads(pr.stdout or "{}")
+                    vids = [x for x in info.get("streams", []) if x.get("codec_type") == "video"]
+                    auds = [x for x in info.get("streams", []) if x.get("codec_type") == "audio"]
+                    dur = float(info.get("format", {}).get("duration", 0))
+                    confere(vids and vids[0].get("width") == 720 and vids[0].get("height") == 720, f"mp4 não é 720×720: {vids}")
+                    confere(3.5 <= dur <= 4.5, f"duração do mp4 fora de 3,5–4,5 s: {dur}")
+                    confere(not auds, "mp4 com stream de áudio")
+                    hyper = "ok"
+            except Exception as e:
+                confere(False, f"render com HyperFrames: {e!r}")
+        print(f"HYPERFRAMES: {hyper}")
 
     # 5. container de verdade (precisa de docker; baixa a imagem python na 1ª vez)
-    b = subprocess.run(["docker", "build", "-q", "-t", "atende-academia-verif", "."], cwd=RAIZ, capture_output=True, text=True)
-    confere(b.returncode == 0, f"docker build falhou: {b.stderr[-300:]}")
-    if b.returncode == 0:
-        c = subprocess.run(["docker", "run", "-d", "--rm", "-p", "127.0.0.1::8080", "atende-academia-verif"],
-                           capture_output=True, text=True)
-        cid = c.stdout.strip()
+    docker = "pulado"
+    if not shutil.which("docker"):
+        print("PULADO: docker (não instalado — instale ou rode a verificação numa máquina com Docker)")
+    else:
         try:
-            porta = subprocess.run(["docker", "port", cid, "8080"], capture_output=True, text=True).stdout.split(":")[-1].strip()
-            ok = False
-            for _ in range(40):
-                try:
-                    ok = urllib.request.urlopen(f"http://127.0.0.1:{porta}/api/saude", timeout=2).status == 200
-                    break
-                except Exception:
-                    time.sleep(0.5)
-            confere(ok, "container não respondeu /api/saude")
-            if ok:
-                try:
-                    svg_ok = urllib.request.urlopen(f"http://127.0.0.1:{porta}/exercicios/prancha.svg", timeout=2).status == 200
-                except Exception:
-                    svg_ok = False
-                confere(svg_ok, "container não serve os SVGs (COPY web/ no Dockerfile)")
-        finally:
-            subprocess.run(["docker", "stop", cid], capture_output=True)
+            b = subprocess.run(["docker", "build", "-q", "-t", "atende-academia-verif", "."], cwd=RAIZ, capture_output=True, text=True, timeout=1800)
+            confere(b.returncode == 0, f"docker build falhou: {b.stderr[-300:]}")
+            if b.returncode == 0:
+                c = subprocess.run(["docker", "run", "-d", "--rm", "-p", "127.0.0.1::8080", "atende-academia-verif"],
+                                   capture_output=True, text=True, timeout=120)
+                cid = c.stdout.strip()
+                if not cid:
+                    confere(False, f"docker run falhou: {c.stderr[-300:]}")
+                else:
+                    try:
+                        porta = subprocess.run(["docker", "port", cid, "8080"], capture_output=True, text=True, timeout=60).stdout.split(":")[-1].strip()
+                        ok = False
+                        for _ in range(40):
+                            try:
+                                ok = urllib.request.urlopen(f"http://127.0.0.1:{porta}/api/saude", timeout=2).status == 200
+                                break
+                            except Exception:
+                                time.sleep(0.5)
+                        confere(ok, "container não respondeu /api/saude")
+                        if ok:
+                            try:
+                                svg_ok = urllib.request.urlopen(f"http://127.0.0.1:{porta}/exercicios/prancha.svg", timeout=2).status == 200
+                            except Exception:
+                                svg_ok = False
+                            confere(svg_ok, "container não serve os SVGs (COPY web/ no Dockerfile)")
+                            docker = "ok" if svg_ok else docker
+                    finally:
+                        subprocess.run(["docker", "stop", cid], capture_output=True, timeout=120)
+        except Exception as e:
+            confere(False, f"docker: {e!r}")
+        print(f"DOCKER: {docker}")
 
     if falhas:
         print("INDEPENDENTE FALHOU:")
         for f in falhas:
             print(" -", f)
         sys.exit(1)
-    print(f"INDEPENDENTE OK (movimento: {movimento}, hyperframes: {hyper})")
+    print(f"INDEPENDENTE OK (movimento: {movimento}, hyperframes: {hyper}, docker: {docker})")
 
 
 if __name__ == "__main__":

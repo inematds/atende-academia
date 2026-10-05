@@ -69,7 +69,7 @@ Dias da semana: `seg ter qua qui sex sab dom`. `planos[].aulas`: `null` = ilimit
 ### 3.3 Matrícula
 - `POST /api/matriculas {aluno_id, plano, inicio?}` → 201 `{id, aluno_id, plano, inicio, fim, status, pagamento, aulas_restantes}`. `inicio` padrão = hoje; pode ser passado ou futuro. **`fim = inicio + vigencia_dias − 1`** (vigência inclusiva nas duas pontas: plano de 30 dias iniciado em 10/09 termina em 09/10). `aulas_restantes` = `planos[].aulas` na criação (`null` em plano ilimitado). Aluno ou plano inexistente → 404; plano inativo → 422. Um aluno pode ter várias matrículas (renovação antecipada).
 - `pagamento` ∈ `pendente` | `pago`; nasce `pendente`; `POST /api/matriculas/{id}/pagamento {pago: bool}` → 200 com a matrícula. **Só status manual**: nenhuma cobrança, Pix ou PSP no v1.
-- Situação guardada: `ativa` (padrão), `trancada` (`POST /api/matriculas/{id}/trancar` → 200), de volta a `ativa` (`POST .../destrancar` → 200; trancar **não** estende o `fim` no v1), `cancelada` (`POST .../cancelar` → 200; grava `cancelada_em` = hoje; irreversível: qualquer ação sobre matrícula cancelada → 409).
+- Situação guardada: `ativa` (padrão), `trancada` (`POST /api/matriculas/{id}/trancar` → 200), de volta a `ativa` (`POST .../destrancar` → 200; trancar **não** estende o `fim` no v1), `cancelada` (`POST .../cancelar` → 200; grava `cancelada_em` = hoje; irreversível: qualquer ação sobre matrícula cancelada → 409). `trancar` sobre matrícula já trancada e `destrancar` sobre matrícula não trancada → 409.
 - **`status`** nas respostas (calculado): `cancelada` se cancelada; senão `trancada` se trancada; senão `vencida` se `hoje > fim`; senão `ativa`.
 - **Matrícula ativa numa data D** = situação `ativa` e `inicio ≤ D ≤ fim`. Se houver mais de uma, vale a de maior `fim` (desempate: maior `id`). É ela que autoriza reserva (seção 4) e check-in (seção 5) e que consome créditos.
 - **Motivo** de recusa (422 `{"motivo": ...}`) quando não há matrícula ativa em D, avaliado nesta ordem sobre as matrículas **não canceladas** do aluno: nenhuma → `sem_matricula`; alguma cobre D mas está trancada → `matricula_trancada`; nenhuma cobre D (vencidas ou ainda não iniciadas) → `matricula_vencida`.
@@ -128,7 +128,7 @@ Matrícula de plano com `aulas = N`: cada reserva (API ou chat) **desconta 1** d
 ### 6.3 "Meu treino de hoje" (chat)
 - Treino do dia = `treinos[k]`, com `k = (nº de check-ins do aluno em dias **anteriores** a hoje) mod nº de treinos` (primeiro dia → o primeiro treino; depois roda em sequência).
 - Resposta: primeira linha `Treino <nome>`; depois uma linha por item: `- <nome do exercício>: <series>x<repeticoes>` + `, <carga>` se houver + `, descanso <descanso_s> s` se houver. Termina com a frase `Para ver como faz, peça: explica <nome do exercício>` (um exemplo com o primeiro item).
-- Sem ficha → resposta contém `ficha` e `professor`. Sem matrícula ativa → contém `plano` e `recepção`.
+- Verificado **nesta ordem**: sem matrícula ativa hoje → resposta contém `plano` e `recepção` (antes de olhar a ficha); senão, sem ficha → contém `ficha` e `professor`; senão, o treino do dia acima.
 
 ## 7. Explicação animada de exercícios
 
@@ -136,15 +136,30 @@ Matrícula de plano com `aulas = N`: cada reserva (API ou chat) **desconta 1** d
 Para **todo exercício do catálogo de exemplo** (`exemplos/academia.json` = fixture dos testes) existe `web/exercicios/<id>.svg`. Ids obrigatórios (12): `agachamento, flexao, prancha, remada, supino, terra-bastao, afundo, elevacao-pelvica, abdominal, desenvolvimento, puxada, polichinelo`. Regras de cada arquivo, verificadas pelos testes sem navegador:
 - XML válido (`xml.etree`), raiz `svg` no namespace `http://www.w3.org/2000/svg`, com `viewBox` definido;
 - `<title>` com texto em português (não vazio);
-- **animação em loop**: contém `<animate`, `<animateTransform` ou `<animateMotion` (SMIL, `repeatCount="indefinite"`), ou `<style>` com `@keyframes` e a propriedade `animation` aplicada (`infinite`). O movimento é a figura humana esquemática executando o exercício; período entre 1 e 4 s e que divida 4 s (1, 2 ou 4 s), para o MP4 de 4 s fechar o loop;
-- **sem `<script`**, sem `http` fora dos valores dos atributos `xmlns`/`xmlns:*`, todo `href`/`xlink:href` começa com `#`, todo `url(` aponta para `#` (nada externo);
+- **animação só por CSS**, dentro de `<style>` no próprio SVG: pelo menos um `@keyframes` e pelo menos um elemento com `animation` (ou `animation-name`) aplicada; **loop**: a palavra `infinite` em pelo menos uma animação (`animation-iteration-count: infinite` ou no atalho `animation`); toda duração (`animation-duration`, ou o **primeiro** tempo do atalho `animation`) ∈ {`1s`, `2s`, `4s`} (ou `1000ms`, `2000ms`, `4000ms`) — divisores dos 4 s do MP4 (7.4), para o vídeo fechar o ciclo. O movimento é a figura humana esquemática executando o exercício;
+- **sem SMIL** (`<animate`, `<animateTransform`, `<animateMotion`, `<set`): o render do HyperFrames avança só animação CSS/WAAPI (7.4); SMIL não é pausado nem buscado e sairia fora de fase no MP4;
+- **sem `<script`**, sem `<image`, sem `<foreignObject`, sem `@import`; sem `http` fora dos valores dos atributos `xmlns`/`xmlns:*`; todo `href`/`xlink:href` começa com `#`; todo `url(` aponta para `#` (nada externo);
 - tamanho ≤ 60 KB (61 440 bytes).
 A prova de que **se mexe** (dois quadros em instantes diferentes diferem) é feita no nível 4 (`verificar-independente.py`), não no pytest.
 
+Esqueleto de referência (um por exercício, com movimento próprio):
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <title>Prancha</title>
+  <style>
+    .tronco { transform-origin: 200px 300px; animation: segura 2s ease-in-out infinite; }
+    @keyframes segura { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+  </style>
+  <rect width="400" height="400" fill="#fff"/>
+  <g class="tronco" fill="none" stroke="#222" stroke-width="8" stroke-linecap="round"><path d="M 80 300 L 300 300"/></g>
+</svg>
+```
+
 ### 7.2 Páginas e arquivos
-- `GET /exercicios/{id}` (público) → 200 HTML com `<h1>` = nome, `<ol>` com um `<li>` por passo (na ordem), os cuidados e, se houver SVG, referência a `/exercicios/{id}.svg` (`<img src>` ou `<object data>`). Exercício sem SVG (cadastrado pela equipe) → mesma página sem a animação. Id inexistente → 404.
-- `GET /exercicios/{id}.svg` → 200 com o arquivo e `Content-Type: image/svg+xml`; sem arquivo → 404.
+- `GET /exercicios/{id}` (público) → 200 HTML com `<h1>` = nome, `<ol>` com um `<li>` por passo (na ordem), os cuidados e, se houver SVG, referência a `/exercicios/{id}.svg` (`<img src>` ou `<object data>`). Exercício sem SVG (cadastrado pela equipe) → mesma página sem a animação e **sem nenhuma ocorrência de `.svg`** no HTML (nem ícone, nem link). Id inexistente no catálogo → 404.
+- `GET /exercicios/{id}.svg` → 200 com o arquivo `web/exercicios/{id}.svg` e `Content-Type: image/svg+xml`; sem arquivo → 404.
 - `GET /exercicios/{id}.mp4` → 200 `video/mp4` com `EXERCICIOS_MP4_DIR/<id>.mp4`; sem arquivo → 404.
+- Caminho com `..` ou que saia da pasta (ex.: `/exercicios/../atende`) → 404 (400 também aceito); nunca serve arquivo fora de `web/exercicios` ou de `EXERCICIOS_MP4_DIR`.
 
 ### 7.3 Pela conversa
 Pedido de exercício (seção 11): resposta **em uma mensagem** com: nome do exercício na primeira linha; passos numerados `1. ...`, `2. ...`; uma linha `Cuidado: <primeiro cuidado>` (se houver); última linha `Veja a animação: <link>` com `<link>` = `{PUBLIC_URL}/exercicios/<id>` (ou `/exercicios/<id>` sem `PUBLIC_URL`). Exercício sem SVG → sem a última linha.
@@ -154,7 +169,13 @@ Pedido de exercício (seção 11): resposta **em uma mensagem** com: nome do exe
 - senão → `sendText` com a mensagem de texto (inclusive a linha do link).
 
 ### 7.4 MP4 com HyperFrames (passo de build, fora do pytest e do loop)
-`tools/render-exercicios [--ids a,b] [--saida DIR]` (Python 3, biblioteca padrão + `subprocess`) gera `DIR/<id>.mp4` (padrão `web/exercicios`) a partir de cada `web/exercicios/<id>.svg`: monta uma composição HyperFrames (`data-width="720" data-height="720" data-duration="4"`) com o SVG, renderiza com `npx hyperframes render --output <id>.mp4` (render local por Chromium, **sem API, sem conta**) e confere com `ffprobe`: 720×720, duração entre 3,5 e 4,5 s, **sem stream de áudio**. Como o HyperFrames renderiza **buscando** uma linha do tempo pausada, a animação SMIL/CSS do SVG não avança sozinha: a composição tem de dirigir o movimento por GSAP ou pelo adaptador de CSS/WAAPI (skill `hyperframes-keyframes`), com um ciclo que fecha em 4 s. Sem HyperFrames/Node instalados o comando sai com código 2 e a mensagem `pulado: hyperframes não instalado`. Documentado no README; conferido no `verificar-independente.py`.
+`tools/render-exercicios [--ids a,b] [--saida DIR]` (Python 3, biblioteca padrão + `subprocess`) gera `DIR/<id>.mp4` (padrão `web/exercicios`) a partir de cada `web/exercicios/<id>.svg`:
+1. Detecta o HyperFrames com `npx --no-install hyperframes --version`; se falhar (sem Node, sem `npx` ou sem o pacote), sai com código 2 e a mensagem `pulado: hyperframes não instalado` — **nunca baixa pacote sozinho** (instalar é passo do humano: `npm install hyperframes` na raiz do repo; `node_modules/` já está no `.gitignore`). `ffprobe` ausente → código 2 e `pulado: ffprobe não instalado`.
+2. Para cada exercício, cria uma pasta temporária com `index.html` = composição HyperFrames **só CSS** (sem GSAP, sem `<script>`, sem CDN, sem referência externa): `<div id="root" data-composition-id="exercicio" data-start="0" data-width="720" data-height="720" data-duration="4">` contendo o SVG inline, com `#root svg { position:absolute; inset:0; width:100%; height:100% }` e `body { margin:0; background:#fff }`. `data-duration="4"` é obrigatório: com animação `infinite` o runtime não infere a duração.
+3. Roda `npx hyperframes render <pasta> --output <DIR>/<id>.mp4 --fps 30` (render local por Chromium, **sem API, sem conta**) e confere com `ffprobe`: 720×720, duração entre 3,5 e 4,5 s, **sem stream de áudio**.
+4. Imprime uma linha por exercício (`ok <id> <duração>s` ou `falhou <id> <motivo>`); código 0 só se todos os pedidos passaram, 1 se algum falhou.
+
+Por que só CSS: o render do HyperFrames **busca** cada quadro numa linha do tempo pausada (shim de tempo virtual + adaptadores que fazem `document.getAnimations()` → `currentTime` + `pause()`), então a animação CSS do SVG inline é avançada quadro a quadro de forma determinística; **SMIL não tem adaptador** (nada chama `pauseAnimations`/`setCurrentTime` do SVG) e só avançaria por coincidência do relógio do compositor, saindo fora de fase conforme o modo de captura. Por isso 7.1 proíbe SMIL e exige durações de 1, 2 ou 4 s (o ciclo fecha em 4 s). Documentado no README; conferido no `verificar-independente.py`.
 
 ## 8. Avaliação física
 

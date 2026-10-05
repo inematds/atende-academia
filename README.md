@@ -25,7 +25,7 @@ O projeto está **planejado, não implementado**: contrato e testes congelados, 
 
 - Linux/macOS com `git`, `python3` ≥ 3.10 e `pytest` (`pip install pytest`; é ferramenta de desenvolvimento, a aplicação não depende dela).
 - Um agente pela **assinatura**: Codex CLI (`codex`) ou Claude Code (`claude`). Nenhuma API é chamada.
-- Para a verificação independente final: `docker`; opcionalmente um Chromium (Playwright ou binário) para a prova de movimento dos SVGs e Node 22 + `npx hyperframes` + `ffprobe` para conferir o MP4 — sem eles o verificador diz "pulado", não "OK".
+- Para a verificação independente final: `docker`; opcionalmente um Chromium (Playwright ou binário) para a prova de movimento dos SVGs e Node 22 + HyperFrames + `ffprobe` para conferir o MP4 — sem eles o verificador imprime `PULADO` para aquela etapa (nunca "ok" silencioso). O verificador e o `tools/render-exercicios` só usam o HyperFrames já instalado (`npx --no-install hyperframes`); para instalar uma vez: `npm install hyperframes` na raiz do repo (`node_modules/` está no `.gitignore`).
 - Método e ferramentas de execução longa: clone de `~/projetos/execucao-longa` (`tools/loop-longrun.sh`, `docs/PLANO-EXECUCAO-LONGA.md`). Se não tiver, a rota `/goal` interativa (abaixo) não precisa dele.
 
 ### 1. Responder as decisões e congelar o contrato
@@ -76,7 +76,7 @@ Pronto = `python3 -m pytest -q tests/` → **99 passed** e `bash longrun/2026-10
 python3 longrun/2026-10-05-academia-v1/verificar-independente.py   # INDEPENDENTE OK
 ```
 
-Procura valores do fixture copiados no código; sobe uma academia **nunca vista** (outra grade, planos, prazos, feriado, relógio) e confere regras que só passam se a lógica for geral; abre 3 SVGs num Chromium headless e exige que dois quadros em instantes diferentes sejam diferentes (prova de movimento; sem Chromium → "pulado"); se o HyperFrames estiver instalado, renderiza um exercício com `tools/render-exercicios` e confere 720×720, ~4 s, sem áudio com `ffprobe` (senão → "pulado"); faz `docker build` e testa o healthcheck do container. Depois abra `/`, `/equipe` e `/exercicios/prancha` no navegador.
+Procura valores do fixture copiados no código; sobe uma academia **nunca vista** (outra grade, planos, prazos, feriado, relógio) e confere regras que só passam se a lógica for geral; abre 3 SVGs num Chromium headless e exige que dois quadros em instantes diferentes sejam diferentes (prova de movimento; sem Chromium que passe na calibração → `PULADO`); se o HyperFrames estiver instalado, renderiza um exercício com `tools/render-exercicios` e confere 720×720, ~4 s, sem áudio com `ffprobe` (senão → `PULADO`); faz `docker build` e testa o healthcheck do container (sem `docker` → `PULADO`). A última linha diz `INDEPENDENTE OK (movimento: ..., hyperframes: ..., docker: ...)` para você ver o que foi de fato conferido. Depois abra `/`, `/equipe` e `/exercicios/prancha` no navegador.
 
 ## Executar (depois de implementado)
 
@@ -89,7 +89,7 @@ mkdir -p dados && cp exemplos/academia.json dados/academia.json   # edite nome, 
 
 Chat do aluno em `/`, equipe em `/equipe` (token de `academia.json` no header `X-Token`), animação de cada exercício em `/exercicios/<id>`. `PUBLIC_URL` (endereço público, HTTPS, sem barra final) entra nos links enviados ao aluno; sem ela os links são relativos.
 
-**MP4 dos exercícios (WhatsApp não mostra SVG):** `tools/render-exercicios [--ids a,b] [--saida DIR]` gera `web/exercicios/<id>.mp4` (720×720, 4 s em loop, sem áudio) a partir de cada SVG com o HyperFrames — render local por Chromium, sem API nem conta. Precisa de Node 22+, `npx hyperframes` (baixa o pacote na primeira vez) e `ffprobe`; a composição dirige o movimento por GSAP/adaptador CSS (`data-width="720" data-height="720" data-duration="4"`). É um passo de build: roda uma vez na máquina de quem publica, não no servidor nem nos testes. Com o MP4 presente e `PUBLIC_URL` definida, o bot envia o vídeo por `sendMedia`; senão manda o link da página.
+**MP4 dos exercícios (WhatsApp não mostra SVG):** `tools/render-exercicios [--ids a,b] [--saida DIR]` gera `web/exercicios/<id>.mp4` (720×720, 4 s em loop, sem áudio) a partir de cada SVG com o HyperFrames — render local por Chromium, sem API nem conta. Precisa de Node 22+, HyperFrames instalado (`npm install hyperframes` na raiz; o script não baixa nada sozinho) e `ffprobe`. A composição é **só CSS** (o SVG inline dentro de `data-width="720" data-height="720" data-duration="4"`, sem GSAP nem CDN): o render busca cada quadro pelos adaptadores CSS/WAAPI, por isso os SVGs usam `@keyframes` com durações de 1, 2 ou 4 s e nunca SMIL. É um passo de build: roda uma vez na máquina de quem publica, não no servidor nem nos testes. Com o MP4 presente e `PUBLIC_URL` definida, o bot envia o vídeo por `sendMedia`; senão manda o link da página.
 
 ## Arquivos
 

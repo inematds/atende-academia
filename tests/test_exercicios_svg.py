@@ -1,4 +1,5 @@
-"""Seções 7.1 e 7.2: um SVG animado por exercício do catálogo de exemplo (checagem sem navegador) e as rotas de arquivo."""
+"""Seções 7.1 e 7.2: um SVG animado por exercício do catálogo de exemplo (checagem sem navegador: animação só por CSS,
+sem SMIL — o render do HyperFrames não avança SMIL) e as rotas de arquivo."""
 import json
 import re
 import xml.etree.ElementTree as ET
@@ -23,11 +24,15 @@ def test_svg_do_exercicio(ex):
     assert raiz.tag == f"{{{SVG_NS}}}svg" and raiz.get("viewBox")
     titulo = raiz.find(f"{{{SVG_NS}}}title")
     assert titulo is not None and (titulo.text or "").strip(), "<title> em português"
-    smil = re.search(r"<animate(Transform|Motion)?\b", texto)
-    css = re.search(r"@keyframes", texto) and re.search(r"\banimation(-name)?\s*:", texto)
-    assert smil or css, "sem animação (SMIL ou @keyframes + animation)"
-    assert ("indefinite" in texto) or ("infinite" in texto), "animação não é em loop"
-    assert "<script" not in texto.lower()
+    assert "@keyframes" in texto and re.search(r"\banimation(-name)?\s*:", texto), "sem animação CSS (@keyframes + animation)"
+    assert "infinite" in texto, "animação não é em loop (infinite)"
+    baixo = texto.lower()
+    for proibido in ("<script", "<animate", "<set", "<image", "<foreignobject", "@import"):   # seção 7.1: SMIL, script, externo
+        assert proibido not in baixo, proibido
+    # toda duração (animation-duration ou o 1º tempo do atalho animation) ∈ {1, 2, 4} s: divisores dos 4 s do MP4
+    for dur in re.findall(r"animation(?:-duration)?\s*:[^;]*?(\d+(?:\.\d+)?)(m?s)\b", texto):
+        seg = float(dur[0]) / (1000 if dur[1] == "ms" else 1)
+        assert seg in (1.0, 2.0, 4.0), ("duração fora de 1/2/4 s", dur)
     sem_xmlns = re.sub(r'xmlns(:\w+)?="[^"]*"', "", texto)
     assert "http" not in sem_xmlns.lower(), "referência externa"
     for href in re.findall(r'(?:xlink:)?href="([^"]*)"', texto):

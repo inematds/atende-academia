@@ -18,3 +18,5 @@ When I correct you, or you catch yourself making a mistake: before continuing, a
 
 ## Lessons
 - Toda contagem de dias/ocupação esperada num teste vem de `python3 -c "import datetime ..."` e fica no comentário do teste; nunca de cabeça.
+- SVG animado que vira MP4 pelo HyperFrames: **só CSS `@keyframes`** (o render busca quadro a quadro por `document.getAnimations()` — adaptador `waapi`; o `css` filtra só elementos HTML); **SMIL não tem adaptador** (nada chama `pauseAnimations`/`setCurrentTime`). Conferido em `dist/hyperframe-runtime.js` 0.7.109 e 0.8.86 (05/10/2026). Antes de afirmar o que um render "avança", ler o código do pacote, não só a skill.
+- Prova de movimento com Chromium headless: screenshot numa pasta **dentro do repo** (o chromium do snap não grava em `/tmp`); o chrome do Playwright neste host está em `chromium-*/chrome-linux-arm64/chrome` (glob `chrome-linux*`); só `--disable-threaded-animation` faz `transform` seguir `--virtual-time-budget`; calibrar cada candidato com um SVG estático + um CSS animado conhecido antes de julgar os SVGs do repo. Ferramenta ausente (docker, npx, ffprobe) = `PULADO`, nunca traceback nem "ok". (05/10/2026)
