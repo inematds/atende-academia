@@ -33,3 +33,7 @@ Cada item tem uma **proposta padrão já aplicada** na spec e nos testes. Respon
 - **CREF/CONFEF:** quais regras de publicidade a academia já segue? (decisão 5 — eu acrescento códigos na trava.)
 - Quer a **página da equipe** só funcional (padrão) ou já com o visual INEMA?
 - Plano de **aulas avulsas**: o crédito vale por reserva (padrão) ou por check-in?
+
+## Resposta do dono (19/10/2026)
+
+"ok em tudo": todas as propostas padrão aceitas. Perguntas abertas ficam para depois do v1 (exemplo fictício, sem piloto real, `/equipe` só funcional). Execução: loop headless com Codex.
