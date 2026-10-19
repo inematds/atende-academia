@@ -6,6 +6,7 @@ import re
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlsplit
 
+from .conversation import Conversation
 from .classes import Classes, filtered
 from .attendance import Attendance
 from .training import Training
@@ -32,6 +33,14 @@ def route(app, method, path, query, body):
         return 200, exercise_resource(app, path)
     if method == 'GET' and path == '/api/saude':
         return 200, {'ok': True, 'versao': (ROOT / 'VERSION').read_text().strip()}
+    conversation = Conversation(app)
+    if path == "/api/mensagens" and method == "POST":
+        return 200, conversation.receive(body)
+    if path == "/api/atendimento-humano" and method == "GET":
+        return 200, {"fila": [x for x in store.all("atendimentos") if x["status"] == "aberto"]}
+    match = re.fullmatch(r"/api/atendimento-humano/(\d+)/(responder|encerrar)", path)
+    if match and method == "POST":
+        return 200, conversation.change_human(int(match[1]), match[2], body)
     classes = Classes(app)
     attendance = Attendance(app)
     training = Training(app)

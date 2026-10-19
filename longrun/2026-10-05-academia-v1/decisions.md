@@ -14,3 +14,5 @@
 | 2026-10-19 14:04 -0300 | SVGs com interpolação CSS de caminhos articulados e transform da cabeça/equipamentos; HTML em template local escapado | movimento específico por exercício, sem SMIL/dependências; textos vêm do catálogo e não entram como markup | gerador de imagens, desenho único repetido ou HTML cadastrado sem escape |
 
 | 2026-10-19 14:07 -0300 | Evaluations separado, usando transação HTTP e Classes.occurrence; conflitos semiabertos e escolha por id | reutilizar agenda real e garantir exclusividade concorrente sem nova infraestrutura | duplicar grade ou criar chat parcial para testes transversais |
+
+| 2026-10-19 14:11 -0300 | Conversation reutiliza domínios e transação HTTP, guarda fluxo/opções por telefone e histórico separado da caixa automática | persistência e confirmação usam regras reais; suspensão humana segue §21, com exceção de saúde | duplicar regras de reserva ou misturar respostas diretas em /saida |

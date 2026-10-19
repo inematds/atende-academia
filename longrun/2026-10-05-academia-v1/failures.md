@@ -17,3 +17,5 @@
 | 2026-10-19 14:04 -0300 | Suíte ainda falha nos módulos não implementados (avaliação, conversa, integrações e entrega) | concluir SVGs/páginas e rodar suíte inteira | 43 passed / 56 failed; nenhum conflito teste/spec identificado | infra |
 
 | 2026-10-19 14:07 -0300 | Suíte ainda falha em conversa, LGPD, integrações e entrega ausentes | implementar avaliação física e verificar suíte completa | 45 passed / 54 failed; sem conflito teste/spec identificado | infra |
+
+| 2026-10-19 14:11 -0300 | Suíte ainda falha em módulos ausentes, incluindo /dados no teste de opt-out | implementar conversa local e verificar suíte inteira | 63 passed / 36 failed; sem conflito teste/spec identificado | infra |
