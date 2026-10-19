@@ -95,13 +95,13 @@ class Classes:
             enrollment['aulas_restantes'] += 1
             self.store.save('matriculas', enrollment)
 
-    def message(self, student_id, kind, text, reference):
+    def message(self, student_id, kind, text, reference, instant=None):
         student = self.app.get('alunos', student_id)
         if student['nao_contatar']:
             return None
         return self.store.save('saida', dict(id=self.store.next_id('saida'), tipo=kind, aluno_id=student_id,
                                telefone=student['telefone'], texto=text, referencia_id=reference,
-                               quando=now().isoformat(timespec='minutes'), status='simulado'))
+                               quando=(instant or now()).isoformat(timespec='minutes'), status='simulado'))
 
     def offer(self, reservation):
         for request in self.store.all('espera'):

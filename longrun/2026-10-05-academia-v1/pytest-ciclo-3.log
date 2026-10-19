@@ -1,0 +1,1467 @@
+F...FF............F..FFFF..FF..FFFFFFFFFFF...F.FFFFFFFFFFFFFFFFFFFFFFFFF [ 72%]
+FFFFFFFF.FFFFFFFFFFFFFFFFFF                                              [100%]
+=================================== FAILURES ===================================
+_________________ test_telefone_normalizado_duplicado_e_codigo _________________
+
+api = <conftest.Cliente object at 0xf08b71df3c20>
+
+    def test_telefone_normalizado_duplicado_e_codigo(api):
+        st, r = api.post("/api/alunos", {"nome": "A", "telefone": "(41) 99999-0001"})
+        assert st == 201 and re.fullmatch(r"\d{4,8}", r["codigo"]), r
+        st2, r2 = api.post("/api/alunos", {"nome": "A", "telefone": "+55 41 99999 0001"})
+        assert st2 == 200 and r2["id"] == r["id"] and r2["codigo"] == r["codigo"]
+        st3, r3 = api.post("/api/alunos", {"nome": "B", "telefone": "41 3333-4444"})
+        assert st3 == 201 and r3["id"] != r["id"] and r3["codigo"] != r["codigo"]
+        st, d = api.get(f"/api/alunos/{r3['id']}/dados")
+>       assert d["aluno"]["telefone"] == "+554133334444" and d["aluno"]["codigo"] == r3["codigo"]
+               ^^^^^^^^^^
+E       KeyError: 'aluno'
+
+tests/test_alunos_planos.py:15: KeyError
+_________________ test_lembrete_vencimento_uma_vez_e_fronteira _________________
+
+api = <conftest.Cliente object at 0xf08b71e018e0>
+
+    def test_lembrete_vencimento_uma_vez_e_fronteira(api):
+        p1 = api.aluno("Maria", "41999990001")
+        _, m1 = api.matricula(p1, "mensal", inicio="2026-09-10")      # fim 09/10; aviso a partir de 09/10 − 5 = 04/10
+        p2 = api.aluno("Cancelou", "41999990002")
+        _, m2 = api.matricula(p2, "mensal", inicio="2026-09-10")
+        api.post(f"/api/matriculas/{m2['id']}/cancelar")
+        p3 = api.aluno("Parou", "41999990003")
+        api.matricula(p3, "mensal", inicio="2026-09-10")
+>       api.msg("41999990003", "parar")
+
+tests/test_alunos_planos.py:69: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <conftest.Cliente object at 0xf08b71e018e0>, telefone = '41999990003'
+texto = 'parar'
+
+    def msg(self, telefone, texto):
+        st, r = self.post("/api/mensagens", {"telefone": telefone, "texto": texto}, token=None)
+>       assert st == 200, (st, r)
+E       AssertionError: (404, {'motivo': 'rota_inexistente'})
+E       assert 404 == 200
+
+tests/conftest.py:105: AssertionError
+___________________________ test_meu_plano_pelo_chat ___________________________
+
+api = <conftest.Cliente object at 0xf08b71e02ed0>
+
+    def test_meu_plano_pelo_chat(api):
+        api.ativo("Ativa", "41999990001", inicio="2026-09-10")        # fim 09/10
+>       r = api.msg("41999990001", "qual é o meu plano?")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_alunos_planos.py:85: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <conftest.Cliente object at 0xf08b71e02ed0>, telefone = '41999990001'
+texto = 'qual é o meu plano?'
+
+    def msg(self, telefone, texto):
+        st, r = self.post("/api/mensagens", {"telefone": telefone, "texto": texto}, token=None)
+>       assert st == 200, (st, r)
+E       AssertionError: (404, {'motivo': 'rota_inexistente'})
+E       assert 404 == 200
+
+tests/conftest.py:105: AssertionError
+________________ test_lista_de_espera_oferece_reserva_e_lotada _________________
+
+api = <conftest.Cliente object at 0xf08b71e58bc0>
+
+    def test_lista_de_espera_oferece_reserva_e_lotada(api):
+        a1 = api.ativo("Um", "41999990001")
+        a2 = api.ativo("Dois", "41999990002")
+        a3 = api.ativo("Tres", "41999990003")
+        a4 = api.ativo("Quatro", "41999990004")
+        a5 = api.ativo("Cinco", "41999990005")
+        a6 = api.ativo("Seis", "41999990006")
+        _, r1 = api.reserva(a1, "pil-qua-9", "2026-10-07")
+        _, r2 = api.reserva(a2, "pil-qua-9", "2026-10-07")
+        for aid, aula in ((a3, "pil-qua-9"), (a4, "pil-qua-9"), (a5, "spin-qua-19")):
+            assert api.post("/api/espera", {"aluno_id": aid, "aula_id": aula, "data": "2026-10-07"})[0] == 201
+        assert api.post("/api/espera", {"aluno_id": a3, "aula_id": "xyz", "data": "2026-10-07"})[0] == 404
+        api.post(f"/api/reservas/{r1['id']}/cancelar")
+        ofertas = api.saida("espera")
+        assert [m["telefone"] for m in ofertas] == ["+5541999990003"]
+        assert "07/10" in ofertas[0]["texto"] and "09:00" in ofertas[0]["texto"] and "1" in ofertas[0]["texto"]
+        st, e = api.get("/api/espera?data=2026-10-07")
+        assert [(x["aluno_id"], x["status"]) for x in e["espera"]] == [(a3, "ofertado"), (a4, "pendente"), (a5, "pendente")]
+>       assert "reservad" in api.msg("41999990003", "1").lower()
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_aulas.py:167: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <conftest.Cliente object at 0xf08b71e58bc0>, telefone = '41999990003'
+texto = '1'
+
+    def msg(self, telefone, texto):
+        st, r = self.post("/api/mensagens", {"telefone": telefone, "texto": texto}, token=None)
+>       assert st == 200, (st, r)
+E       AssertionError: (404, {'motivo': 'rota_inexistente'})
+E       assert 404 == 200
+
+tests/conftest.py:105: AssertionError
+__________________________ test_horarios_de_avaliacao __________________________
+
+api = <conftest.Cliente object at 0xf08b71e59250>
+
+    def test_horarios_de_avaliacao(api):
+        # qua 07/10: janela 09:00–12:00 menos a aula de pilates [09:00, 10:00)
+>       assert horarios(api, "2026-10-07") == [(h, "carla") for h in ("10:00", "10:30", "11:00", "11:30")]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_avaliacao.py:15: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+api = <conftest.Cliente object at 0xf08b71e59250>, data = '2026-10-07'
+professor = None
+
+    def horarios(api, data, professor=None):
+        rota = f"/api/avaliacoes/horarios?data={data}" + (f"&professor={professor}" if professor else "")
+        st, r = api.get(rota, token=None)
+>       assert st == 200, (st, r)
+E       AssertionError: (404, {'motivo': 'rota_inexistente'})
+E       assert 404 == 200
+
+tests/test_avaliacao.py:9: AssertionError
+________________________ test_agendar_cancelar_409_422 _________________________
+
+api = <conftest.Cliente object at 0xf08b71e5a7b0>
+
+    def test_agendar_cancelar_409_422(api):
+        aid = api.aluno()
+        st, a = api.post("/api/avaliacoes", {"aluno_id": aid, "inicio": "2026-10-07T10:00", "professor": "carla"})
+>       assert st == 201 and (a["status"], a["fim"], a["professor"]) == ("agendada", "2026-10-07T10:30", "carla")
+E       assert (404 == 201)
+
+tests/test_avaliacao.py:27: AssertionError
+____________________ test_resultado_dados_sensiveis_e_chat _____________________
+
+api = <conftest.Cliente object at 0xf08b71e5b5c0>
+
+    def test_resultado_dados_sensiveis_e_chat(api):
+        aid = api.aluno("Maria", "41988887777")
+        _, a = api.post("/api/avaliacoes", {"aluno_id": aid, "inicio": "2026-10-07T10:00"})
+>       assert api.post(f"/api/avaliacoes/{a['id']}/resultado", {"altura_cm": 178})[0] == 422
+                                           ^^^^^^^
+E       KeyError: 'id'
+
+tests/test_avaliacao.py:47: KeyError
+_______________________ test_lembrete_avaliacao_uma_vez ________________________
+
+api = <conftest.Cliente object at 0xf08b71e50d10>
+
+    def test_lembrete_avaliacao_uma_vez(api):
+        aid = api.aluno("Maria", "41999990001")
+        api.post("/api/avaliacoes", {"aluno_id": aid, "inicio": "2026-10-07T10:00", "professor": "carla"})
+        p = api.aluno("Parou", "41999990002")
+>       api.msg("41999990002", "parar")
+
+tests/test_avaliacao.py:64: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <conftest.Cliente object at 0xf08b71e50d10>, telefone = '41999990002'
+texto = 'parar'
+
+    def msg(self, telefone, texto):
+        st, r = self.post("/api/mensagens", {"telefone": telefone, "texto": texto}, token=None)
+>       assert st == 200, (st, r)
+E       AssertionError: (404, {'motivo': 'rota_inexistente'})
+E       assert 404 == 200
+
+tests/conftest.py:105: AssertionError
+_______________ test_rotas_da_equipe_exigem_token_e_publicas_nao _______________
+
+api = <conftest.Cliente object at 0xf08b71e58aa0>
+
+    def test_rotas_da_equipe_exigem_token_e_publicas_nao(api):
+        for metodo, rota in [("GET", "/api/saida"), ("GET", "/api/reservas?data=2026-10-07"), ("POST", "/api/alunos"),
+                             ("POST", "/api/matriculas"), ("POST", "/api/reservas"), ("POST", "/api/checkins"),
+                             ("GET", "/api/checkins?de=2026-10-06&ate=2026-10-06"), ("GET", "/api/atendimento-humano"),
+                             ("GET", "/api/raiox?mes=2026-10"), ("POST", "/api/campanhas"), ("GET", "/api/aulas?de=2026-10-06&ate=2026-10-07"),
+                             ("POST", "/api/avaliacoes"), ("GET", "/api/grade"), ("POST", "/api/exercicios")]:
+            corpo = {} if metodo == "POST" else None   # corpo vazio: o 401 vem antes de qualquer validação (seção 9)
+            assert api.req(metodo, rota, corpo, token=None)[0] == 401, rota
+            assert api.req(metodo, rota, corpo, token="errado")[0] == 401, rota
+        assert api.get("/api/aulas?data=2026-10-07", token=None)[0] == 200
+        assert api.get("/api/planos", token=None)[0] == 200
+>       assert api.get("/api/exercicios", token=None)[0] == 200
+E       assert 404 == 200
+
+tests/test_basico.py:34: AssertionError
+_________________________________ test_paginas _________________________________
+
+api = <conftest.Cliente object at 0xf08b71e59130>
+
+    def test_paginas(api):
+        st, html = api.get("/", token=None)
+>       assert st == 200 and 'id="chat"' in html
+E       assert (404 == 200)
+
+tests/test_basico.py:42: AssertionError
+_____________________________ test_professor_crud ______________________________
+
+api = <conftest.Cliente object at 0xf08b71e01790>
+
+    def test_professor_crud(api):
+        vazio = {d: [] for d in ("seg", "ter", "qua", "qui", "sex", "sab", "dom")}
+        st, r = api.post("/api/professores", {"id": "eva", "nome": "Eva", "avaliacao": True, "horarios": dict(vazio, qua=[["14:00", "16:00"]])})
+>       assert st == 201, r
+E       AssertionError: {'motivo': 'rota_inexistente'}
+E       assert 404 == 201
+
+tests/test_cadastros.py:17: AssertionError
+_______________________________ test_grade_crud ________________________________
+
+api = <conftest.Cliente object at 0xf08b71df3c20>
+
+    def test_grade_crud(api):
+        nova = {"id": "pil-qui-8", "modalidade": "pilates", "professor": "carla", "sala": "sala2", "dia": "qui", "hora": "08:00", "duracao_min": 60, "vagas": 5}
+        st, r = api.post("/api/grade", nova)
+>       assert st == 201, r
+E       AssertionError: {'motivo': 'rota_inexistente'}
+E       assert 404 == 201
+
+tests/test_cadastros.py:36: AssertionError
+______________________ test_exercicio_editar_e_desativar _______________________
+
+api = <conftest.Cliente object at 0xf08b71f32b70>
+
+    def test_exercicio_editar_e_desativar(api):
+        st, r = api.put("/api/exercicios/prancha", {"apelidos": ["prancha abdominal", "plank", "tabua"]})
+>       assert st == 200 and "tabua" in r["apelidos"]
+E       assert (404 == 200)
+
+tests/test_cadastros.py:55: AssertionError
+__________________________ test_faq_crud_vale_na_hora __________________________
+
+api = <conftest.Cliente object at 0xf08b71e519a0>
+
+    def test_faq_crud_vale_na_hora(api):
+        st, r = api.post("/api/faq", {"perguntas": ["atendem criança"], "resposta": "Sim, a partir de 12 anos com autorização."})
+>       assert st == 201
+E       assert 404 == 201
+
+tests/test_cadastros.py:69: AssertionError
+_______________________ test_semente_so_na_primeira_vez ________________________
+
+dados = PosixPath('/tmp/pytest-of-nmaldaner/pytest-75/test_semente_so_na_primeira_ve0/dados')
+
+    def test_semente_so_na_primeira_vez(dados):
+        s = Servidor(dados)
+        api = s.subir()
+        assert api.post("/api/planos", {"id": "semestral", "nome": "Semestral", "preco": 599, "vigencia_dias": 180})[0] == 201
+        api.delete("/api/exercicios/polichinelo")
+        s.parar()
+        s2 = Servidor(dados)
+        try:
+            api2 = s2.subir()
+            assert [p["id"] for p in api2.get("/api/planos", token=None)[1]["planos"]] == ["mensal", "trimestral", "anual", "avulso5", "semestral"]
+>           assert "polichinelo" not in [e["id"] for e in api2.get("/api/exercicios", token=None)[1]["exercicios"]]
+                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'exercicios'
+
+tests/test_cadastros.py:87: KeyError
+___________________________ test_backup_e_restaurar ____________________________
+
+dados = PosixPath('/tmp/pytest-of-nmaldaner/pytest-75/test_backup_e_restaurar0/dados')
+tmp_path = PosixPath('/tmp/pytest-of-nmaldaner/pytest-75/test_backup_e_restaurar0')
+
+    def test_backup_e_restaurar(dados, tmp_path):
+        s = Servidor(dados)
+        api = s.subir()
+        aid = api.ativo("Guardada", "41999990009")
+        api.reserva(aid, "pil-qua-9", "2026-10-07")
+        arq = tmp_path / "copia.bak"
+        r = subprocess.run([str(RAIZ / "atende"), "backup", "--dados", str(dados), "--saida", str(arq)],
+                           cwd=RAIZ, capture_output=True, timeout=30)
+>       assert r.returncode == 0 and arq.exists() and arq.stat().st_size > 0
+E       assert (2 == 0)
+E        +  where 2 = CompletedProcess(args=['/home/nmaldaner/projetos/atende-academia/atende', 'backup', '--dados', '/tmp/pytest-of-nmaldan...r=b"usage: atende [-h] {serve} ...\natende: error: argument command: invalid choice: 'backup' (choose from 'serve')\n").returncode
+
+tests/test_cadastros.py:100: AssertionError
+______________________ test_trava_de_publicidade[caso-0] _______________________
+
+api = <conftest.Cliente object at 0xf08b71e51d60>
+texto = 'Resultado garantido em 30 dias!', esperado = {'promessa_resultado'}
+
+    @pytest.mark.parametrize("texto,esperado", CASOS, ids=[f"caso-{i}" for i in range(len(CASOS))])
+    def test_trava_de_publicidade(api, texto, esperado):
+        api.aluno("Maria", "41999990001", marketing=True)
+        st, r = api.post("/api/campanhas", {"texto": texto})
+        if esperado is None:
+            assert st == 200 and r["enviadas"] == 1, (st, r)
+            [m] = api.saida("campanha")
+            assert m["texto"] == texto and m["telefone"] == "+5541999990001"
+        else:
+>           assert st == 422, (st, r)
+E           AssertionError: (404, {'motivo': 'rota_inexistente'})
+E           assert 404 == 422
+
+tests/test_campanhas.py:22: AssertionError
+______________________ test_trava_de_publicidade[caso-1] _______________________
+
+api = <conftest.Cliente object at 0xf08b71e51ee0>
+texto = 'Veja o antes e depois dos nossos alunos', esperado = {'antes_depois'}
+
+    @pytest.mark.parametrize("texto,esperado", CASOS, ids=[f"caso-{i}" for i in range(len(CASOS))])
+    def test_trava_de_publicidade(api, texto, esperado):
+        api.aluno("Maria", "41999990001", marketing=True)
+        st, r = api.post("/api/campanhas", {"texto": texto})
+        if esperado is None:
+            assert st == 200 and r["enviadas"] == 1, (st, r)
+            [m] = api.saida("campanha")
+            assert m["texto"] == texto and m["telefone"] == "+5541999990001"
+        else:
+>           assert st == 422, (st, r)
+E           AssertionError: (404, {'motivo': 'rota_inexistente'})
+E           assert 404 == 422
+
+tests/test_campanhas.py:22: AssertionError
+______________________ test_trava_de_publicidade[caso-2] _______________________
+
+api = <conftest.Cliente object at 0xf08b71ed0350>
+texto = 'Emagreça 100% garantido, veja o antes e depois'
+esperado = {'antes_depois', 'promessa_resultado'}
+
+    @pytest.mark.parametrize("texto,esperado", CASOS, ids=[f"caso-{i}" for i in range(len(CASOS))])
+    def test_trava_de_publicidade(api, texto, esperado):
+        api.aluno("Maria", "41999990001", marketing=True)
+        st, r = api.post("/api/campanhas", {"texto": texto})
+        if esperado is None:
+            assert st == 200 and r["enviadas"] == 1, (st, r)
+            [m] = api.saida("campanha")
+            assert m["texto"] == texto and m["telefone"] == "+5541999990001"
+        else:
+>           assert st == 422, (st, r)
+E           AssertionError: (404, {'motivo': 'rota_inexistente'})
+E           assert 404 == 422
+
+tests/test_campanhas.py:22: AssertionError
+______________________ test_trava_de_publicidade[caso-3] _______________________
+
+api = <conftest.Cliente object at 0xf08b71ed0d70>
+texto = 'Nova turma de pilates às quartas, 9h. Reserve pelo chat.'
+esperado = None
+
+    @pytest.mark.parametrize("texto,esperado", CASOS, ids=[f"caso-{i}" for i in range(len(CASOS))])
+    def test_trava_de_publicidade(api, texto, esperado):
+        api.aluno("Maria", "41999990001", marketing=True)
+        st, r = api.post("/api/campanhas", {"texto": texto})
+        if esperado is None:
+>           assert st == 200 and r["enviadas"] == 1, (st, r)
+E           AssertionError: (404, {'motivo': 'rota_inexistente'})
+E           assert (404 == 200)
+
+tests/test_campanhas.py:18: AssertionError
+________________ test_publico_so_com_consentimento_e_sem_parar _________________
+
+api = <conftest.Cliente object at 0xf08b71e501a0>
+
+    def test_publico_so_com_consentimento_e_sem_parar(api):
+        api.aluno("Com", "41999990001", marketing=True)
+        api.aluno("Sem", "41999990002", marketing=False)
+        api.aluno("Parou", "41999990003", marketing=True)
+>       api.msg("41999990003", "parar")
+
+tests/test_campanhas.py:31: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <conftest.Cliente object at 0xf08b71e501a0>, telefone = '41999990003'
+texto = 'parar'
+
+    def msg(self, telefone, texto):
+        st, r = self.post("/api/mensagens", {"telefone": telefone, "texto": texto}, token=None)
+>       assert st == 200, (st, r)
+E       AssertionError: (404, {'motivo': 'rota_inexistente'})
+E       assert 404 == 200
+
+tests/conftest.py:105: AssertionError
+____________________________ test_checkin_pelo_chat ____________________________
+
+api = <conftest.Cliente object at 0xf08b71e50350>
+
+    def test_checkin_pelo_chat(api):
+        aid = api.ativo("Maria", "41988887777")
+>       r = norm(api.msg("41988887777", "cheguei!"))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_checkin.py:40: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <conftest.Cliente object at 0xf08b71e50350>, telefone = '41988887777'
+texto = 'cheguei!'
+
+    def msg(self, telefone, texto):
+        st, r = self.post("/api/mensagens", {"telefone": telefone, "texto": texto}, token=None)
+>       assert st == 200, (st, r)
+E       AssertionError: (404, {'motivo': 'rota_inexistente'})
+E       assert 404 == 200
+
+tests/conftest.py:105: AssertionError
+_________________________ test_faq_responde_exatamente _________________________
+
+api = <conftest.Cliente object at 0xf08b71fd5b80>
+
+    def test_faq_responde_exatamente(api):
+>       assert api.msg(TEL, "Oi, qual o horario de funcionamento?") == "Segunda a sexta das 6h às 22h, sábado das 8h às 12h."
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_conversa.py:15: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <conftest.Cliente object at 0xf08b71fd5b80>, telefone = '41988887777'
+texto = 'Oi, qual o horario de funcionamento?'
+
+    def msg(self, telefone, texto):
+        st, r = self.post("/api/mensagens", {"telefone": telefone, "texto": texto}, token=None)
+>       assert st == 200, (st, r)
+E       AssertionError: (404, {'motivo': 'rota_inexistente'})
+E       assert 404 == 200
+
+tests/conftest.py:105: AssertionError
+_____________________ test_nao_entendi_humano_e_atendente ______________________
+
+api = <conftest.Cliente object at 0xf08b71e035f0>
+
+    def test_nao_entendi_humano_e_atendente(api):
+>       r = norm(api.msg(TEL, "vocês vendem whey?"))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_conversa.py:21: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <conftest.Cliente object at 0xf08b71e035f0>, telefone = '41988887777'
+texto = 'vocês vendem whey?'
+
+    def msg(self, telefone, texto):
+        st, r = self.post("/api/mensagens", {"telefone": telefone, "texto": texto}, token=None)
+>       assert st == 200, (st, r)
+E       AssertionError: (404, {'motivo': 'rota_inexistente'})
+E       assert 404 == 200
+
+tests/conftest.py:105: AssertionError
+_____________________ test_alerta_de_saude_prioridade_alta _____________________
+
+api = <conftest.Cliente object at 0xf08b71e03f50>
+
+    def test_alerta_de_saude_prioridade_alta(api):
+        api.ativo("Maria", TEL)
+>       r = norm(api.msg(TEL, "quero reservar aula mas estou com dor no peito"))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_conversa.py:33: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <conftest.Cliente object at 0xf08b71e03f50>, telefone = '41988887777'
+texto = 'quero reservar aula mas estou com dor no peito'
+
+    def msg(self, telefone, texto):
+        st, r = self.post("/api/mensagens", {"telefone": telefone, "texto": texto}, token=None)
+>       assert st == 200, (st, r)
+E       AssertionError: (404, {'motivo': 'rota_inexistente'})
+E       assert 404 == 200
+
+tests/conftest.py:105: AssertionError
+_____________________________ test_aulas_pelo_chat _____________________________
+
+api = <conftest.Cliente object at 0xf08b71e5a2d0>
+
+    def test_aulas_pelo_chat(api):
+        api.ativo("Maria", TEL)
+>       r = api.msg(TEL, "quais aulas tem?")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_conversa.py:44: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <conftest.Cliente object at 0xf08b71e5a2d0>, telefone = '41988887777'
+texto = 'quais aulas tem?'
+
+    def msg(self, telefone, texto):
+        st, r = self.post("/api/mensagens", {"telefone": telefone, "texto": texto}, token=None)
+>       assert st == 200, (st, r)
+E       AssertionError: (404, {'motivo': 'rota_inexistente'})
+E       assert 404 == 200
+
+tests/conftest.py:105: AssertionError
+_______________________ test_reserva_pelo_chat_com_plano _______________________
+
+api = <conftest.Cliente object at 0xf08b71ed1be0>
+
+    def test_reserva_pelo_chat_com_plano(api):
+        aid = api.ativo("Maria", TEL)
+>       r = api.msg(TEL, "quero reservar uma aula")          # aluno conhecido: vai direto à lista
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_conversa.py:52: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <conftest.Cliente object at 0xf08b71ed1be0>, telefone = '41988887777'
+texto = 'quero reservar uma aula'
+
+    def msg(self, telefone, texto):
+        st, r = self.post("/api/mensagens", {"telefone": telefone, "texto": texto}, token=None)
+>       assert st == 200, (st, r)
+E       AssertionError: (404, {'motivo': 'rota_inexistente'})
+E       assert 404 == 200
+
+tests/conftest.py:105: AssertionError
+_______________ test_reserva_pelo_chat_sem_plano_e_desconhecido ________________
+
+api = <conftest.Cliente object at 0xf08b71e01580>
+
+    def test_reserva_pelo_chat_sem_plano_e_desconhecido(api):
+>       assert "nome" in norm(api.msg(TEL, "quero reservar uma aula"))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_conversa.py:67: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <conftest.Cliente object at 0xf08b71e01580>, telefone = '41988887777'
+texto = 'quero reservar uma aula'
+
+    def msg(self, telefone, texto):
+        st, r = self.post("/api/mensagens", {"telefone": telefone, "texto": texto}, token=None)
+>       assert st == 200, (st, r)
+E       AssertionError: (404, {'motivo': 'rota_inexistente'})
+E       assert 404 == 200
+
+tests/conftest.py:105: AssertionError
+_______________________ test_cancelar_reserva_pelo_chat ________________________
+
+api = <conftest.Cliente object at 0xf08b71e51700>
+
+    def test_cancelar_reserva_pelo_chat(api):
+        aid = api.ativo("Maria", TEL)
+        _, r1 = api.reserva(aid, "pil-qua-9", "2026-10-07")
+        _, r2 = api.reserva(aid, "func-sex-18", "2026-10-09")
+>       r = api.msg(TEL, "quero cancelar")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_conversa.py:82: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <conftest.Cliente object at 0xf08b71e51700>, telefone = '41988887777'
+texto = 'quero cancelar'
+
+    def msg(self, telefone, texto):
+        st, r = self.post("/api/mensagens", {"telefone": telefone, "texto": texto}, token=None)
+>       assert st == 200, (st, r)
+E       AssertionError: (404, {'motivo': 'rota_inexistente'})
+E       assert 404 == 200
+
+tests/conftest.py:105: AssertionError
+_________________ test_cancelar_sai_do_fluxo_e_parar_bloqueia __________________
+
+api = <conftest.Cliente object at 0xf08b71e52cc0>
+
+    def test_cancelar_sai_do_fluxo_e_parar_bloqueia(api):
+        aid = api.ativo("Maria", TEL, inicio="2026-09-10")        # fim 09/10: aviso de vencimento pendente
+>       assert "1) 07/10 09:00" in api.msg(TEL, "reservar")
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_conversa.py:95: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <conftest.Cliente object at 0xf08b71e52cc0>, telefone = '41988887777'
+texto = 'reservar'
+
+    def msg(self, telefone, texto):
+        st, r = self.post("/api/mensagens", {"telefone": telefone, "texto": texto}, token=None)
+>       assert st == 200, (st, r)
+E       AssertionError: (404, {'motivo': 'rota_inexistente'})
+E       assert 404 == 200
+
+tests/conftest.py:105: AssertionError
+_______________________________ test_dockerfile ________________________________
+
+    def test_dockerfile():
+>       d = ler("Dockerfile")
+            ^^^^^^^^^^^^^^^^^
+
+tests/test_docker.py:15: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+nome = 'Dockerfile'
+
+    def ler(nome):
+        p = RAIZ / nome
+>       assert p.exists(), f"falta {nome}"
+E       AssertionError: falta Dockerfile
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/home/nmaldaner/projetos/atende-academia/Dockerfile').exists
+
+tests/test_docker.py:10: AssertionError
+_________________________________ test_compose _________________________________
+
+    def test_compose():
+>       c = ler("docker-compose.yml")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_docker.py:24: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+nome = 'docker-compose.yml'
+
+    def ler(nome):
+        p = RAIZ / nome
+>       assert p.exists(), f"falta {nome}"
+E       AssertionError: falta docker-compose.yml
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/home/nmaldaner/projetos/atende-academia/docker-compose.yml').exists
+
+tests/test_docker.py:10: AssertionError
+_________ test_env_exemplo_tem_todas_as_variaveis_sem_segredo_nem_url __________
+
+    def test_env_exemplo_tem_todas_as_variaveis_sem_segredo_nem_url():
+>       e = ler(".env.exemplo")
+            ^^^^^^^^^^^^^^^^^^^
+
+tests/test_docker.py:30: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+nome = '.env.exemplo'
+
+    def ler(nome):
+        p = RAIZ / nome
+>       assert p.exists(), f"falta {nome}"
+E       AssertionError: falta .env.exemplo
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/home/nmaldaner/projetos/atende-academia/.env.exemplo').exists
+
+tests/test_docker.py:10: AssertionError
+________________ test_readme_explica_deploy_e_mantem_como_rodar ________________
+
+    def test_readme_explica_deploy_e_mantem_como_rodar():
+        r = ler("README.md")
+        assert "Como rodar no seu ambiente" in r      # seção do dono: o implementador acrescenta o deploy sem removê-la
+>       assert "Deploy na VPS" in r
+E       AssertionError: assert 'Deploy na VPS' in '# atende-academia\n\n**🇧🇷 [Português](README.md) · 🇺🇸 [English](README.en.md) · 🇪🇸 [Español](README.es.md)**\n\n[![At...ificar-independente.py`.\n- `FALHAS.md` — uma linha por falha (data, o que quebrou, menor correção, prompt | infra).\n'
+
+tests/test_docker.py:41: AssertionError
+_______________________ test_ferramenta_de_render_existe _______________________
+
+    def test_ferramenta_de_render_existe():
+        p = RAIZ / "tools" / "render-exercicios"
+>       assert p.exists(), "falta tools/render-exercicios (seção 7.4)"
+E       AssertionError: falta tools/render-exercicios (seção 7.4)
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/home/nmaldaner/projetos/atende-academia/tools/render-exercicios').exists
+
+tests/test_docker.py:49: AssertionError
+______________________ test_svg_do_exercicio[agachamento] ______________________
+
+ex = 'agachamento'
+
+    @pytest.mark.parametrize("ex", IDS)
+    def test_svg_do_exercicio(ex):
+        p = PASTA / f"{ex}.svg"
+>       assert p.exists(), f"falta {p.relative_to(RAIZ)}"
+E       AssertionError: falta web/exercicios/agachamento.svg
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/home/nmaldaner/projetos/atende-academia/web/exercicios/agachamento.svg').exists
+
+tests/test_exercicios_svg.py:20: AssertionError
+________________________ test_svg_do_exercicio[flexao] _________________________
+
+ex = 'flexao'
+
+    @pytest.mark.parametrize("ex", IDS)
+    def test_svg_do_exercicio(ex):
+        p = PASTA / f"{ex}.svg"
+>       assert p.exists(), f"falta {p.relative_to(RAIZ)}"
+E       AssertionError: falta web/exercicios/flexao.svg
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/home/nmaldaner/projetos/atende-academia/web/exercicios/flexao.svg').exists
+
+tests/test_exercicios_svg.py:20: AssertionError
+________________________ test_svg_do_exercicio[prancha] ________________________
+
+ex = 'prancha'
+
+    @pytest.mark.parametrize("ex", IDS)
+    def test_svg_do_exercicio(ex):
+        p = PASTA / f"{ex}.svg"
+>       assert p.exists(), f"falta {p.relative_to(RAIZ)}"
+E       AssertionError: falta web/exercicios/prancha.svg
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/home/nmaldaner/projetos/atende-academia/web/exercicios/prancha.svg').exists
+
+tests/test_exercicios_svg.py:20: AssertionError
+________________________ test_svg_do_exercicio[remada] _________________________
+
+ex = 'remada'
+
+    @pytest.mark.parametrize("ex", IDS)
+    def test_svg_do_exercicio(ex):
+        p = PASTA / f"{ex}.svg"
+>       assert p.exists(), f"falta {p.relative_to(RAIZ)}"
+E       AssertionError: falta web/exercicios/remada.svg
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/home/nmaldaner/projetos/atende-academia/web/exercicios/remada.svg').exists
+
+tests/test_exercicios_svg.py:20: AssertionError
+________________________ test_svg_do_exercicio[supino] _________________________
+
+ex = 'supino'
+
+    @pytest.mark.parametrize("ex", IDS)
+    def test_svg_do_exercicio(ex):
+        p = PASTA / f"{ex}.svg"
+>       assert p.exists(), f"falta {p.relative_to(RAIZ)}"
+E       AssertionError: falta web/exercicios/supino.svg
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/home/nmaldaner/projetos/atende-academia/web/exercicios/supino.svg').exists
+
+tests/test_exercicios_svg.py:20: AssertionError
+_____________________ test_svg_do_exercicio[terra-bastao] ______________________
+
+ex = 'terra-bastao'
+
+    @pytest.mark.parametrize("ex", IDS)
+    def test_svg_do_exercicio(ex):
+        p = PASTA / f"{ex}.svg"
+>       assert p.exists(), f"falta {p.relative_to(RAIZ)}"
+E       AssertionError: falta web/exercicios/terra-bastao.svg
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/home/nmaldaner/projetos/atende-academia/web/exercicios/terra-bastao.svg').exists
+
+tests/test_exercicios_svg.py:20: AssertionError
+________________________ test_svg_do_exercicio[afundo] _________________________
+
+ex = 'afundo'
+
+    @pytest.mark.parametrize("ex", IDS)
+    def test_svg_do_exercicio(ex):
+        p = PASTA / f"{ex}.svg"
+>       assert p.exists(), f"falta {p.relative_to(RAIZ)}"
+E       AssertionError: falta web/exercicios/afundo.svg
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/home/nmaldaner/projetos/atende-academia/web/exercicios/afundo.svg').exists
+
+tests/test_exercicios_svg.py:20: AssertionError
+___________________ test_svg_do_exercicio[elevacao-pelvica] ____________________
+
+ex = 'elevacao-pelvica'
+
+    @pytest.mark.parametrize("ex", IDS)
+    def test_svg_do_exercicio(ex):
+        p = PASTA / f"{ex}.svg"
+>       assert p.exists(), f"falta {p.relative_to(RAIZ)}"
+E       AssertionError: falta web/exercicios/elevacao-pelvica.svg
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/home/nmaldaner/projetos/atende-academia/web/exercicios/elevacao-pelvica.svg').exists
+
+tests/test_exercicios_svg.py:20: AssertionError
+_______________________ test_svg_do_exercicio[abdominal] _______________________
+
+ex = 'abdominal'
+
+    @pytest.mark.parametrize("ex", IDS)
+    def test_svg_do_exercicio(ex):
+        p = PASTA / f"{ex}.svg"
+>       assert p.exists(), f"falta {p.relative_to(RAIZ)}"
+E       AssertionError: falta web/exercicios/abdominal.svg
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/home/nmaldaner/projetos/atende-academia/web/exercicios/abdominal.svg').exists
+
+tests/test_exercicios_svg.py:20: AssertionError
+____________________ test_svg_do_exercicio[desenvolvimento] ____________________
+
+ex = 'desenvolvimento'
+
+    @pytest.mark.parametrize("ex", IDS)
+    def test_svg_do_exercicio(ex):
+        p = PASTA / f"{ex}.svg"
+>       assert p.exists(), f"falta {p.relative_to(RAIZ)}"
+E       AssertionError: falta web/exercicios/desenvolvimento.svg
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/home/nmaldaner/projetos/atende-academia/web/exercicios/desenvolvimento.svg').exists
+
+tests/test_exercicios_svg.py:20: AssertionError
+________________________ test_svg_do_exercicio[puxada] _________________________
+
+ex = 'puxada'
+
+    @pytest.mark.parametrize("ex", IDS)
+    def test_svg_do_exercicio(ex):
+        p = PASTA / f"{ex}.svg"
+>       assert p.exists(), f"falta {p.relative_to(RAIZ)}"
+E       AssertionError: falta web/exercicios/puxada.svg
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/home/nmaldaner/projetos/atende-academia/web/exercicios/puxada.svg').exists
+
+tests/test_exercicios_svg.py:20: AssertionError
+______________________ test_svg_do_exercicio[polichinelo] ______________________
+
+ex = 'polichinelo'
+
+    @pytest.mark.parametrize("ex", IDS)
+    def test_svg_do_exercicio(ex):
+        p = PASTA / f"{ex}.svg"
+>       assert p.exists(), f"falta {p.relative_to(RAIZ)}"
+E       AssertionError: falta web/exercicios/polichinelo.svg
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/home/nmaldaner/projetos/atende-academia/web/exercicios/polichinelo.svg').exists
+
+tests/test_exercicios_svg.py:20: AssertionError
+_________________ test_catalogo_de_exemplo_tem_svg_para_todos __________________
+
+    def test_catalogo_de_exemplo_tem_svg_para_todos():
+        cfg = json.loads((RAIZ / "exemplos" / "academia.json").read_text(encoding="utf-8"))
+        ids = [e["id"] for e in cfg["exercicios"]]
+        assert ids == IDS                                             # os 12 obrigatórios, nesta ordem
+        arquivos = sorted(p.stem for p in PASTA.glob("*.svg"))
+>       assert set(ids) <= set(arquivos) and len(arquivos) >= 12
+E       AssertionError: assert ({'abdominal',...'flexao', ...} <= set()
+E         
+E         Extra items in the left set:
+E         'flexao'
+E         'terra-bastao'
+E         'desenvolvimento'
+E         'puxada'
+E         'prancha'...
+E         
+E         ...Full output truncated (7 lines hidden), use '-vv' to show)
+
+tests/test_exercicios_svg.py:49: AssertionError
+_____________________________ test_rotas_svg_e_mp4 _____________________________
+
+dados = PosixPath('/tmp/pytest-of-nmaldaner/pytest-75/test_rotas_svg_e_mp40/dados')
+tmp_path = PosixPath('/tmp/pytest-of-nmaldaner/pytest-75/test_rotas_svg_e_mp40')
+
+    def test_rotas_svg_e_mp4(dados, tmp_path):
+        pasta_mp4 = tmp_path / "mp4"
+        pasta_mp4.mkdir()
+        (pasta_mp4 / "prancha.mp4").write_bytes(b"\x00\x00\x00\x18ftypmp42" + b"\x00" * 64)
+        s = Servidor(dados, env={"EXERCICIOS_MP4_DIR": str(pasta_mp4)})
+        try:
+            api = s.subir()
+            st, ctype, corpo = api.raw("/exercicios/prancha.svg")
+>           assert st == 200 and ctype.startswith("image/svg+xml")
+E           assert (404 == 200)
+
+tests/test_exercicios_svg.py:60: AssertionError
+____________________ test_webhook_evolution_segredo_errado _____________________
+
+api_int = <conftest.Cliente object at 0xf08b71e384d0>
+
+    def test_webhook_evolution_segredo_errado(api_int):
+>       assert api_int.post("/webhook/evolution/errado", {"event": "messages.upsert"}, token=None)[0] == 404
+E       assert 401 == 404
+
+tests/test_integracoes.py:59: AssertionError
+____________________ test_whatsapp_responde_pela_evolution _____________________
+
+api_int = <conftest.Cliente object at 0xf08b71e3a480>
+externo = <conftest.Externo object at 0xf08b71e39160>
+
+    def test_whatsapp_responde_pela_evolution(api_int, externo):
+>       evo(api_int, "tem estacionamento?")
+
+tests/test_integracoes.py:63: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+api = <conftest.Cliente object at 0xf08b71e3a480>, texto = 'tem estacionamento?'
+numero = '5541988887777', msg_id = None, from_me = False
+sufixo = '@s.whatsapp.net', evento = 'messages.upsert'
+message = {'conversation': 'tem estacionamento?'}
+
+    def evo(api, texto=None, numero=NUM, msg_id=None, from_me=False, sufixo="@s.whatsapp.net",
+            evento="messages.upsert", message=None):
+        if message is None:
+            message = {"conversation": texto}
+        corpo = {"event": evento, "instance": "academia",
+                 "data": {"key": {"remoteJid": numero + sufixo, "fromMe": from_me, "id": msg_id or f"M{next(_ids)}"},
+                          "pushName": "Aluno", "message": message, "messageType": "conversation"}}
+        st, _ = api.post(f"/webhook/evolution/{SEGREDO_WH}", corpo, token=None)
+>       assert st == 200
+E       assert 401 == 200
+
+tests/test_integracoes.py:25: AssertionError
+__________________ test_whatsapp_ignora_o_que_nao_e_do_aluno ___________________
+
+api_int = <conftest.Cliente object at 0xf08b71ed2180>
+externo = <conftest.Externo object at 0xf08b71e3a0f0>
+
+    def test_whatsapp_ignora_o_que_nao_e_do_aluno(api_int, externo):
+>       evo(api_int, "tem estacionamento?", msg_id="DUP1")
+
+tests/test_integracoes.py:71: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+api = <conftest.Cliente object at 0xf08b71ed2180>, texto = 'tem estacionamento?'
+numero = '5541988887777', msg_id = 'DUP1', from_me = False
+sufixo = '@s.whatsapp.net', evento = 'messages.upsert'
+message = {'conversation': 'tem estacionamento?'}
+
+    def evo(api, texto=None, numero=NUM, msg_id=None, from_me=False, sufixo="@s.whatsapp.net",
+            evento="messages.upsert", message=None):
+        if message is None:
+            message = {"conversation": texto}
+        corpo = {"event": evento, "instance": "academia",
+                 "data": {"key": {"remoteJid": numero + sufixo, "fromMe": from_me, "id": msg_id or f"M{next(_ids)}"},
+                          "pushName": "Aluno", "message": message, "messageType": "conversation"}}
+        st, _ = api.post(f"/webhook/evolution/{SEGREDO_WH}", corpo, token=None)
+>       assert st == 200
+E       assert 401 == 200
+
+tests/test_integracoes.py:25: AssertionError
+___________________________ test_whatsapp_sem_texto ____________________________
+
+api_int = <conftest.Cliente object at 0xf08b71ed3920>
+externo = <conftest.Externo object at 0xf08b71e3a060>
+
+    def test_whatsapp_sem_texto(api_int, externo):
+>       evo(api_int, message={"audioMessage": {"seconds": 5}})
+
+tests/test_integracoes.py:81: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+api = <conftest.Cliente object at 0xf08b71ed3920>, texto = None
+numero = '5541988887777', msg_id = None, from_me = False
+sufixo = '@s.whatsapp.net', evento = 'messages.upsert'
+message = {'audioMessage': {'seconds': 5}}
+
+    def evo(api, texto=None, numero=NUM, msg_id=None, from_me=False, sufixo="@s.whatsapp.net",
+            evento="messages.upsert", message=None):
+        if message is None:
+            message = {"conversation": texto}
+        corpo = {"event": evento, "instance": "academia",
+                 "data": {"key": {"remoteJid": numero + sufixo, "fromMe": from_me, "id": msg_id or f"M{next(_ids)}"},
+                          "pushName": "Aluno", "message": message, "messageType": "conversation"}}
+        st, _ = api.post(f"/webhook/evolution/{SEGREDO_WH}", corpo, token=None)
+>       assert st == 200
+E       assert 401 == 200
+
+tests/test_integracoes.py:25: AssertionError
+_____________________ test_whatsapp_reserva_e_avisa_equipe _____________________
+
+api_int = <conftest.Cliente object at 0xf08b71df01a0>
+externo = <conftest.Externo object at 0xf08b71ed1310>
+
+    def test_whatsapp_reserva_e_avisa_equipe(api_int, externo):
+        api_int.ativo("Maria Lima", TEL)
+    
+        def tem(trecho):
+            return esperar(lambda: any(trecho in norm(t) for t in textos_whats(externo)))
+    
+>       evo(api_int, "quero reservar uma aula")
+
+tests/test_integracoes.py:91: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+api = <conftest.Cliente object at 0xf08b71df01a0>
+texto = 'quero reservar uma aula', numero = '5541988887777', msg_id = None
+from_me = False, sufixo = '@s.whatsapp.net', evento = 'messages.upsert'
+message = {'conversation': 'quero reservar uma aula'}
+
+    def evo(api, texto=None, numero=NUM, msg_id=None, from_me=False, sufixo="@s.whatsapp.net",
+            evento="messages.upsert", message=None):
+        if message is None:
+            message = {"conversation": texto}
+        corpo = {"event": evento, "instance": "academia",
+                 "data": {"key": {"remoteJid": numero + sufixo, "fromMe": from_me, "id": msg_id or f"M{next(_ids)}"},
+                          "pushName": "Aluno", "message": message, "messageType": "conversation"}}
+        st, _ = api.post(f"/webhook/evolution/{SEGREDO_WH}", corpo, token=None)
+>       assert st == 200
+E       assert 401 == 200
+
+tests/test_integracoes.py:25: AssertionError
+____________________ test_saida_pela_evolution_com_reenvio _____________________
+
+api_int = <conftest.Cliente object at 0xf08b71e02450>
+externo = <conftest.Externo object at 0xf08b71ed1850>
+
+    def test_saida_pela_evolution_com_reenvio(api_int, externo):
+        api_int.ativo("Maria", TEL, inicio="2026-09-10")             # fim 09/10: aviso de vencimento devido hoje
+        externo.falhas = 1
+        r = api_int.rodar()
+        assert r["enviadas"] == 1
+        [m] = api_int.saida("vencimento")
+>       assert m["status"] == "pendente"
+E       AssertionError: assert 'simulado' == 'pendente'
+E         
+E         - pendente
+E         + simulado
+
+tests/test_integracoes.py:107: AssertionError
+_________ test_exercicio_com_mp4_vai_por_sendmedia_e_sem_mp4_por_texto _________
+
+dados = PosixPath('/tmp/pytest-of-nmaldaner/pytest-75/test_exercicio_com_mp4_vai_por0/dados')
+externo = <conftest.Externo object at 0xf08b71f32000>
+tmp_path = PosixPath('/tmp/pytest-of-nmaldaner/pytest-75/test_exercicio_com_mp4_vai_por0')
+
+    def test_exercicio_com_mp4_vai_por_sendmedia_e_sem_mp4_por_texto(dados, externo, tmp_path):
+        pasta = tmp_path / "mp4"
+        pasta.mkdir()
+        (pasta / "prancha.mp4").write_bytes(b"\x00\x00\x00\x18ftypmp42" + b"\x00" * 64)
+        env = dict(env_integracoes(externo), PUBLIC_URL="https://academia.teste", EXERCICIOS_MP4_DIR=str(pasta))
+        s = Servidor(dados, env=env)
+        try:
+            api = s.subir()
+>           evo(api, "como faço a prancha?")
+
+tests/test_integracoes.py:129: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+api = <conftest.Cliente object at 0xf08b71ec9400>
+texto = 'como faço a prancha?', numero = '5541988887777', msg_id = None
+from_me = False, sufixo = '@s.whatsapp.net', evento = 'messages.upsert'
+message = {'conversation': 'como faço a prancha?'}
+
+    def evo(api, texto=None, numero=NUM, msg_id=None, from_me=False, sufixo="@s.whatsapp.net",
+            evento="messages.upsert", message=None):
+        if message is None:
+            message = {"conversation": texto}
+        corpo = {"event": evento, "instance": "academia",
+                 "data": {"key": {"remoteJid": numero + sufixo, "fromMe": from_me, "id": msg_id or f"M{next(_ids)}"},
+                          "pushName": "Aluno", "message": message, "messageType": "conversation"}}
+        st, _ = api.post(f"/webhook/evolution/{SEGREDO_WH}", corpo, token=None)
+>       assert st == 200
+E       assert 401 == 200
+
+tests/test_integracoes.py:25: AssertionError
+__________________________ test_abertura_vai_ao_grupo __________________________
+
+api_int = <conftest.Cliente object at 0xf08b714ee6f0>
+externo = <conftest.Externo object at 0xf08b714ee870>
+
+    def test_abertura_vai_ao_grupo(api_int, externo):
+>       at, abertura = abre_atendimento(api_int, externo)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_integracoes.py:154: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_integracoes.py:49: in abre_atendimento
+    api.msg(TEL, "quero falar com um atendente")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <conftest.Cliente object at 0xf08b714ee6f0>, telefone = '41988887777'
+texto = 'quero falar com um atendente'
+
+    def msg(self, telefone, texto):
+        st, r = self.post("/api/mensagens", {"telefone": telefone, "texto": texto}, token=None)
+>       assert st == 200, (st, r)
+E       AssertionError: (404, {'motivo': 'rota_inexistente'})
+E       assert 404 == 200
+
+tests/conftest.py:105: AssertionError
+____________________________ test_alerta_marca_alta ____________________________
+
+api_int = <conftest.Cliente object at 0xf08b7151b680>
+externo = <conftest.Externo object at 0xf08b714ef920>
+
+    def test_alerta_marca_alta(api_int, externo):
+>       api_int.msg(TEL, "estou com dor forte no joelho")
+
+tests/test_integracoes.py:162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <conftest.Cliente object at 0xf08b7151b680>, telefone = '41988887777'
+texto = 'estou com dor forte no joelho'
+
+    def msg(self, telefone, texto):
+        st, r = self.post("/api/mensagens", {"telefone": telefone, "texto": texto}, token=None)
+>       assert st == 200, (st, r)
+E       AssertionError: (404, {'motivo': 'rota_inexistente'})
+E       assert 404 == 200
+
+tests/conftest.py:105: AssertionError
+________________ test_atendimento_aberto_silencia_bot_e_repassa ________________
+
+api_int = <conftest.Cliente object at 0xf08b7151a660>
+externo = <conftest.Externo object at 0xf08b714ef7d0>
+
+    def test_atendimento_aberto_silencia_bot_e_repassa(api_int, externo):
+>       at, abertura = abre_atendimento(api_int, externo)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_integracoes.py:167: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_integracoes.py:49: in abre_atendimento
+    api.msg(TEL, "quero falar com um atendente")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <conftest.Cliente object at 0xf08b7151a660>, telefone = '41988887777'
+texto = 'quero falar com um atendente'
+
+    def msg(self, telefone, texto):
+        st, r = self.post("/api/mensagens", {"telefone": telefone, "texto": texto}, token=None)
+>       assert st == 200, (st, r)
+E       AssertionError: (404, {'motivo': 'rota_inexistente'})
+E       assert 404 == 200
+
+tests/conftest.py:105: AssertionError
+__________________ test_equipe_responde_em_cima_e_pela_pagina __________________
+
+api_int = <conftest.Cliente object at 0xf08b71f31fd0>
+externo = <conftest.Externo object at 0xf08b714efa70>
+
+    def test_equipe_responde_em_cima_e_pela_pagina(api_int, externo):
+>       at, abertura = abre_atendimento(api_int, externo)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_integracoes.py:177: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_integracoes.py:49: in abre_atendimento
+    api.msg(TEL, "quero falar com um atendente")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <conftest.Cliente object at 0xf08b71f31fd0>, telefone = '41988887777'
+texto = 'quero falar com um atendente'
+
+    def msg(self, telefone, texto):
+        st, r = self.post("/api/mensagens", {"telefone": telefone, "texto": texto}, token=None)
+>       assert st == 200, (st, r)
+E       AssertionError: (404, {'motivo': 'rota_inexistente'})
+E       assert 404 == 200
+
+tests/conftest.py:105: AssertionError
+_______________________ test_webhook_telegram_protegido ________________________
+
+api_int = <conftest.Cliente object at 0xf08b71ed20c0>
+externo = <conftest.Externo object at 0xf08b714ef140>
+
+    def test_webhook_telegram_protegido(api_int, externo):
+>       at, abertura = abre_atendimento(api_int, externo)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_integracoes.py:190: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_integracoes.py:49: in abre_atendimento
+    api.msg(TEL, "quero falar com um atendente")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <conftest.Cliente object at 0xf08b71ed20c0>, telefone = '41988887777'
+texto = 'quero falar com um atendente'
+
+    def msg(self, telefone, texto):
+        st, r = self.post("/api/mensagens", {"telefone": telefone, "texto": texto}, token=None)
+>       assert st == 200, (st, r)
+E       AssertionError: (404, {'motivo': 'rota_inexistente'})
+E       assert 404 == 200
+
+tests/conftest.py:105: AssertionError
+____________________ test_comandos_responder_encerrar_fila _____________________
+
+api_int = <conftest.Cliente object at 0xf08b71e3be00>
+externo = <conftest.Externo object at 0xf08b71ed0cb0>
+
+    def test_comandos_responder_encerrar_fila(api_int, externo):
+>       at, _ = abre_atendimento(api_int, externo)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_integracoes.py:198: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_integracoes.py:49: in abre_atendimento
+    api.msg(TEL, "quero falar com um atendente")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <conftest.Cliente object at 0xf08b71e3be00>, telefone = '41988887777'
+texto = 'quero falar com um atendente'
+
+    def msg(self, telefone, texto):
+        st, r = self.post("/api/mensagens", {"telefone": telefone, "texto": texto}, token=None)
+>       assert st == 200, (st, r)
+E       AssertionError: (404, {'motivo': 'rota_inexistente'})
+E       assert 404 == 200
+
+tests/conftest.py:105: AssertionError
+______________________________ test_comando_aulas ______________________________
+
+api_int = <conftest.Cliente object at 0xf08b71e38800>
+externo = <conftest.Externo object at 0xf08b71ed1160>
+
+    def test_comando_aulas(api_int, externo):
+        aid = api_int.ativo("Maria Lima", "41999990001")
+        api_int.reserva(aid, "pil-qua-9", "2026-10-07")
+        tg(api_int, "/aulas 2026-10-07")
+    
+        def achou():
+            ts = [p["json"]["text"] for p in externo.telegram()]
+            return any("09:00 Pilates (Carla) — 1/2" in t and "19:00 Spinning (Diego) — 0/2" in t for t in ts)
+>       assert esperar(achou)
+E       assert False
+E        +  where False = esperar(<function test_comando_aulas.<locals>.achou at 0xf08b7154ea20>)
+
+tests/test_integracoes.py:217: AssertionError
+___________________ test_cancelamento_pelo_chat_avisa_equipe ___________________
+
+api_int = <conftest.Cliente object at 0xf08b71e38e90>
+externo = <conftest.Externo object at 0xf08b71e3a180>
+
+    def test_cancelamento_pelo_chat_avisa_equipe(api_int, externo):
+        aid = api_int.ativo("Maria", TEL)
+        api_int.reserva(aid, "pil-qua-9", "2026-10-07")
+>       assert "1) 07/10 09:00 Pilates" in api_int.msg(TEL, "cancelar")
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_integracoes.py:226: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <conftest.Cliente object at 0xf08b71e38e90>, telefone = '41988887777'
+texto = 'cancelar'
+
+    def msg(self, telefone, texto):
+        st, r = self.post("/api/mensagens", {"telefone": telefone, "texto": texto}, token=None)
+>       assert st == 200, (st, r)
+E       AssertionError: (404, {'motivo': 'rota_inexistente'})
+E       assert 404 == 200
+
+tests/conftest.py:105: AssertionError
+____________________________ test_dados_e_exclusao _____________________________
+
+api = <conftest.Cliente object at 0xf08b71518920>
+
+    def test_dados_e_exclusao(api):
+        tel = "41999990001"
+        aid = api.ativo("Maria Silva", tel, marketing=True)
+        outro = api.ativo("Outro", "41999990002")
+        _, r1 = api.reserva(aid, "pil-qua-9", "2026-10-07")
+        _, r2 = api.reserva(aid, "func-sex-18", "2026-10-09")
+        api.post(f"/api/reservas/{r2['id']}/presenca", {"compareceu": True})
+        api.post("/api/espera", {"aluno_id": outro, "aula_id": "pil-qua-9", "data": "2026-10-07"})
+        cod = api.codigo(aid)
+        api.checkin(cod)
+        _, av = api.post("/api/avaliacoes", {"aluno_id": aid, "inicio": "2026-10-07T10:00"})
+>       api.post(f"/api/avaliacoes/{av['id']}/resultado", {"peso_kg": 70, "altura_cm": 165})
+                                    ^^^^^^^^
+E       KeyError: 'id'
+
+tests/test_lgpd_raiox.py:33: KeyError
+__________________________ test_raiox_numeros_do_mes ___________________________
+
+dados = PosixPath('/tmp/pytest-of-nmaldaner/pytest-75/test_raiox_numeros_do_mes0/dados')
+
+    def test_raiox_numeros_do_mes(dados):
+        s, api = montar_mes(dados)
+        try:
+            st, r = api.get("/api/raiox?mes=2026-10")
+>           assert st == 200 and r["pacote"] == "servicos" and r["mes"] == "2026-10"
+E           assert (404 == 200)
+
+tests/test_lgpd_raiox.py:97: AssertionError
+________________ test_cli_grava_mes_no_acompanhamento_do_painel ________________
+
+dados = PosixPath('/tmp/pytest-of-nmaldaner/pytest-75/test_cli_grava_mes_no_acompanh0/dados')
+tmp_path = PosixPath('/tmp/pytest-of-nmaldaner/pytest-75/test_cli_grava_mes_no_acompanh0')
+
+    def test_cli_grava_mes_no_acompanhamento_do_painel(dados, tmp_path):
+        s, _ = montar_mes(dados)
+        s.parar()
+        arq = tmp_path / "acompanhamento.json"
+        arq.write_text(json.dumps({
+            "tipo": "acompanhamento", "pacote": "servicos", "cliente": "Academia Movimento",
+            "base": {"data": "2026-09-01", "valores": {"falta_pct": 18, "ticket_medio": 150, "atendimentos_mes": 400}},
+            "meses": [],
+        }))
+        cmd = [str(RAIZ / "atende"), "raiox", "--dados", str(dados), "--mes", "2026-10", "--acompanhamento", str(arq)]
+        for _ in range(2):  # rodar duas vezes substitui o mês, não duplica
+>           assert subprocess.run(cmd, cwd=RAIZ, capture_output=True, timeout=30).returncode == 0
+E           assert 2 == 0
+E            +  where 2 = CompletedProcess(args=['/home/nmaldaner/projetos/atende-academia/atende', 'raiox', '--dados', '/tmp/pytest-of-nmaldane...rr=b"usage: atende [-h] {serve} ...\natende: error: argument command: invalid choice: 'raiox' (choose from 'serve')\n").returncode
+E            +    where CompletedProcess(args=['/home/nmaldaner/projetos/atende-academia/atende', 'raiox', '--dados', '/tmp/pytest-of-nmaldane...rr=b"usage: atende [-h] {serve} ...\natende: error: argument command: invalid choice: 'raiox' (choose from 'serve')\n") = <function run at 0xf08b72f68360>(['/home/nmaldaner/projetos/atende-academia/atende', 'raiox', '--dados', '/tmp/pytest-of-nmaldaner/pytest-75/test_cli_grava_mes_no_acompanh0/dados', '--mes', '2026-10', ...], cwd=PosixPath('/home/nmaldaner/projetos/atende-academia'), capture_output=True, timeout=30)
+E            +      where <function run at 0xf08b72f68360> = subprocess.run
+
+tests/test_lgpd_raiox.py:126: AssertionError
+_________________________ test_biblioteca_lista_e_404 __________________________
+
+api = <conftest.Cliente object at 0xf08b71e5b4d0>
+
+    def test_biblioteca_lista_e_404(api):
+        st, r = api.get("/api/exercicios", token=None)
+>       assert st == 200 and [e["id"] for e in r["exercicios"]] == IDS
+E       assert (404 == 200)
+
+tests/test_treino.py:16: AssertionError
+___________________________ test_ficha_montar_e_ler ____________________________
+
+api = <conftest.Cliente object at 0xf08b71f32b70>
+
+    def test_ficha_montar_e_ler(api):
+        aid = api.aluno()
+        st, r = api.put(f"/api/alunos/{aid}/ficha", FICHA)
+>       assert st == 200 and [t["nome"] for t in r["treinos"]] == ["A", "B"]
+E       assert (404 == 200)
+
+tests/test_treino.py:27: AssertionError
+_____________________ test_meu_treino_pelo_chat_rotaciona ______________________
+
+dados = PosixPath('/tmp/pytest-of-nmaldaner/pytest-75/test_meu_treino_pelo_chat_rota0/dados')
+
+    def test_meu_treino_pelo_chat_rotaciona(dados):
+        s = Servidor(dados, agora="2026-10-05T10:00")
+        api = s.subir()
+        aid = api.ativo("Maria", "41988887777", inicio="2026-10-01")
+        api.put(f"/api/alunos/{aid}/ficha", FICHA)
+        cod = api.codigo(aid)
+>       r = api.msg("41988887777", "meu treino de hoje")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_treino.py:43: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <conftest.Cliente object at 0xf08b714ef440>, telefone = '41988887777'
+texto = 'meu treino de hoje'
+
+    def msg(self, telefone, texto):
+        st, r = self.post("/api/mensagens", {"telefone": telefone, "texto": texto}, token=None)
+>       assert st == 200, (st, r)
+E       AssertionError: (404, {'motivo': 'rota_inexistente'})
+E       assert 404 == 200
+
+tests/conftest.py:105: AssertionError
+____________________ test_meu_treino_sem_ficha_ou_sem_plano ____________________
+
+api = <conftest.Cliente object at 0xf08b7151adb0>
+
+    def test_meu_treino_sem_ficha_ou_sem_plano(api):
+        api.ativo("Com plano", "41999990001")
+>       r = norm(api.msg("41999990001", "meu treino"))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_treino.py:64: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <conftest.Cliente object at 0xf08b7151adb0>, telefone = '41999990001'
+texto = 'meu treino'
+
+    def msg(self, telefone, texto):
+        st, r = self.post("/api/mensagens", {"telefone": telefone, "texto": texto}, token=None)
+>       assert st == 200, (st, r)
+E       AssertionError: (404, {'motivo': 'rota_inexistente'})
+E       assert 404 == 200
+
+tests/conftest.py:105: AssertionError
+______________________ test_explicar_exercicio_pelo_chat _______________________
+
+api = <conftest.Cliente object at 0xf08b7151bf80>
+
+    def test_explicar_exercicio_pelo_chat(api):
+>       r = api.msg("41988887777", "como faço a prancha?")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_treino.py:72: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <conftest.Cliente object at 0xf08b7151bf80>, telefone = '41988887777'
+texto = 'como faço a prancha?'
+
+    def msg(self, telefone, texto):
+        st, r = self.post("/api/mensagens", {"telefone": telefone, "texto": texto}, token=None)
+>       assert st == 200, (st, r)
+E       AssertionError: (404, {'motivo': 'rota_inexistente'})
+E       assert 404 == 200
+
+tests/conftest.py:105: AssertionError
+_________________________ test_exercicio_novo_sem_svg __________________________
+
+api = <conftest.Cliente object at 0xf08b7151bd70>
+
+    def test_exercicio_novo_sem_svg(api):
+        novo = {"id": "rosca", "nome": "Rosca direta", "apelidos": ["rosca", "biceps"], "grupo": "bracos",
+                "passos": ["Segure os halteres com as palmas para a frente.", "Dobre os cotovelos sem mover os ombros."],
+                "cuidados": ["Não balance o tronco."]}
+        st, r = api.post("/api/exercicios", novo)
+>       assert st == 201, r
+E       AssertionError: {'motivo': 'rota_inexistente'}
+E       assert 404 == 201
+
+tests/test_treino.py:88: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_alunos_planos.py::test_telefone_normalizado_duplicado_e_codigo
+FAILED tests/test_alunos_planos.py::test_lembrete_vencimento_uma_vez_e_fronteira
+FAILED tests/test_alunos_planos.py::test_meu_plano_pelo_chat - AssertionError...
+FAILED tests/test_aulas.py::test_lista_de_espera_oferece_reserva_e_lotada - A...
+FAILED tests/test_avaliacao.py::test_horarios_de_avaliacao - AssertionError: ...
+FAILED tests/test_avaliacao.py::test_agendar_cancelar_409_422 - assert (404 =...
+FAILED tests/test_avaliacao.py::test_resultado_dados_sensiveis_e_chat - KeyEr...
+FAILED tests/test_avaliacao.py::test_lembrete_avaliacao_uma_vez - AssertionEr...
+FAILED tests/test_basico.py::test_rotas_da_equipe_exigem_token_e_publicas_nao
+FAILED tests/test_basico.py::test_paginas - assert (404 == 200)
+FAILED tests/test_cadastros.py::test_professor_crud - AssertionError: {'motiv...
+FAILED tests/test_cadastros.py::test_grade_crud - AssertionError: {'motivo': ...
+FAILED tests/test_cadastros.py::test_exercicio_editar_e_desativar - assert (4...
+FAILED tests/test_cadastros.py::test_faq_crud_vale_na_hora - assert 404 == 201
+FAILED tests/test_cadastros.py::test_semente_so_na_primeira_vez - KeyError: '...
+FAILED tests/test_cadastros.py::test_backup_e_restaurar - assert (2 == 0)
+FAILED tests/test_campanhas.py::test_trava_de_publicidade[caso-0] - Assertion...
+FAILED tests/test_campanhas.py::test_trava_de_publicidade[caso-1] - Assertion...
+FAILED tests/test_campanhas.py::test_trava_de_publicidade[caso-2] - Assertion...
+FAILED tests/test_campanhas.py::test_trava_de_publicidade[caso-3] - Assertion...
+FAILED tests/test_campanhas.py::test_publico_so_com_consentimento_e_sem_parar
+FAILED tests/test_checkin.py::test_checkin_pelo_chat - AssertionError: (404, ...
+FAILED tests/test_conversa.py::test_faq_responde_exatamente - AssertionError:...
+FAILED tests/test_conversa.py::test_nao_entendi_humano_e_atendente - Assertio...
+FAILED tests/test_conversa.py::test_alerta_de_saude_prioridade_alta - Asserti...
+FAILED tests/test_conversa.py::test_aulas_pelo_chat - AssertionError: (404, {...
+FAILED tests/test_conversa.py::test_reserva_pelo_chat_com_plano - AssertionEr...
+FAILED tests/test_conversa.py::test_reserva_pelo_chat_sem_plano_e_desconhecido
+FAILED tests/test_conversa.py::test_cancelar_reserva_pelo_chat - AssertionErr...
+FAILED tests/test_conversa.py::test_cancelar_sai_do_fluxo_e_parar_bloqueia - ...
+FAILED tests/test_docker.py::test_dockerfile - AssertionError: falta Dockerfile
+FAILED tests/test_docker.py::test_compose - AssertionError: falta docker-comp...
+FAILED tests/test_docker.py::test_env_exemplo_tem_todas_as_variaveis_sem_segredo_nem_url
+FAILED tests/test_docker.py::test_readme_explica_deploy_e_mantem_como_rodar
+FAILED tests/test_docker.py::test_ferramenta_de_render_existe - AssertionErro...
+FAILED tests/test_exercicios_svg.py::test_svg_do_exercicio[agachamento] - Ass...
+FAILED tests/test_exercicios_svg.py::test_svg_do_exercicio[flexao] - Assertio...
+FAILED tests/test_exercicios_svg.py::test_svg_do_exercicio[prancha] - Asserti...
+FAILED tests/test_exercicios_svg.py::test_svg_do_exercicio[remada] - Assertio...
+FAILED tests/test_exercicios_svg.py::test_svg_do_exercicio[supino] - Assertio...
+FAILED tests/test_exercicios_svg.py::test_svg_do_exercicio[terra-bastao] - As...
+FAILED tests/test_exercicios_svg.py::test_svg_do_exercicio[afundo] - Assertio...
+FAILED tests/test_exercicios_svg.py::test_svg_do_exercicio[elevacao-pelvica]
+FAILED tests/test_exercicios_svg.py::test_svg_do_exercicio[abdominal] - Asser...
+FAILED tests/test_exercicios_svg.py::test_svg_do_exercicio[desenvolvimento]
+FAILED tests/test_exercicios_svg.py::test_svg_do_exercicio[puxada] - Assertio...
+FAILED tests/test_exercicios_svg.py::test_svg_do_exercicio[polichinelo] - Ass...
+FAILED tests/test_exercicios_svg.py::test_catalogo_de_exemplo_tem_svg_para_todos
+FAILED tests/test_exercicios_svg.py::test_rotas_svg_e_mp4 - assert (404 == 200)
+FAILED tests/test_integracoes.py::test_webhook_evolution_segredo_errado - ass...
+FAILED tests/test_integracoes.py::test_whatsapp_responde_pela_evolution - ass...
+FAILED tests/test_integracoes.py::test_whatsapp_ignora_o_que_nao_e_do_aluno
+FAILED tests/test_integracoes.py::test_whatsapp_sem_texto - assert 401 == 200
+FAILED tests/test_integracoes.py::test_whatsapp_reserva_e_avisa_equipe - asse...
+FAILED tests/test_integracoes.py::test_saida_pela_evolution_com_reenvio - Ass...
+FAILED tests/test_integracoes.py::test_exercicio_com_mp4_vai_por_sendmedia_e_sem_mp4_por_texto
+FAILED tests/test_integracoes.py::test_abertura_vai_ao_grupo - AssertionError...
+FAILED tests/test_integracoes.py::test_alerta_marca_alta - AssertionError: (4...
+FAILED tests/test_integracoes.py::test_atendimento_aberto_silencia_bot_e_repassa
+FAILED tests/test_integracoes.py::test_equipe_responde_em_cima_e_pela_pagina
+FAILED tests/test_integracoes.py::test_webhook_telegram_protegido - Assertion...
+FAILED tests/test_integracoes.py::test_comandos_responder_encerrar_fila - Ass...
+FAILED tests/test_integracoes.py::test_comando_aulas - assert False
+FAILED tests/test_integracoes.py::test_cancelamento_pelo_chat_avisa_equipe - ...
+FAILED tests/test_lgpd_raiox.py::test_dados_e_exclusao - KeyError: 'id'
+FAILED tests/test_lgpd_raiox.py::test_raiox_numeros_do_mes - assert (404 == 200)
+FAILED tests/test_lgpd_raiox.py::test_cli_grava_mes_no_acompanhamento_do_painel
+FAILED tests/test_treino.py::test_biblioteca_lista_e_404 - assert (404 == 200)
+FAILED tests/test_treino.py::test_ficha_montar_e_ler - assert (404 == 200)
+FAILED tests/test_treino.py::test_meu_treino_pelo_chat_rotaciona - AssertionE...
+FAILED tests/test_treino.py::test_meu_treino_sem_ficha_ou_sem_plano - Asserti...
+FAILED tests/test_treino.py::test_explicar_exercicio_pelo_chat - AssertionErr...
+FAILED tests/test_treino.py::test_exercicio_novo_sem_svg - AssertionError: {'...
+73 failed, 26 passed in 18.75s

@@ -1,7 +1,7 @@
 # Plano — próximos 3 passos
 
-1. Implementar check-in/reativação (§5), incluindo presença automática (§4.6) e aviso de vencimento (§3.3) no núcleo de tarefas; preservar idempotência, relógio da rodada e consentimento. Validar com suíte inteira.
-2. Implementar biblioteca/fichas/meu treino (§6), 12 SVGs CSS manuais e páginas (§7), depois avaliação física (§8). Não executar render-exercicios.
-3. Implementar conversa na ordem exata §11, conectando oferta de espera às reservas existentes; completar tarefas, campanhas, LGPD, Raio-X, cadastros/backup, integrações falsas, Docker/README/render e páginas na sequência autorizada.
+1. Implementar biblioteca de exercícios, CRUD de fichas e cálculo do treino do dia (§6); seguir para os 12 SVGs CSS manuais e páginas (§7), sem executar render-exercicios. Validar com suíte completa.
+2. Implementar avaliação física (§8), horários/conflitos/resultados e verificar os lembretes já preparados; implementar conversa na ordem exata §11, reutilizando check-in/reservas/fichas.
+3. Completar tarefas com reenvio, campanhas, LGPD, Raio-X, cadastros/backup, Evolution e Telegram falsos, Docker/.env.exemplo/README/render-exercicios e páginas na sequência autorizada.
 
-Só marcar concluído após suíte inteira aprovada e LIMITES OK. Build de MP4 e deploy são passos do humano. Sem commit neste loop.
+Só marcar concluído após suíte inteira aprovada e LIMITES OK. Build MP4 e deploy são passos do humano. Sem commit neste loop.

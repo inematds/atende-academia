@@ -2,6 +2,7 @@
 
 | data | o que quebrou | menor correção | prompt \| infra |
 |---|---|---|---|
+| 2026-10-19 | Check-in, reativação e presença automática ausentes no ciclo anterior | implementar Attendance e relógio explícito para avisos; suíte passou de 20 para 26 aprovados | infra |
 | 2026-10-19 | Rotas de aulas e reservas ainda ausentes no checkpoint anterior | implementar ocorrências, reserva transacional, créditos, cancelamento, presença manual e oferta de espera; suíte passou de 9 para 20 aprovados | infra |
 | 2026-10-19 | Escrita inicial de FALHAS.md substituiu histórico | restaurar conteúdo do HEAD e inserir linhas novas no topo | prompt |
 | 2026-10-19 | Leitura de tests/test_base.py inexistente | usar nome tests/test_basico.py encontrado por rg --files | prompt |

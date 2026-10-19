@@ -7,3 +7,5 @@
 | 2026-10-19 | Escrita de FALHAS.md substituiu histórico | recuperar HEAD e inserir novos registros no topo | histórico preservado antes do fim do ciclo | prompt |
 
 | 2026-10-19 13:54 -0300 | Suíte ainda com 79 falhas por módulos ausentes; aulas depende de chat e check-in/tarefas | implementar domínio de aulas e rodar suíte completa | 20 passed / 79 failed; pendências registradas, sem conflito teste/spec identificado | infra |
+
+| 2026-10-19 13:56 -0300 | Suíte ainda com módulos ausentes (chat, exercícios, avaliação, integrações e entrega) | implementar check-in/reativação e núcleo local de tarefas | 26 passed / 73 failed; sem conflito teste/spec; próximos módulos no plan.md | infra |

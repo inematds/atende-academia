@@ -13,3 +13,5 @@ Formato: `- AAAA-MM-DD HH:MM · fato|aprendizado|glossário|armadilha · texto`
 - 2026-10-19 13:54 -0300 · fato · Classes implementa ocorrências/reservas/cancelamentos/espera, sob store.lock + store.db do dispatcher; matricula_id é a matrícula que consumiu o crédito.
 - 2026-10-19 13:54 -0300 · armadilha · §4.4 cita oferta também no cancelamento pela academia (§4.6): implementado literalmente; confirmar depois tenta reservar pelas regras normais e ocorrência cancelada recusa sem_aula.
 - 2026-10-19 13:54 -0300 · fato · 20 passed / 79 failed e LIMITES OK. Restam em aulas os testes que atravessam chat e check-in/tarefas; caixa de saída é simulada até implementação da Evolution.
+
+- 2026-10-19 13:56 -0300 · fato · Attendance.checkin/listing/run em src/attendance.py; tasks grava quando com instante da rodada via Classes.message(..., instant). Reativação compara mensagem > último check-in (não >=); presença usa fim persistido da reserva. Reenvio ainda falta; lembretes de avaliação preparados mas sem API de avaliação. Suíte 26 passed / 73 failed, LIMITES OK; check-in concorrente adicional aprovado.

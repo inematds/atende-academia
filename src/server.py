@@ -7,6 +7,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlsplit
 
 from .classes import Classes, filtered
+from .attendance import Attendance
 from .domain import Academia, Error, norm, require
 from .store import ROOT, Store
 
@@ -27,6 +28,14 @@ def route(app, method, path, query, body):
     if method == 'GET' and path == '/api/saude':
         return 200, {'ok': True, 'versao': (ROOT / 'VERSION').read_text().strip()}
     classes = Classes(app)
+    attendance = Attendance(app)
+    if path == '/api/checkins':
+        if method == 'POST':
+            return attendance.checkin(body)
+        if method == 'GET':
+            return 200, {'checkins': attendance.listing(query)}
+    if path == '/api/tarefas/rodar' and method == 'POST':
+        return 200, attendance.run(body)
     if path == '/api/aulas' and method == 'GET':
         return 200, {'aulas': classes.occurrences(query)}
     if path == '/api/reservas':
