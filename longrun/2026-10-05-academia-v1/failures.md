@@ -13,3 +13,5 @@
 | 2026-10-19 | Verificação manual recebeu 401 usando token do fixture com configuração de exemplo | repetir copiando fixture para dados temporários | erro de preparação corrigido, sem alterar implementação | prompt |
 
 | 2026-10-19 14:00 -0300 | Suíte ainda com módulos ausentes, inclusive SVG e chat que atravessam treino | implementar catálogo/ficha e seleção do treino | 28 passed / 71 failed; nenhum conflito teste/spec identificado | infra |
+
+| 2026-10-19 14:04 -0300 | Suíte ainda falha nos módulos não implementados (avaliação, conversa, integrações e entrega) | concluir SVGs/páginas e rodar suíte inteira | 43 passed / 56 failed; nenhum conflito teste/spec identificado | infra |

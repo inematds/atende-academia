@@ -1,9 +1,9 @@
-F...FF............F..FFFF..FF..FFFFFFFFFFF...F.FFFFFFFFFFFFFFFFFFFFFFFFF [ 72%]
-FFFFFFFF.FFFFFFFFFFFFFFFFFF                                              [100%]
+F...FF............F..FFFF..FF..FFFF.FFFFFF...F.FFFFFFFFFFFFFFFFFFFFFFFFF [ 72%]
+FFFFFFFF.FFFFFFFFFFFFF.FFFF                                              [100%]
 =================================== FAILURES ===================================
 _________________ test_telefone_normalizado_duplicado_e_codigo _________________
 
-api = <conftest.Cliente object at 0xf9cef2bf34d0>
+api = <conftest.Cliente object at 0xf039efa43ad0>
 
     def test_telefone_normalizado_duplicado_e_codigo(api):
         st, r = api.post("/api/alunos", {"nome": "A", "telefone": "(41) 99999-0001"})
@@ -20,7 +20,7 @@ E       KeyError: 'aluno'
 tests/test_alunos_planos.py:15: KeyError
 _________________ test_lembrete_vencimento_uma_vez_e_fronteira _________________
 
-api = <conftest.Cliente object at 0xf9cef2d3a3f0>
+api = <conftest.Cliente object at 0xf039efb824e0>
 
     def test_lembrete_vencimento_uma_vez_e_fronteira(api):
         p1 = api.aluno("Maria", "41999990001")
@@ -35,7 +35,7 @@ api = <conftest.Cliente object at 0xf9cef2d3a3f0>
 tests/test_alunos_planos.py:69: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-self = <conftest.Cliente object at 0xf9cef2d3a3f0>, telefone = '41999990003'
+self = <conftest.Cliente object at 0xf039efb824e0>, telefone = '41999990003'
 texto = 'parar'
 
     def msg(self, telefone, texto):
@@ -47,7 +47,7 @@ E       assert 404 == 200
 tests/conftest.py:105: AssertionError
 ___________________________ test_meu_plano_pelo_chat ___________________________
 
-api = <conftest.Cliente object at 0xf9cef2bff560>
+api = <conftest.Cliente object at 0xf039efa4d0d0>
 
     def test_meu_plano_pelo_chat(api):
         api.ativo("Ativa", "41999990001", inicio="2026-09-10")        # fim 09/10
@@ -57,7 +57,7 @@ api = <conftest.Cliente object at 0xf9cef2bff560>
 tests/test_alunos_planos.py:85: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-self = <conftest.Cliente object at 0xf9cef2bff560>, telefone = '41999990001'
+self = <conftest.Cliente object at 0xf039efa4d0d0>, telefone = '41999990001'
 texto = 'qual é o meu plano?'
 
     def msg(self, telefone, texto):
@@ -69,7 +69,7 @@ E       assert 404 == 200
 tests/conftest.py:105: AssertionError
 ________________ test_lista_de_espera_oferece_reserva_e_lotada _________________
 
-api = <conftest.Cliente object at 0xf9cef2bff110>
+api = <conftest.Cliente object at 0xf039efab0f80>
 
     def test_lista_de_espera_oferece_reserva_e_lotada(api):
         a1 = api.ativo("Um", "41999990001")
@@ -95,7 +95,7 @@ api = <conftest.Cliente object at 0xf9cef2bff110>
 tests/test_aulas.py:167: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-self = <conftest.Cliente object at 0xf9cef2bff110>, telefone = '41999990003'
+self = <conftest.Cliente object at 0xf039efab0f80>, telefone = '41999990003'
 texto = '1'
 
     def msg(self, telefone, texto):
@@ -107,7 +107,7 @@ E       assert 404 == 200
 tests/conftest.py:105: AssertionError
 __________________________ test_horarios_de_avaliacao __________________________
 
-api = <conftest.Cliente object at 0xf9cef2c39d90>
+api = <conftest.Cliente object at 0xf039efab2090>
 
     def test_horarios_de_avaliacao(api):
         # qua 07/10: janela 09:00–12:00 menos a aula de pilates [09:00, 10:00)
@@ -117,7 +117,7 @@ api = <conftest.Cliente object at 0xf9cef2c39d90>
 tests/test_avaliacao.py:15: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-api = <conftest.Cliente object at 0xf9cef2c39d90>, data = '2026-10-07'
+api = <conftest.Cliente object at 0xf039efab2090>, data = '2026-10-07'
 professor = None
 
     def horarios(api, data, professor=None):
@@ -130,7 +130,7 @@ E       assert 404 == 200
 tests/test_avaliacao.py:9: AssertionError
 ________________________ test_agendar_cancelar_409_422 _________________________
 
-api = <conftest.Cliente object at 0xf9cef2c38590>
+api = <conftest.Cliente object at 0xf039efab2360>
 
     def test_agendar_cancelar_409_422(api):
         aid = api.aluno()
@@ -141,7 +141,7 @@ E       assert (404 == 201)
 tests/test_avaliacao.py:27: AssertionError
 ____________________ test_resultado_dados_sensiveis_e_chat _____________________
 
-api = <conftest.Cliente object at 0xf9cef2c3a720>
+api = <conftest.Cliente object at 0xf039efab2f60>
 
     def test_resultado_dados_sensiveis_e_chat(api):
         aid = api.aluno("Maria", "41988887777")
@@ -153,7 +153,7 @@ E       KeyError: 'id'
 tests/test_avaliacao.py:47: KeyError
 _______________________ test_lembrete_avaliacao_uma_vez ________________________
 
-api = <conftest.Cliente object at 0xf9cef2c3b860>
+api = <conftest.Cliente object at 0xf039efac0260>
 
     def test_lembrete_avaliacao_uma_vez(api):
         aid = api.aluno("Maria", "41999990001")
@@ -164,7 +164,7 @@ api = <conftest.Cliente object at 0xf9cef2c3b860>
 tests/test_avaliacao.py:64: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-self = <conftest.Cliente object at 0xf9cef2c3b860>, telefone = '41999990002'
+self = <conftest.Cliente object at 0xf039efac0260>, telefone = '41999990002'
 texto = 'parar'
 
     def msg(self, telefone, texto):
@@ -176,7 +176,7 @@ E       assert 404 == 200
 tests/conftest.py:105: AssertionError
 _______________ test_rotas_da_equipe_exigem_token_e_publicas_nao _______________
 
-api = <conftest.Cliente object at 0xf9cef2bfea80>
+api = <conftest.Cliente object at 0xf039efab2210>
 
     def test_rotas_da_equipe_exigem_token_e_publicas_nao(api):
         for metodo, rota in [("GET", "/api/saida"), ("GET", "/api/reservas?data=2026-10-07"), ("POST", "/api/alunos"),
@@ -189,13 +189,15 @@ api = <conftest.Cliente object at 0xf9cef2bfea80>
             assert api.req(metodo, rota, corpo, token="errado")[0] == 401, rota
         assert api.get("/api/aulas?data=2026-10-07", token=None)[0] == 200
         assert api.get("/api/planos", token=None)[0] == 200
->       assert api.get("/api/exercicios", token=None)[0] == 200
+        assert api.get("/api/exercicios", token=None)[0] == 200
+        assert api.get("/api/exercicios/prancha", token=None)[0] == 200
+>       assert api.get("/api/avaliacoes/horarios?data=2026-10-07", token=None)[0] == 200
 E       assert 404 == 200
 
-tests/test_basico.py:34: AssertionError
+tests/test_basico.py:36: AssertionError
 _________________________________ test_paginas _________________________________
 
-api = <conftest.Cliente object at 0xf9cef2bfcd10>
+api = <conftest.Cliente object at 0xf039efab1670>
 
     def test_paginas(api):
         st, html = api.get("/", token=None)
@@ -205,7 +207,7 @@ E       assert (404 == 200)
 tests/test_basico.py:42: AssertionError
 _____________________________ test_professor_crud ______________________________
 
-api = <conftest.Cliente object at 0xf9cef2c3b8c0>
+api = <conftest.Cliente object at 0xf039efa4d3d0>
 
     def test_professor_crud(api):
         vazio = {d: [] for d in ("seg", "ter", "qua", "qui", "sex", "sab", "dom")}
@@ -217,7 +219,7 @@ E       assert 404 == 201
 tests/test_cadastros.py:17: AssertionError
 _______________________________ test_grade_crud ________________________________
 
-api = <conftest.Cliente object at 0xf9cef2c3a930>
+api = <conftest.Cliente object at 0xf039efa4ec60>
 
     def test_grade_crud(api):
         nova = {"id": "pil-qui-8", "modalidade": "pilates", "professor": "carla", "sala": "sala2", "dia": "qui", "hora": "08:00", "duracao_min": 60, "vagas": 5}
@@ -229,17 +231,30 @@ E       assert 404 == 201
 tests/test_cadastros.py:36: AssertionError
 ______________________ test_exercicio_editar_e_desativar _______________________
 
-api = <conftest.Cliente object at 0xf9cef2c39f40>
+api = <conftest.Cliente object at 0xf039efc25250>
 
     def test_exercicio_editar_e_desativar(api):
         st, r = api.put("/api/exercicios/prancha", {"apelidos": ["prancha abdominal", "plank", "tabua"]})
->       assert st == 200 and "tabua" in r["apelidos"]
-E       assert (404 == 200)
+        assert st == 200 and "tabua" in r["apelidos"]
+>       assert api.msg("41988887777", "como faz a tabua?").splitlines()[0] == "Prancha"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-tests/test_cadastros.py:55: AssertionError
+tests/test_cadastros.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <conftest.Cliente object at 0xf039efc25250>, telefone = '41988887777'
+texto = 'como faz a tabua?'
+
+    def msg(self, telefone, texto):
+        st, r = self.post("/api/mensagens", {"telefone": telefone, "texto": texto}, token=None)
+>       assert st == 200, (st, r)
+E       AssertionError: (404, {'motivo': 'rota_inexistente'})
+E       assert 404 == 200
+
+tests/conftest.py:105: AssertionError
 __________________________ test_faq_crud_vale_na_hora __________________________
 
-api = <conftest.Cliente object at 0xf9cef2cd81d0>
+api = <conftest.Cliente object at 0xf039efac12b0>
 
     def test_faq_crud_vale_na_hora(api):
         st, r = api.post("/api/faq", {"perguntas": ["atendem criança"], "resposta": "Sim, a partir de 12 anos com autorização."})
@@ -247,29 +262,10 @@ api = <conftest.Cliente object at 0xf9cef2cd81d0>
 E       assert 404 == 201
 
 tests/test_cadastros.py:69: AssertionError
-_______________________ test_semente_so_na_primeira_vez ________________________
-
-dados = PosixPath('/tmp/pytest-of-nmaldaner/pytest-82/test_semente_so_na_primeira_ve0/dados')
-
-    def test_semente_so_na_primeira_vez(dados):
-        s = Servidor(dados)
-        api = s.subir()
-        assert api.post("/api/planos", {"id": "semestral", "nome": "Semestral", "preco": 599, "vigencia_dias": 180})[0] == 201
-        api.delete("/api/exercicios/polichinelo")
-        s.parar()
-        s2 = Servidor(dados)
-        try:
-            api2 = s2.subir()
-            assert [p["id"] for p in api2.get("/api/planos", token=None)[1]["planos"]] == ["mensal", "trimestral", "anual", "avulso5", "semestral"]
->           assert "polichinelo" not in [e["id"] for e in api2.get("/api/exercicios", token=None)[1]["exercicios"]]
-                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-E           KeyError: 'exercicios'
-
-tests/test_cadastros.py:87: KeyError
 ___________________________ test_backup_e_restaurar ____________________________
 
-dados = PosixPath('/tmp/pytest-of-nmaldaner/pytest-82/test_backup_e_restaurar0/dados')
-tmp_path = PosixPath('/tmp/pytest-of-nmaldaner/pytest-82/test_backup_e_restaurar0')
+dados = PosixPath('/tmp/pytest-of-nmaldaner/pytest-93/test_backup_e_restaurar0/dados')
+tmp_path = PosixPath('/tmp/pytest-of-nmaldaner/pytest-93/test_backup_e_restaurar0')
 
     def test_backup_e_restaurar(dados, tmp_path):
         s = Servidor(dados)
@@ -286,7 +282,7 @@ E        +  where 2 = CompletedProcess(args=['/home/nmaldaner/projetos/atende-ac
 tests/test_cadastros.py:100: AssertionError
 ______________________ test_trava_de_publicidade[caso-0] _______________________
 
-api = <conftest.Cliente object at 0xf9cef2cd8980>
+api = <conftest.Cliente object at 0xf039efac1790>
 texto = 'Resultado garantido em 30 dias!', esperado = {'promessa_resultado'}
 
     @pytest.mark.parametrize("texto,esperado", CASOS, ids=[f"caso-{i}" for i in range(len(CASOS))])
@@ -305,7 +301,7 @@ E           assert 404 == 422
 tests/test_campanhas.py:22: AssertionError
 ______________________ test_trava_de_publicidade[caso-1] _______________________
 
-api = <conftest.Cliente object at 0xf9cef2cda150>
+api = <conftest.Cliente object at 0xf039efac0e90>
 texto = 'Veja o antes e depois dos nossos alunos', esperado = {'antes_depois'}
 
     @pytest.mark.parametrize("texto,esperado", CASOS, ids=[f"caso-{i}" for i in range(len(CASOS))])
@@ -324,7 +320,7 @@ E           assert 404 == 422
 tests/test_campanhas.py:22: AssertionError
 ______________________ test_trava_de_publicidade[caso-2] _______________________
 
-api = <conftest.Cliente object at 0xf9cef2cdb770>
+api = <conftest.Cliente object at 0xf039efac2330>
 texto = 'Emagreça 100% garantido, veja o antes e depois'
 esperado = {'antes_depois', 'promessa_resultado'}
 
@@ -344,7 +340,7 @@ E           assert 404 == 422
 tests/test_campanhas.py:22: AssertionError
 ______________________ test_trava_de_publicidade[caso-3] _______________________
 
-api = <conftest.Cliente object at 0xf9cef2c3c4d0>
+api = <conftest.Cliente object at 0xf039efb24260>
 texto = 'Nova turma de pilates às quartas, 9h. Reserve pelo chat.'
 esperado = None
 
@@ -360,7 +356,7 @@ E           assert (404 == 200)
 tests/test_campanhas.py:18: AssertionError
 ________________ test_publico_so_com_consentimento_e_sem_parar _________________
 
-api = <conftest.Cliente object at 0xf9cef2cdb1a0>
+api = <conftest.Cliente object at 0xf039efac0fe0>
 
     def test_publico_so_com_consentimento_e_sem_parar(api):
         api.aluno("Com", "41999990001", marketing=True)
@@ -371,7 +367,7 @@ api = <conftest.Cliente object at 0xf9cef2cdb1a0>
 tests/test_campanhas.py:31: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-self = <conftest.Cliente object at 0xf9cef2cdb1a0>, telefone = '41999990003'
+self = <conftest.Cliente object at 0xf039efac0fe0>, telefone = '41999990003'
 texto = 'parar'
 
     def msg(self, telefone, texto):
@@ -383,7 +379,7 @@ E       assert 404 == 200
 tests/conftest.py:105: AssertionError
 ____________________________ test_checkin_pelo_chat ____________________________
 
-api = <conftest.Cliente object at 0xf9cef2cd8350>
+api = <conftest.Cliente object at 0xf039efac1a90>
 
     def test_checkin_pelo_chat(api):
         aid = api.ativo("Maria", "41988887777")
@@ -393,7 +389,7 @@ api = <conftest.Cliente object at 0xf9cef2cd8350>
 tests/test_checkin.py:40: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-self = <conftest.Cliente object at 0xf9cef2cd8350>, telefone = '41988887777'
+self = <conftest.Cliente object at 0xf039efac1a90>, telefone = '41988887777'
 texto = 'cheguei!'
 
     def msg(self, telefone, texto):
@@ -405,7 +401,7 @@ E       assert 404 == 200
 tests/conftest.py:105: AssertionError
 _________________________ test_faq_responde_exatamente _________________________
 
-api = <conftest.Cliente object at 0xf9cef2c387d0>
+api = <conftest.Cliente object at 0xf039efa43f50>
 
     def test_faq_responde_exatamente(api):
 >       assert api.msg(TEL, "Oi, qual o horario de funcionamento?") == "Segunda a sexta das 6h às 22h, sábado das 8h às 12h."
@@ -414,7 +410,7 @@ api = <conftest.Cliente object at 0xf9cef2c387d0>
 tests/test_conversa.py:15: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-self = <conftest.Cliente object at 0xf9cef2c387d0>, telefone = '41988887777'
+self = <conftest.Cliente object at 0xf039efa43f50>, telefone = '41988887777'
 texto = 'Oi, qual o horario de funcionamento?'
 
     def msg(self, telefone, texto):
@@ -426,7 +422,7 @@ E       assert 404 == 200
 tests/conftest.py:105: AssertionError
 _____________________ test_nao_entendi_humano_e_atendente ______________________
 
-api = <conftest.Cliente object at 0xf9cef2c39340>
+api = <conftest.Cliente object at 0xf039efa4edb0>
 
     def test_nao_entendi_humano_e_atendente(api):
 >       r = norm(api.msg(TEL, "vocês vendem whey?"))
@@ -435,7 +431,7 @@ api = <conftest.Cliente object at 0xf9cef2c39340>
 tests/test_conversa.py:21: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-self = <conftest.Cliente object at 0xf9cef2c39340>, telefone = '41988887777'
+self = <conftest.Cliente object at 0xf039efa4edb0>, telefone = '41988887777'
 texto = 'vocês vendem whey?'
 
     def msg(self, telefone, texto):
@@ -447,7 +443,7 @@ E       assert 404 == 200
 tests/conftest.py:105: AssertionError
 _____________________ test_alerta_de_saude_prioridade_alta _____________________
 
-api = <conftest.Cliente object at 0xf9cef2d38260>
+api = <conftest.Cliente object at 0xf039efab0350>
 
     def test_alerta_de_saude_prioridade_alta(api):
         api.ativo("Maria", TEL)
@@ -457,7 +453,7 @@ api = <conftest.Cliente object at 0xf9cef2d38260>
 tests/test_conversa.py:33: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-self = <conftest.Cliente object at 0xf9cef2d38260>, telefone = '41988887777'
+self = <conftest.Cliente object at 0xf039efab0350>, telefone = '41988887777'
 texto = 'quero reservar aula mas estou com dor no peito'
 
     def msg(self, telefone, texto):
@@ -469,7 +465,7 @@ E       assert 404 == 200
 tests/conftest.py:105: AssertionError
 _____________________________ test_aulas_pelo_chat _____________________________
 
-api = <conftest.Cliente object at 0xf9cef2bfebd0>
+api = <conftest.Cliente object at 0xf039efab18e0>
 
     def test_aulas_pelo_chat(api):
         api.ativo("Maria", TEL)
@@ -479,7 +475,7 @@ api = <conftest.Cliente object at 0xf9cef2bfebd0>
 tests/test_conversa.py:44: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-self = <conftest.Cliente object at 0xf9cef2bfebd0>, telefone = '41988887777'
+self = <conftest.Cliente object at 0xf039efab18e0>, telefone = '41988887777'
 texto = 'quais aulas tem?'
 
     def msg(self, telefone, texto):
@@ -491,7 +487,7 @@ E       assert 404 == 200
 tests/conftest.py:105: AssertionError
 _______________________ test_reserva_pelo_chat_com_plano _______________________
 
-api = <conftest.Cliente object at 0xf9cef2c3e390>
+api = <conftest.Cliente object at 0xf039efb27ce0>
 
     def test_reserva_pelo_chat_com_plano(api):
         aid = api.ativo("Maria", TEL)
@@ -501,7 +497,7 @@ api = <conftest.Cliente object at 0xf9cef2c3e390>
 tests/test_conversa.py:52: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-self = <conftest.Cliente object at 0xf9cef2c3e390>, telefone = '41988887777'
+self = <conftest.Cliente object at 0xf039efb27ce0>, telefone = '41988887777'
 texto = 'quero reservar uma aula'
 
     def msg(self, telefone, texto):
@@ -513,7 +509,7 @@ E       assert 404 == 200
 tests/conftest.py:105: AssertionError
 _______________ test_reserva_pelo_chat_sem_plano_e_desconhecido ________________
 
-api = <conftest.Cliente object at 0xf9cef2c3b800>
+api = <conftest.Cliente object at 0xf039efa4dd00>
 
     def test_reserva_pelo_chat_sem_plano_e_desconhecido(api):
 >       assert "nome" in norm(api.msg(TEL, "quero reservar uma aula"))
@@ -522,7 +518,7 @@ api = <conftest.Cliente object at 0xf9cef2c3b800>
 tests/test_conversa.py:67: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-self = <conftest.Cliente object at 0xf9cef2c3b800>, telefone = '41988887777'
+self = <conftest.Cliente object at 0xf039efa4dd00>, telefone = '41988887777'
 texto = 'quero reservar uma aula'
 
     def msg(self, telefone, texto):
@@ -534,7 +530,7 @@ E       assert 404 == 200
 tests/conftest.py:105: AssertionError
 _______________________ test_cancelar_reserva_pelo_chat ________________________
 
-api = <conftest.Cliente object at 0xf9cef2cd80e0>
+api = <conftest.Cliente object at 0xf039efa41220>
 
     def test_cancelar_reserva_pelo_chat(api):
         aid = api.ativo("Maria", TEL)
@@ -546,7 +542,7 @@ api = <conftest.Cliente object at 0xf9cef2cd80e0>
 tests/test_conversa.py:82: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-self = <conftest.Cliente object at 0xf9cef2cd80e0>, telefone = '41988887777'
+self = <conftest.Cliente object at 0xf039efa41220>, telefone = '41988887777'
 texto = 'quero cancelar'
 
     def msg(self, telefone, texto):
@@ -558,7 +554,7 @@ E       assert 404 == 200
 tests/conftest.py:105: AssertionError
 _________________ test_cancelar_sai_do_fluxo_e_parar_bloqueia __________________
 
-api = <conftest.Cliente object at 0xf9cef2bff710>
+api = <conftest.Cliente object at 0xf039efac00e0>
 
     def test_cancelar_sai_do_fluxo_e_parar_bloqueia(api):
         aid = api.ativo("Maria", TEL, inicio="2026-09-10")        # fim 09/10: aviso de vencimento pendente
@@ -568,7 +564,7 @@ api = <conftest.Cliente object at 0xf9cef2bff710>
 tests/test_conversa.py:95: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-self = <conftest.Cliente object at 0xf9cef2bff710>, telefone = '41988887777'
+self = <conftest.Cliente object at 0xf039efac00e0>, telefone = '41988887777'
 texto = 'reservar'
 
     def msg(self, telefone, texto):
@@ -837,10 +833,10 @@ _________________ test_catalogo_de_exemplo_tem_svg_para_todos __________________
 E       AssertionError: assert ({'abdominal',...'flexao', ...} <= set()
 E         
 E         Extra items in the left set:
-E         'polichinelo'
 E         'terra-bastao'
 E         'abdominal'
-E         'flexao'
+E         'polichinelo'
+E         'prancha'
 E         'supino'...
 E         
 E         ...Full output truncated (7 lines hidden), use '-vv' to show)
@@ -848,8 +844,8 @@ E         ...Full output truncated (7 lines hidden), use '-vv' to show)
 tests/test_exercicios_svg.py:49: AssertionError
 _____________________________ test_rotas_svg_e_mp4 _____________________________
 
-dados = PosixPath('/tmp/pytest-of-nmaldaner/pytest-82/test_rotas_svg_e_mp40/dados')
-tmp_path = PosixPath('/tmp/pytest-of-nmaldaner/pytest-82/test_rotas_svg_e_mp40')
+dados = PosixPath('/tmp/pytest-of-nmaldaner/pytest-93/test_rotas_svg_e_mp40/dados')
+tmp_path = PosixPath('/tmp/pytest-of-nmaldaner/pytest-93/test_rotas_svg_e_mp40')
 
     def test_rotas_svg_e_mp4(dados, tmp_path):
         pasta_mp4 = tmp_path / "mp4"
@@ -865,7 +861,7 @@ E           assert (404 == 200)
 tests/test_exercicios_svg.py:60: AssertionError
 ____________________ test_webhook_evolution_segredo_errado _____________________
 
-api_int = <conftest.Cliente object at 0xf9cef2cece30>
+api_int = <conftest.Cliente object at 0xf039efac52b0>
 
     def test_webhook_evolution_segredo_errado(api_int):
 >       assert api_int.post("/webhook/evolution/errado", {"event": "messages.upsert"}, token=None)[0] == 404
@@ -874,8 +870,8 @@ E       assert 401 == 404
 tests/test_integracoes.py:59: AssertionError
 ____________________ test_whatsapp_responde_pela_evolution _____________________
 
-api_int = <conftest.Cliente object at 0xf9cef2ced970>
-externo = <conftest.Externo object at 0xf9cef2cecd70>
+api_int = <conftest.Cliente object at 0xf039efac5ca0>
+externo = <conftest.Externo object at 0xf039efac4ef0>
 
     def test_whatsapp_responde_pela_evolution(api_int, externo):
 >       evo(api_int, "tem estacionamento?")
@@ -883,7 +879,7 @@ externo = <conftest.Externo object at 0xf9cef2cecd70>
 tests/test_integracoes.py:63: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-api = <conftest.Cliente object at 0xf9cef2ced970>, texto = 'tem estacionamento?'
+api = <conftest.Cliente object at 0xf039efac5ca0>, texto = 'tem estacionamento?'
 numero = '5541988887777', msg_id = None, from_me = False
 sufixo = '@s.whatsapp.net', evento = 'messages.upsert'
 message = {'conversation': 'tem estacionamento?'}
@@ -902,8 +898,8 @@ E       assert 401 == 200
 tests/test_integracoes.py:25: AssertionError
 __________________ test_whatsapp_ignora_o_que_nao_e_do_aluno ___________________
 
-api_int = <conftest.Cliente object at 0xf9cef2c3db20>
-externo = <conftest.Externo object at 0xf9cef2cec680>
+api_int = <conftest.Cliente object at 0xf039efb27b30>
+externo = <conftest.Externo object at 0xf039efac47a0>
 
     def test_whatsapp_ignora_o_que_nao_e_do_aluno(api_int, externo):
 >       evo(api_int, "tem estacionamento?", msg_id="DUP1")
@@ -911,7 +907,7 @@ externo = <conftest.Externo object at 0xf9cef2cec680>
 tests/test_integracoes.py:71: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-api = <conftest.Cliente object at 0xf9cef2c3db20>, texto = 'tem estacionamento?'
+api = <conftest.Cliente object at 0xf039efb27b30>, texto = 'tem estacionamento?'
 numero = '5541988887777', msg_id = 'DUP1', from_me = False
 sufixo = '@s.whatsapp.net', evento = 'messages.upsert'
 message = {'conversation': 'tem estacionamento?'}
@@ -930,8 +926,8 @@ E       assert 401 == 200
 tests/test_integracoes.py:25: AssertionError
 ___________________________ test_whatsapp_sem_texto ____________________________
 
-api_int = <conftest.Cliente object at 0xf9cef2c3dc40>
-externo = <conftest.Externo object at 0xf9cef2c3c860>
+api_int = <conftest.Cliente object at 0xf039efb27890>
+externo = <conftest.Externo object at 0xf039efac5f40>
 
     def test_whatsapp_sem_texto(api_int, externo):
 >       evo(api_int, message={"audioMessage": {"seconds": 5}})
@@ -939,7 +935,7 @@ externo = <conftest.Externo object at 0xf9cef2c3c860>
 tests/test_integracoes.py:81: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-api = <conftest.Cliente object at 0xf9cef2c3dc40>, texto = None
+api = <conftest.Cliente object at 0xf039efb27890>, texto = None
 numero = '5541988887777', msg_id = None, from_me = False
 sufixo = '@s.whatsapp.net', evento = 'messages.upsert'
 message = {'audioMessage': {'seconds': 5}}
@@ -958,8 +954,8 @@ E       assert 401 == 200
 tests/test_integracoes.py:25: AssertionError
 _____________________ test_whatsapp_reserva_e_avisa_equipe _____________________
 
-api_int = <conftest.Cliente object at 0xf9cef2c3d4c0>
-externo = <conftest.Externo object at 0xf9cef2c3c530>
+api_int = <conftest.Cliente object at 0xf039efb25b80>
+externo = <conftest.Externo object at 0xf039efb27590>
 
     def test_whatsapp_reserva_e_avisa_equipe(api_int, externo):
         api_int.ativo("Maria Lima", TEL)
@@ -972,7 +968,7 @@ externo = <conftest.Externo object at 0xf9cef2c3c530>
 tests/test_integracoes.py:91: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-api = <conftest.Cliente object at 0xf9cef2c3d4c0>
+api = <conftest.Cliente object at 0xf039efb25b80>
 texto = 'quero reservar uma aula', numero = '5541988887777', msg_id = None
 from_me = False, sufixo = '@s.whatsapp.net', evento = 'messages.upsert'
 message = {'conversation': 'quero reservar uma aula'}
@@ -991,8 +987,8 @@ E       assert 401 == 200
 tests/test_integracoes.py:25: AssertionError
 ____________________ test_saida_pela_evolution_com_reenvio _____________________
 
-api_int = <conftest.Cliente object at 0xf9cef2cdac30>
-externo = <conftest.Externo object at 0xf9cef2c3e540>
+api_int = <conftest.Cliente object at 0xf039efa4cf20>
+externo = <conftest.Externo object at 0xf039efb27230>
 
     def test_saida_pela_evolution_com_reenvio(api_int, externo):
         api_int.ativo("Maria", TEL, inicio="2026-09-10")             # fim 09/10: aviso de vencimento devido hoje
@@ -1009,9 +1005,9 @@ E         + simulado
 tests/test_integracoes.py:107: AssertionError
 _________ test_exercicio_com_mp4_vai_por_sendmedia_e_sem_mp4_por_texto _________
 
-dados = PosixPath('/tmp/pytest-of-nmaldaner/pytest-82/test_exercicio_com_mp4_vai_por0/dados')
-externo = <conftest.Externo object at 0xf9cef2d99520>
-tmp_path = PosixPath('/tmp/pytest-of-nmaldaner/pytest-82/test_exercicio_com_mp4_vai_por0')
+dados = PosixPath('/tmp/pytest-of-nmaldaner/pytest-93/test_exercicio_com_mp4_vai_por0/dados')
+externo = <conftest.Externo object at 0xf039efac1f40>
+tmp_path = PosixPath('/tmp/pytest-of-nmaldaner/pytest-93/test_exercicio_com_mp4_vai_por0')
 
     def test_exercicio_com_mp4_vai_por_sendmedia_e_sem_mp4_por_texto(dados, externo, tmp_path):
         pasta = tmp_path / "mp4"
@@ -1026,7 +1022,7 @@ tmp_path = PosixPath('/tmp/pytest-of-nmaldaner/pytest-82/test_exercicio_com_mp4_
 tests/test_integracoes.py:129: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-api = <conftest.Cliente object at 0xf9cef2c64c80>
+api = <conftest.Cliente object at 0xf039efaa10a0>
 texto = 'como faço a prancha?', numero = '5541988887777', msg_id = None
 from_me = False, sufixo = '@s.whatsapp.net', evento = 'messages.upsert'
 message = {'conversation': 'como faço a prancha?'}
@@ -1045,8 +1041,8 @@ E       assert 401 == 200
 tests/test_integracoes.py:25: AssertionError
 __________________________ test_abertura_vai_ao_grupo __________________________
 
-api_int = <conftest.Cliente object at 0xf9cef22e2750>
-externo = <conftest.Externo object at 0xf9cef2c64cb0>
+api_int = <conftest.Cliente object at 0xf039ef19a2d0>
+externo = <conftest.Externo object at 0xf039ef19bcb0>
 
     def test_abertura_vai_ao_grupo(api_int, externo):
 >       at, abertura = abre_atendimento(api_int, externo)
@@ -1058,7 +1054,7 @@ tests/test_integracoes.py:49: in abre_atendimento
     api.msg(TEL, "quero falar com um atendente")
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-self = <conftest.Cliente object at 0xf9cef22e2750>, telefone = '41988887777'
+self = <conftest.Cliente object at 0xf039ef19a2d0>, telefone = '41988887777'
 texto = 'quero falar com um atendente'
 
     def msg(self, telefone, texto):
@@ -1070,8 +1066,8 @@ E       assert 404 == 200
 tests/conftest.py:105: AssertionError
 ____________________________ test_alerta_marca_alta ____________________________
 
-api_int = <conftest.Cliente object at 0xf9cef22e2c90>
-externo = <conftest.Externo object at 0xf9cef22e3230>
+api_int = <conftest.Cliente object at 0xf039ef19b740>
+externo = <conftest.Externo object at 0xf039ef19b440>
 
     def test_alerta_marca_alta(api_int, externo):
 >       api_int.msg(TEL, "estou com dor forte no joelho")
@@ -1079,7 +1075,7 @@ externo = <conftest.Externo object at 0xf9cef22e3230>
 tests/test_integracoes.py:162: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-self = <conftest.Cliente object at 0xf9cef22e2c90>, telefone = '41988887777'
+self = <conftest.Cliente object at 0xf039ef19b740>, telefone = '41988887777'
 texto = 'estou com dor forte no joelho'
 
     def msg(self, telefone, texto):
@@ -1091,8 +1087,8 @@ E       assert 404 == 200
 tests/conftest.py:105: AssertionError
 ________________ test_atendimento_aberto_silencia_bot_e_repassa ________________
 
-api_int = <conftest.Cliente object at 0xf9cef23385c0>
-externo = <conftest.Externo object at 0xf9cef22e2ba0>
+api_int = <conftest.Cliente object at 0xf039ef144a40>
+externo = <conftest.Externo object at 0xf039ef19ba10>
 
     def test_atendimento_aberto_silencia_bot_e_repassa(api_int, externo):
 >       at, abertura = abre_atendimento(api_int, externo)
@@ -1104,7 +1100,7 @@ tests/test_integracoes.py:49: in abre_atendimento
     api.msg(TEL, "quero falar com um atendente")
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-self = <conftest.Cliente object at 0xf9cef23385c0>, telefone = '41988887777'
+self = <conftest.Cliente object at 0xf039ef144a40>, telefone = '41988887777'
 texto = 'quero falar com um atendente'
 
     def msg(self, telefone, texto):
@@ -1116,8 +1112,8 @@ E       assert 404 == 200
 tests/conftest.py:105: AssertionError
 __________________ test_equipe_responde_em_cima_e_pela_pagina __________________
 
-api_int = <conftest.Cliente object at 0xf9cef2cd8500>
-externo = <conftest.Externo object at 0xf9cef22e3170>
+api_int = <conftest.Cliente object at 0xf039efab1bb0>
+externo = <conftest.Externo object at 0xf039ef19b0e0>
 
     def test_equipe_responde_em_cima_e_pela_pagina(api_int, externo):
 >       at, abertura = abre_atendimento(api_int, externo)
@@ -1129,7 +1125,7 @@ tests/test_integracoes.py:49: in abre_atendimento
     api.msg(TEL, "quero falar com um atendente")
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-self = <conftest.Cliente object at 0xf9cef2cd8500>, telefone = '41988887777'
+self = <conftest.Cliente object at 0xf039efab1bb0>, telefone = '41988887777'
 texto = 'quero falar com um atendente'
 
     def msg(self, telefone, texto):
@@ -1141,8 +1137,8 @@ E       assert 404 == 200
 tests/conftest.py:105: AssertionError
 _______________________ test_webhook_telegram_protegido ________________________
 
-api_int = <conftest.Cliente object at 0xf9cef2c3e540>
-externo = <conftest.Externo object at 0xf9cef22e37d0>
+api_int = <conftest.Cliente object at 0xf039efb254c0>
+externo = <conftest.Externo object at 0xf039ef19aea0>
 
     def test_webhook_telegram_protegido(api_int, externo):
 >       at, abertura = abre_atendimento(api_int, externo)
@@ -1154,7 +1150,7 @@ tests/test_integracoes.py:49: in abre_atendimento
     api.msg(TEL, "quero falar com um atendente")
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-self = <conftest.Cliente object at 0xf9cef2c3e540>, telefone = '41988887777'
+self = <conftest.Cliente object at 0xf039efb254c0>, telefone = '41988887777'
 texto = 'quero falar com um atendente'
 
     def msg(self, telefone, texto):
@@ -1166,8 +1162,8 @@ E       assert 404 == 200
 tests/conftest.py:105: AssertionError
 ____________________ test_comandos_responder_encerrar_fila _____________________
 
-api_int = <conftest.Cliente object at 0xf9cef2c3e000>
-externo = <conftest.Externo object at 0xf9cef2cda9f0>
+api_int = <conftest.Cliente object at 0xf039efb27260>
+externo = <conftest.Externo object at 0xf039efac1190>
 
     def test_comandos_responder_encerrar_fila(api_int, externo):
 >       at, _ = abre_atendimento(api_int, externo)
@@ -1179,7 +1175,7 @@ tests/test_integracoes.py:49: in abre_atendimento
     api.msg(TEL, "quero falar com um atendente")
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-self = <conftest.Cliente object at 0xf9cef2c3e000>, telefone = '41988887777'
+self = <conftest.Cliente object at 0xf039efb27260>, telefone = '41988887777'
 texto = 'quero falar com um atendente'
 
     def msg(self, telefone, texto):
@@ -1191,8 +1187,8 @@ E       assert 404 == 200
 tests/conftest.py:105: AssertionError
 ______________________________ test_comando_aulas ______________________________
 
-api_int = <conftest.Cliente object at 0xf9cef2cef9b0>
-externo = <conftest.Externo object at 0xf9cef2c3df70>
+api_int = <conftest.Cliente object at 0xf039efac71a0>
+externo = <conftest.Externo object at 0xf039efb27680>
 
     def test_comando_aulas(api_int, externo):
         aid = api_int.ativo("Maria Lima", "41999990001")
@@ -1204,13 +1200,13 @@ externo = <conftest.Externo object at 0xf9cef2c3df70>
             return any("09:00 Pilates (Carla) — 1/2" in t and "19:00 Spinning (Diego) — 0/2" in t for t in ts)
 >       assert esperar(achou)
 E       assert False
-E        +  where False = esperar(<function test_comando_aulas.<locals>.achou at 0xf9cef22cea20>)
+E        +  where False = esperar(<function test_comando_aulas.<locals>.achou at 0xf039ef195620>)
 
 tests/test_integracoes.py:217: AssertionError
 ___________________ test_cancelamento_pelo_chat_avisa_equipe ___________________
 
-api_int = <conftest.Cliente object at 0xf9cef2cefa10>
-externo = <conftest.Externo object at 0xf9cef2cecf20>
+api_int = <conftest.Cliente object at 0xf039efac4f80>
+externo = <conftest.Externo object at 0xf039efac6030>
 
     def test_cancelamento_pelo_chat_avisa_equipe(api_int, externo):
         aid = api_int.ativo("Maria", TEL)
@@ -1221,7 +1217,7 @@ externo = <conftest.Externo object at 0xf9cef2cecf20>
 tests/test_integracoes.py:226: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-self = <conftest.Cliente object at 0xf9cef2cefa10>, telefone = '41988887777'
+self = <conftest.Cliente object at 0xf039efac4f80>, telefone = '41988887777'
 texto = 'cancelar'
 
     def msg(self, telefone, texto):
@@ -1233,7 +1229,7 @@ E       assert 404 == 200
 tests/conftest.py:105: AssertionError
 ____________________________ test_dados_e_exclusao _____________________________
 
-api = <conftest.Cliente object at 0xf9cef233a930>
+api = <conftest.Cliente object at 0xf039ef146330>
 
     def test_dados_e_exclusao(api):
         tel = "41999990001"
@@ -1253,7 +1249,7 @@ E       KeyError: 'id'
 tests/test_lgpd_raiox.py:33: KeyError
 __________________________ test_raiox_numeros_do_mes ___________________________
 
-dados = PosixPath('/tmp/pytest-of-nmaldaner/pytest-82/test_raiox_numeros_do_mes0/dados')
+dados = PosixPath('/tmp/pytest-of-nmaldaner/pytest-93/test_raiox_numeros_do_mes0/dados')
 
     def test_raiox_numeros_do_mes(dados):
         s, api = montar_mes(dados)
@@ -1265,8 +1261,8 @@ E           assert (404 == 200)
 tests/test_lgpd_raiox.py:97: AssertionError
 ________________ test_cli_grava_mes_no_acompanhamento_do_painel ________________
 
-dados = PosixPath('/tmp/pytest-of-nmaldaner/pytest-82/test_cli_grava_mes_no_acompanh0/dados')
-tmp_path = PosixPath('/tmp/pytest-of-nmaldaner/pytest-82/test_cli_grava_mes_no_acompanh0')
+dados = PosixPath('/tmp/pytest-of-nmaldaner/pytest-93/test_cli_grava_mes_no_acompanh0/dados')
+tmp_path = PosixPath('/tmp/pytest-of-nmaldaner/pytest-93/test_cli_grava_mes_no_acompanh0')
 
     def test_cli_grava_mes_no_acompanhamento_do_painel(dados, tmp_path):
         s, _ = montar_mes(dados)
@@ -1282,34 +1278,29 @@ tmp_path = PosixPath('/tmp/pytest-of-nmaldaner/pytest-82/test_cli_grava_mes_no_a
 >           assert subprocess.run(cmd, cwd=RAIZ, capture_output=True, timeout=30).returncode == 0
 E           assert 2 == 0
 E            +  where 2 = CompletedProcess(args=['/home/nmaldaner/projetos/atende-academia/atende', 'raiox', '--dados', '/tmp/pytest-of-nmaldane...rr=b"usage: atende [-h] {serve} ...\natende: error: argument command: invalid choice: 'raiox' (choose from 'serve')\n").returncode
-E            +    where CompletedProcess(args=['/home/nmaldaner/projetos/atende-academia/atende', 'raiox', '--dados', '/tmp/pytest-of-nmaldane...rr=b"usage: atende [-h] {serve} ...\natende: error: argument command: invalid choice: 'raiox' (choose from 'serve')\n") = <function run at 0xf9cef3d94360>(['/home/nmaldaner/projetos/atende-academia/atende', 'raiox', '--dados', '/tmp/pytest-of-nmaldaner/pytest-82/test_cli_grava_mes_no_acompanh0/dados', '--mes', '2026-10', ...], cwd=PosixPath('/home/nmaldaner/projetos/atende-academia'), capture_output=True, timeout=30)
-E            +      where <function run at 0xf9cef3d94360> = subprocess.run
+E            +    where CompletedProcess(args=['/home/nmaldaner/projetos/atende-academia/atende', 'raiox', '--dados', '/tmp/pytest-of-nmaldane...rr=b"usage: atende [-h] {serve} ...\natende: error: argument command: invalid choice: 'raiox' (choose from 'serve')\n") = <function run at 0xf039f0be4360>(['/home/nmaldaner/projetos/atende-academia/atende', 'raiox', '--dados', '/tmp/pytest-of-nmaldaner/pytest-93/test_cli_grava_mes_no_acompanh0/dados', '--mes', '2026-10', ...], cwd=PosixPath('/home/nmaldaner/projetos/atende-academia'), capture_output=True, timeout=30)
+E            +      where <function run at 0xf039f0be4360> = subprocess.run
 
 tests/test_lgpd_raiox.py:126: AssertionError
 _________________________ test_biblioteca_lista_e_404 __________________________
 
-api = <conftest.Cliente object at 0xf9cef2c3f6e0>
+api = <conftest.Cliente object at 0xf039efb24350>
 
     def test_biblioteca_lista_e_404(api):
         st, r = api.get("/api/exercicios", token=None)
->       assert st == 200 and [e["id"] for e in r["exercicios"]] == IDS
-E       assert (404 == 200)
+        assert st == 200 and [e["id"] for e in r["exercicios"]] == IDS
+        st, e = api.get("/api/exercicios/prancha", token=None)
+        assert st == 200
+>       assert (e["nome"], e["grupo"], len(e["passos"]), e["svg"], e["ativo"]) == ("Prancha", "core", 3, True, True)
+E       AssertionError: assert ('Prancha', '..., False, True) == ('Prancha', '...3, True, True)
+E         
+E         At index 3 diff: False != True
+E         Use -v to get more diff
 
-tests/test_treino.py:16: AssertionError
-___________________________ test_ficha_montar_e_ler ____________________________
-
-api = <conftest.Cliente object at 0xf9cef2cda9f0>
-
-    def test_ficha_montar_e_ler(api):
-        aid = api.aluno()
-        st, r = api.put(f"/api/alunos/{aid}/ficha", FICHA)
->       assert st == 200 and [t["nome"] for t in r["treinos"]] == ["A", "B"]
-E       assert (404 == 200)
-
-tests/test_treino.py:27: AssertionError
+tests/test_treino.py:19: AssertionError
 _____________________ test_meu_treino_pelo_chat_rotaciona ______________________
 
-dados = PosixPath('/tmp/pytest-of-nmaldaner/pytest-82/test_meu_treino_pelo_chat_rota0/dados')
+dados = PosixPath('/tmp/pytest-of-nmaldaner/pytest-93/test_meu_treino_pelo_chat_rota0/dados')
 
     def test_meu_treino_pelo_chat_rotaciona(dados):
         s = Servidor(dados, agora="2026-10-05T10:00")
@@ -1323,7 +1314,7 @@ dados = PosixPath('/tmp/pytest-of-nmaldaner/pytest-82/test_meu_treino_pelo_chat_
 tests/test_treino.py:43: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-self = <conftest.Cliente object at 0xf9cef22e2bd0>, telefone = '41988887777'
+self = <conftest.Cliente object at 0xf039ef19b620>, telefone = '41988887777'
 texto = 'meu treino de hoje'
 
     def msg(self, telefone, texto):
@@ -1335,7 +1326,7 @@ E       assert 404 == 200
 tests/conftest.py:105: AssertionError
 ____________________ test_meu_treino_sem_ficha_ou_sem_plano ____________________
 
-api = <conftest.Cliente object at 0xf9cef2338980>
+api = <conftest.Cliente object at 0xf039ef144110>
 
     def test_meu_treino_sem_ficha_ou_sem_plano(api):
         api.ativo("Com plano", "41999990001")
@@ -1345,7 +1336,7 @@ api = <conftest.Cliente object at 0xf9cef2338980>
 tests/test_treino.py:64: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-self = <conftest.Cliente object at 0xf9cef2338980>, telefone = '41999990001'
+self = <conftest.Cliente object at 0xf039ef144110>, telefone = '41999990001'
 texto = 'meu treino'
 
     def msg(self, telefone, texto):
@@ -1357,7 +1348,7 @@ E       assert 404 == 200
 tests/conftest.py:105: AssertionError
 ______________________ test_explicar_exercicio_pelo_chat _______________________
 
-api = <conftest.Cliente object at 0xf9cef233ac60>
+api = <conftest.Cliente object at 0xf039ef145a00>
 
     def test_explicar_exercicio_pelo_chat(api):
 >       r = api.msg("41988887777", "como faço a prancha?")
@@ -1366,7 +1357,7 @@ api = <conftest.Cliente object at 0xf9cef233ac60>
 tests/test_treino.py:72: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-self = <conftest.Cliente object at 0xf9cef233ac60>, telefone = '41988887777'
+self = <conftest.Cliente object at 0xf039ef145a00>, telefone = '41988887777'
 texto = 'como faço a prancha?'
 
     def msg(self, telefone, texto):
@@ -1378,18 +1369,34 @@ E       assert 404 == 200
 tests/conftest.py:105: AssertionError
 _________________________ test_exercicio_novo_sem_svg __________________________
 
-api = <conftest.Cliente object at 0xf9cef2338b30>
+api = <conftest.Cliente object at 0xf039ef145460>
 
     def test_exercicio_novo_sem_svg(api):
         novo = {"id": "rosca", "nome": "Rosca direta", "apelidos": ["rosca", "biceps"], "grupo": "bracos",
                 "passos": ["Segure os halteres com as palmas para a frente.", "Dobre os cotovelos sem mover os ombros."],
                 "cuidados": ["Não balance o tronco."]}
         st, r = api.post("/api/exercicios", novo)
->       assert st == 201, r
-E       AssertionError: {'motivo': 'rota_inexistente'}
-E       assert 404 == 201
+        assert st == 201, r
+        assert api.post("/api/exercicios", novo)[0] == 409
+        assert api.post("/api/exercicios", {"id": "vazio", "nome": "Vazio", "passos": []})[0] == 422
+        lista = api.get("/api/exercicios", token=None)[1]["exercicios"]
+        assert lista[-1]["id"] == "rosca" and lista[-1]["svg"] is False
+>       r = api.msg("41988887777", "como faz a rosca?")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-tests/test_treino.py:88: AssertionError
+tests/test_treino.py:93: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <conftest.Cliente object at 0xf039ef145460>, telefone = '41988887777'
+texto = 'como faz a rosca?'
+
+    def msg(self, telefone, texto):
+        st, r = self.post("/api/mensagens", {"telefone": telefone, "texto": texto}, token=None)
+>       assert st == 200, (st, r)
+E       AssertionError: (404, {'motivo': 'rota_inexistente'})
+E       assert 404 == 200
+
+tests/conftest.py:105: AssertionError
 =========================== short test summary info ============================
 FAILED tests/test_alunos_planos.py::test_telefone_normalizado_duplicado_e_codigo
 FAILED tests/test_alunos_planos.py::test_lembrete_vencimento_uma_vez_e_fronteira
@@ -1403,9 +1410,8 @@ FAILED tests/test_basico.py::test_rotas_da_equipe_exigem_token_e_publicas_nao
 FAILED tests/test_basico.py::test_paginas - assert (404 == 200)
 FAILED tests/test_cadastros.py::test_professor_crud - AssertionError: {'motiv...
 FAILED tests/test_cadastros.py::test_grade_crud - AssertionError: {'motivo': ...
-FAILED tests/test_cadastros.py::test_exercicio_editar_e_desativar - assert (4...
+FAILED tests/test_cadastros.py::test_exercicio_editar_e_desativar - Assertion...
 FAILED tests/test_cadastros.py::test_faq_crud_vale_na_hora - assert 404 == 201
-FAILED tests/test_cadastros.py::test_semente_so_na_primeira_vez - KeyError: '...
 FAILED tests/test_cadastros.py::test_backup_e_restaurar - assert (2 == 0)
 FAILED tests/test_campanhas.py::test_trava_de_publicidade[caso-0] - Assertion...
 FAILED tests/test_campanhas.py::test_trava_de_publicidade[caso-1] - Assertion...
@@ -1458,10 +1464,9 @@ FAILED tests/test_integracoes.py::test_cancelamento_pelo_chat_avisa_equipe - ...
 FAILED tests/test_lgpd_raiox.py::test_dados_e_exclusao - KeyError: 'id'
 FAILED tests/test_lgpd_raiox.py::test_raiox_numeros_do_mes - assert (404 == 200)
 FAILED tests/test_lgpd_raiox.py::test_cli_grava_mes_no_acompanhamento_do_painel
-FAILED tests/test_treino.py::test_biblioteca_lista_e_404 - assert (404 == 200)
-FAILED tests/test_treino.py::test_ficha_montar_e_ler - assert (404 == 200)
+FAILED tests/test_treino.py::test_biblioteca_lista_e_404 - AssertionError: as...
 FAILED tests/test_treino.py::test_meu_treino_pelo_chat_rotaciona - AssertionE...
 FAILED tests/test_treino.py::test_meu_treino_sem_ficha_ou_sem_plano - Asserti...
 FAILED tests/test_treino.py::test_explicar_exercicio_pelo_chat - AssertionErr...
-FAILED tests/test_treino.py::test_exercicio_novo_sem_svg - AssertionError: {'...
-73 failed, 26 passed in 19.29s
+FAILED tests/test_treino.py::test_exercicio_novo_sem_svg - AssertionError: (4...
+71 failed, 28 passed in 18.88s

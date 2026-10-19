@@ -10,3 +10,5 @@
 | 2026-10-19 13:56 -0300 | Attendance separado, relógio explícito por rodada e fim persistido da reserva para presença automática | preservar isolamento do relógio e aulas já reservadas após edição da grade; reutilizar trava HTTP e caixa de saída | alterar ambiente/global do relógio ou recalcular término usando grade editada |
 
 | 2026-10-19 14:00 -0300 | Training separado do dispatcher da conversa; ficha validada inteira antes de salvar, svg calculado no acesso | reaproveitar domínio em §11 sem furar ordem de decisão; preservar ficha anterior em erro e fichas com exercícios desativados | chat parcial ou persistir campo svg desatualizado |
+
+| 2026-10-19 14:04 -0300 | SVGs com interpolação CSS de caminhos articulados e transform da cabeça/equipamentos; HTML em template local escapado | movimento específico por exercício, sem SMIL/dependências; textos vêm do catálogo e não entram como markup | gerador de imagens, desenho único repetido ou HTML cadastrado sem escape |

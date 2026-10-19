@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-labelledby="titulo">
+<title id="titulo">Elevação pélvica — demonstração do movimento</title>
+<style>
+.corpo { animation: movimento 4s ease-in-out infinite; }
+.cabeca { animation: cabeca 4s ease-in-out infinite; }
+@keyframes movimento { 0%,100% { d:path('M 104 320 L 225 320 M 120 320 L 155 335 L 195 335 M 120 320 L 155 340 L 195 340 M 225 320 L 260 255 L 310 340 M 225 320 L 280 265 L 335 340'); } 50% { d:path('M 104 320 L 210 252 M 120 310 L 155 335 L 195 335 M 120 310 L 155 340 L 195 340 M 210 252 L 260 255 L 310 340 M 210 252 L 280 265 L 335 340'); } }
+@keyframes cabeca { 0%,100% { transform:translate(0,0); } 50% { transform:translate(0px,0px); } }
+.equipamento { stroke:#9baab4; stroke-width:6; } .peso { stroke:#bd5b16; stroke-width:8; } .cabo {stroke:#9baab4;stroke-width:3;}
+@media (prefers-reduced-motion: reduce) { .corpo,.cabeca,.peso,.cabo { animation-play-state:paused; } }
+</style>
+<rect width="400" height="400" fill="#f5f7f8"/>
+<path d="M 50 350 H 350" fill="none" stroke="#c3ccd1" stroke-width="3"/>
+<g fill="none" stroke="#193f50" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+
+<path class="corpo" d="M 104 320 L 225 320 M 120 320 L 155 335 L 195 335 M 120 320 L 155 340 L 195 340 M 225 320 L 260 255 L 310 340 M 225 320 L 280 265 L 335 340"/>
+<circle class="cabeca" cx="80" cy="318" r="20" fill="#e7b58d" stroke-width="5"/>
+</g>
+</svg>

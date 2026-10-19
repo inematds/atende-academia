@@ -9,6 +9,7 @@ from urllib.parse import parse_qs, urlsplit
 from .classes import Classes, filtered
 from .attendance import Attendance
 from .training import Training
+from .exercise_pages import Resource, exercise_resource
 from .domain import Academia, Error, norm, require
 from .store import ROOT, Store
 
@@ -26,6 +27,8 @@ def public(method, path, query):
 
 def route(app, method, path, query, body):
     store = app.store
+    if method == 'GET' and path.startswith('/exercicios/'):
+        return 200, exercise_resource(app, path)
     if method == 'GET' and path == '/api/saude':
         return 200, {'ok': True, 'versao': (ROOT / 'VERSION').read_text().strip()}
     classes = Classes(app)
@@ -125,9 +128,13 @@ def route(app, method, path, query, body):
 def handler(app):
     class Handler(BaseHTTPRequestHandler):
         def respond(self, status, value):
-            data = b'' if status == 204 else json.dumps(value, ensure_ascii=False).encode('utf-8')
+            if isinstance(value, Resource):
+                data, content_type = value.content, value.content_type
+            else:
+                data = b'' if status == 204 else json.dumps(value, ensure_ascii=False).encode('utf-8')
+                content_type = 'application/json; charset=utf-8'
             self.send_response(status)
-            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_header('Content-Type', content_type)
             self.send_header('Content-Length', str(len(data)))
             self.end_headers()
             self.wfile.write(data)

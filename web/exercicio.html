@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>$nome · Exercícios</title>
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; background: #f5f7f8; color: #193f50; font: 1.125rem/1.65 system-ui, sans-serif; }
+main { max-width: 68rem; margin: auto; padding: 2rem 1.25rem 4rem; }
+a { color: #174f68; text-underline-offset: .2em; }
+a:focus-visible { outline: 3px solid #bd5b16; outline-offset: 4px; }
+h1 { font-size: clamp(2rem, 5vw, 3.4rem); line-height: 1.15; margin: 2rem 0 1.5rem; }
+h2 { font-size: 1.35rem; margin: 2rem 0 .5rem; }
+.conteudo { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 2.5rem; align-items: start; }
+figure { margin: 0; position: sticky; top: 1rem; }
+img { display: block; width: 100%; height: auto; }
+figcaption { font-size: .95rem; color: #455d69; padding-top: .5rem; }
+ol, ul { padding-left: 1.4rem; margin-top: .75rem; }
+li { margin-bottom: .8rem; padding-left: .25rem; }
+.sem-animacao { grid-template-columns: minmax(0, 44rem); }
+@media (max-width: 44rem) { .conteudo { grid-template-columns: 1fr; gap: .5rem; } figure { position: static; max-width: 28rem; } }
+</style>
+</head>
+<body><main>
+<nav aria-label="Navegação"><a href="/">Voltar ao atendimento</a></nav>
+<h1>$nome</h1>
+<div class="conteudo $classe">
+$animacao
+<article aria-label="Orientações do exercício">
+<h2>Como fazer</h2><ol>$passos</ol>
+$erros
+$cuidados
+</article>
+</div>
+</main></body>
+</html>

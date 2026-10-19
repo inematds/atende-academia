@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-labelledby="titulo">
+<title id="titulo">Abdominal — demonstração do movimento</title>
+<style>
+.corpo { animation: movimento 4s ease-in-out infinite; }
+.cabeca { animation: cabeca 4s ease-in-out infinite; }
+@keyframes movimento { 0%,100% { d:path('M 120 315 L 225 325 M 135 316 L 150 280 L 110 295 M 135 316 L 170 287 L 125 295 M 225 325 L 270 265 L 320 340 M 225 325 L 290 275 L 345 340'); } 50% { d:path('M 160 263 L 225 325 M 170 275 L 190 235 L 150 235 M 170 275 L 210 245 L 165 235 M 225 325 L 270 265 L 320 340 M 225 325 L 290 275 L 345 340'); } }
+@keyframes cabeca { 0%,100% { transform:translate(0,0); } 50% { transform:translate(45px,-64px); } }
+.equipamento { stroke:#9baab4; stroke-width:6; } .peso { stroke:#bd5b16; stroke-width:8; } .cabo {stroke:#9baab4;stroke-width:3;}
+@media (prefers-reduced-motion: reduce) { .corpo,.cabeca,.peso,.cabo { animation-play-state:paused; } }
+</style>
+<rect width="400" height="400" fill="#f5f7f8"/>
+<path d="M 50 350 H 350" fill="none" stroke="#c3ccd1" stroke-width="3"/>
+<g fill="none" stroke="#193f50" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+
+<path class="corpo" d="M 120 315 L 225 325 M 135 316 L 150 280 L 110 295 M 135 316 L 170 287 L 125 295 M 225 325 L 270 265 L 320 340 M 225 325 L 290 275 L 345 340"/>
+<circle class="cabeca" cx="95" cy="307" r="20" fill="#e7b58d" stroke-width="5"/>
+</g>
+</svg>

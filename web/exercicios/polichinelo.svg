@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-labelledby="titulo">
+<title id="titulo">Polichinelo — demonstração do movimento</title>
+<style>
+.corpo { animation: movimento 2s ease-in-out infinite; }
+.cabeca { animation: cabeca 2s ease-in-out infinite; }
+@keyframes movimento { 0%,100% { d:path('M 200 131 L 200 235 M 200 150 L 165 200 L 165 245 M 200 150 L 235 200 L 235 245 M 200 235 L 185 285 L 180 342 M 200 235 L 215 285 L 220 342'); } 50% { d:path('M 200 111 L 200 215 M 200 130 L 145 100 L 165 50 M 200 130 L 255 100 L 235 50 M 200 215 L 150 265 L 110 325 M 200 215 L 250 265 L 290 325'); } }
+@keyframes cabeca { 0%,100% { transform:translate(0,0); } 50% { transform:translate(0px,-20px); } }
+.equipamento { stroke:#9baab4; stroke-width:6; } .peso { stroke:#bd5b16; stroke-width:8; } .cabo {stroke:#9baab4;stroke-width:3;}
+@media (prefers-reduced-motion: reduce) { .corpo,.cabeca,.peso,.cabo { animation-play-state:paused; } }
+</style>
+<rect width="400" height="400" fill="#f5f7f8"/>
+<path d="M 50 350 H 350" fill="none" stroke="#c3ccd1" stroke-width="3"/>
+<g fill="none" stroke="#193f50" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+
+<path class="corpo" d="M 200 131 L 200 235 M 200 150 L 165 200 L 165 245 M 200 150 L 235 200 L 235 245 M 200 235 L 185 285 L 180 342 M 200 235 L 215 285 L 220 342"/>
+<circle class="cabeca" cx="200" cy="105" r="20" fill="#e7b58d" stroke-width="5"/>
+</g>
+</svg>

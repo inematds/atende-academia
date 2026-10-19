@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-labelledby="titulo">
+<title id="titulo">Supino — demonstração do movimento</title>
+<style>
+.corpo { animation: movimento 4s ease-in-out infinite; }
+.cabeca { animation: cabeca 4s ease-in-out infinite; }
+@keyframes movimento { 0%,100% { d:path('M 127 265 L 240 265 M 145 265 L 145 210 L 175 155 M 145 265 L 185 210 L 210 155 M 240 265 L 285 285 L 285 342 M 240 265 L 265 295 L 265 342'); } 50% { d:path('M 127 265 L 240 265 M 145 265 L 110 235 L 175 230 M 145 265 L 220 245 L 210 230 M 240 265 L 285 285 L 285 342 M 240 265 L 265 295 L 265 342'); } }
+@keyframes cabeca { 0%,100% { transform:translate(0,0); } 50% { transform:translate(0px,0px); } }
+.peso { animation: peso 4s ease-in-out infinite; } @keyframes peso { 0%,100% { transform:translate(0,0); } 50% { transform:translateY(75px); } }
+.equipamento { stroke:#9baab4; stroke-width:6; } .peso { stroke:#bd5b16; stroke-width:8; } .cabo {stroke:#9baab4;stroke-width:3;}
+@media (prefers-reduced-motion: reduce) { .corpo,.cabeca,.peso,.cabo { animation-play-state:paused; } }
+</style>
+<rect width="400" height="400" fill="#f5f7f8"/>
+<path d="M 50 350 H 350" fill="none" stroke="#c3ccd1" stroke-width="3"/>
+<g fill="none" stroke="#193f50" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+<path class="equipamento" d="M 85 283 H 245 M 110 283 V 342 M 225 283 V 342"/><g class="peso"><path d="M 155 155 H 230 M 155 145 V 165 M 230 145 V 165"/></g>
+<path class="corpo" d="M 127 265 L 240 265 M 145 265 L 145 210 L 175 155 M 145 265 L 185 210 L 210 155 M 240 265 L 285 285 L 285 342 M 240 265 L 265 295 L 265 342"/>
+<circle class="cabeca" cx="102" cy="258" r="20" fill="#e7b58d" stroke-width="5"/>
+</g>
+</svg>

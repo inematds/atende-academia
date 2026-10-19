@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-labelledby="titulo">
+<title id="titulo">Puxada — demonstração do movimento</title>
+<style>
+.corpo { animation: movimento 4s ease-in-out infinite; }
+.cabeca { animation: cabeca 4s ease-in-out infinite; }
+@keyframes movimento { 0%,100% { d:path('M 200 196 L 200 275 M 200 210 L 150 160 L 135 105 M 200 210 L 250 160 L 265 105 M 200 275 L 155 285 L 145 342 M 200 275 L 245 285 L 255 342'); } 50% { d:path('M 200 196 L 200 275 M 200 210 L 135 255 L 135 210 M 200 210 L 265 255 L 265 210 M 200 275 L 155 285 L 145 342 M 200 275 L 245 285 L 255 342'); } }
+@keyframes cabeca { 0%,100% { transform:translate(0,0); } 50% { transform:translate(0px,0px); } }
+.peso { animation: peso 4s ease-in-out infinite; } @keyframes peso { 0%,100% { transform:translate(0,0); } 50% { transform:translateY(105px); } }
+.cabo { animation: cabo 4s ease-in-out infinite; } @keyframes cabo {0%,100% {d:path("M 200 55 V 105");} 50% {d:path("M 200 55 V 210");}}
+.equipamento { stroke:#9baab4; stroke-width:6; } .peso { stroke:#bd5b16; stroke-width:8; } .cabo {stroke:#9baab4;stroke-width:3;}
+@media (prefers-reduced-motion: reduce) { .corpo,.cabeca,.peso,.cabo { animation-play-state:paused; } }
+</style>
+<rect width="400" height="400" fill="#f5f7f8"/>
+<path d="M 50 350 H 350" fill="none" stroke="#c3ccd1" stroke-width="3"/>
+<g fill="none" stroke="#193f50" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+<path class="equipamento" d="M 70 340 V 55 H 330 V 340 M 165 290 H 235 M 200 290 V 342"/><path class="cabo" d="M 200 55 V 105"/><path class="peso" d="M 120 105 H 280"/>
+<path class="corpo" d="M 200 196 L 200 275 M 200 210 L 150 160 L 135 105 M 200 210 L 250 160 L 265 105 M 200 275 L 155 285 L 145 342 M 200 275 L 245 285 L 255 342"/>
+<circle class="cabeca" cx="200" cy="170" r="20" fill="#e7b58d" stroke-width="5"/>
+</g>
+</svg>
