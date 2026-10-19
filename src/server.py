@@ -9,6 +9,7 @@ from urllib.parse import parse_qs, urlsplit
 from .classes import Classes, filtered
 from .attendance import Attendance
 from .training import Training
+from .evaluations import Evaluations
 from .exercise_pages import Resource, exercise_resource
 from .domain import Academia, Error, norm, require
 from .store import ROOT, Store
@@ -34,6 +35,17 @@ def route(app, method, path, query, body):
     classes = Classes(app)
     attendance = Attendance(app)
     training = Training(app)
+    evaluations = Evaluations(app)
+    if path == '/api/avaliacoes/horarios' and method == 'GET':
+        return 200, {'horarios': evaluations.slots(query)}
+    if path == '/api/avaliacoes' and method == 'POST':
+        return 201, evaluations.schedule(body)
+    match = re.fullmatch(r'/api/avaliacoes/(\d+)/(cancelar|resultado)', path)
+    if match and method == 'POST':
+        return 200, evaluations.change(int(match[1]), match[2], body)
+    match = re.fullmatch(r'/api/alunos/(\d+)/avaliacoes', path)
+    if match and method == 'GET':
+        return 200, {'avaliacoes': evaluations.listing(int(match[1]))}
     match = re.fullmatch(r'/api/exercicios(?:/([\w-]+))?', path)
     if match:
         identifier = match[1]

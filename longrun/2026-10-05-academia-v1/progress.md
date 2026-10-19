@@ -11,3 +11,5 @@
 | 2026-10-19 14:00 -0300 | Ciclo 4: catálogo editável, fichas persistentes e domínio do treino do dia, v0.4.0; pytest 28 passed / 71 failed (20.91s); LIMITES OK; HTTP/reinício/rotação adicionais aprovados | sem commit (loop externo) | parcial | — | 0 |
 
 | 2026-10-19 14:04 -0300 | Ciclo 5: 12 SVGs CSS manuais + páginas e rotas SVG/MP4 restritas, v0.5.0; pytest 43 passed / 56 failed (18.91s); LIMITES OK; HTML/escape/caminhos verificados por HTTP | sem commit (loop externo) | parcial | — | 0 |
+
+| 2026-10-19 14:07 -0300 | Ciclo 6: avaliação física, conflitos/agenda/resultados protegidos, v0.6.0; pytest 45 passed / 54 failed (18.85s); LIMITES OK; concorrência/auth/reinício/lembretes verificados por HTTP | sem commit (loop externo) | parcial | — | 0 |

@@ -12,3 +12,5 @@
 | 2026-10-19 14:00 -0300 | Training separado do dispatcher da conversa; ficha validada inteira antes de salvar, svg calculado no acesso | reaproveitar domínio em §11 sem furar ordem de decisão; preservar ficha anterior em erro e fichas com exercícios desativados | chat parcial ou persistir campo svg desatualizado |
 
 | 2026-10-19 14:04 -0300 | SVGs com interpolação CSS de caminhos articulados e transform da cabeça/equipamentos; HTML em template local escapado | movimento específico por exercício, sem SMIL/dependências; textos vêm do catálogo e não entram como markup | gerador de imagens, desenho único repetido ou HTML cadastrado sem escape |
+
+| 2026-10-19 14:07 -0300 | Evaluations separado, usando transação HTTP e Classes.occurrence; conflitos semiabertos e escolha por id | reutilizar agenda real e garantir exclusividade concorrente sem nova infraestrutura | duplicar grade ou criar chat parcial para testes transversais |
