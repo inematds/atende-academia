@@ -18,3 +18,5 @@
 | 2026-10-19 14:11 -0300 | Conversation reutiliza domínios e transação HTTP, guarda fluxo/opções por telefone e histórico separado da caixa automática | persistência e confirmação usam regras reais; suspensão humana segue §21, com exceção de saúde | duplicar regras de reserva ou misturar respostas diretas em /saida |
 
 | 2026-10-19 14:15 -0300 | Privacy separa exportação/anonimização; Raio-X usa report único na API/CLI e substituição de arquivo temporário | preservar agregados e campos não medidos, limpar cópias operacionais sem ofertas de espera | duplicar cálculo CLI ou chamar cancelamento comum com oferta automática |
+
+| 2026-10-19 14:20 -0300 | Backup ZIP com snapshot SQLite e academia.json; restauração lê apenas membros conhecidos e valida antes de substituir | cópia consistente online e recuperação da configuração em diretório novo sem extração de caminhos arbitrários | copiar SQLite/WAL em uso ou restaurar sem configuração |

@@ -6,6 +6,8 @@ import re
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlsplit
 
+from .backup import backup, restore
+from .catalogs import catalog
 from .privacy import Privacy
 from .raiox import report, update
 from .conversation import Conversation
@@ -31,6 +33,9 @@ def public(method, path, query):
 
 def route(app, method, path, query, body):
     store = app.store
+    match = re.fullmatch(r'/api/(professores|grade|faq|modalidades|salas)(?:/([\w-]+))?', path)
+    if match:
+        return catalog(app, match[1], match[2], method, body)
     if method == 'GET' and path.startswith('/exercicios/'):
         return 200, exercise_resource(app, path)
     if method == 'GET' and path == '/api/saude':
@@ -129,8 +134,6 @@ def route(app, method, path, query, body):
     match = re.fullmatch(r'/api/matriculas/(\d+)/(pagamento|trancar|destrancar|cancelar)', path)
     if match and method == 'POST':
         return 200, app.mudar_matricula(int(match[1]), match[2], body)
-    if path == '/api/modalidades' and method == 'GET':
-        return 200, {'modalidades': store.all('modalidades')}
     match = re.fullmatch(r'/api/planos(?:/([\w-]+))?', path)
     if match:
         identifier = match[1]
@@ -215,7 +218,20 @@ def main():
     raiox.add_argument('--dados', required=True)
     raiox.add_argument('--mes', required=True)
     raiox.add_argument('--acompanhamento', required=True)
+    for name, flag in (("backup", "--saida"), ("restaurar", "--entrada")):
+        command = commands.add_parser(name)
+        command.add_argument("--dados", required=True)
+        command.add_argument(flag, required=True)
     args = parser.parse_args()
+    if args.command in ("backup", "restaurar"):
+        try:
+            if args.command == "backup":
+                backup(args.dados, args.saida)
+            else:
+                restore(args.dados, args.entrada)
+        except (OSError, ValueError, KeyError) as exc:
+            parser.exit(1, f"falhou: {exc}\n")
+        return
     app = Academia(Store(args.dados))
     if args.command == 'raiox':
         try:

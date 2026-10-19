@@ -21,3 +21,5 @@
 | 2026-10-19 14:11 -0300 | Suíte ainda falha em módulos ausentes, incluindo /dados no teste de opt-out | implementar conversa local e verificar suíte inteira | 63 passed / 36 failed; sem conflito teste/spec identificado | infra |
 
 | 2026-10-19 14:15 -0300 | Suíte ainda falha em cadastros, backup, integrações, páginas e entrega ausentes → implementar campanhas/LGPD/Raio-X → 74 passed / 25 failed; sem conflito teste/spec | infra |
+
+| 2026-10-19 14:20 -0300 | Suíte ainda falha em integrações, páginas e entrega ausentes → implementar cadastros e backup/restauração → 78 passed / 21 failed; sem conflito teste/spec | infra |
