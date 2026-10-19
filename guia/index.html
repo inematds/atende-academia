@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Atende Academia — kit de plano para atendimento de academia: planos, aulas com vagas, check-in, ficha de treino e exercícios animados</title>
-<meta name="description" content="Kit de plano aberto para um sistema de atendimento de academia ou estúdio: especificação, 99 testes de aceitação, travas e prompts para um agente (Claude Code ou Codex) implementar no seu ambiente. O sistema ainda não está implementado.">
+<title>Atende Academia — sistema aberto de atendimento de academia: planos, aulas com vagas, check-in, ficha de treino e exercícios animados</title>
+<meta name="description" content="Sistema aberto de atendimento de academia ou estúdio, pronto para rodar: v0.11.0, 99/99 testes de aceitação, chat web, WhatsApp (Evolution) e equipe no Telegram, Docker para VPS. Construído por um agente a partir de especificação, testes congelados e execução longa.">
 <link rel="alternate" hreflang="pt-BR" href="https://inematds.github.io/atende-academia/guia/">
 <link rel="alternate" hreflang="en" href="https://inematds.github.io/atende-academia/guia/en/">
 <link rel="alternate" hreflang="es" href="https://inematds.github.io/atende-academia/guia/es/">
@@ -126,9 +126,9 @@
   <div class="glow"></div>
   <div class="wrap">
     <div>
-      <span class="chip">Kit de plano · academia e estúdio · código aberto</span>
-      <h1>O plano completo para o aluno <span class="amb">voltar</span> amanhã</h1>
-      <p class="lead">Especificação, 99 testes de aceitação, travas e prompts para um agente construir, no seu ambiente, o atendimento de uma academia ou estúdio pequeno: planos e matrícula, aulas com vagas e lista de espera, check-in, ficha de treino, exercícios animados e a equipe no Telegram. <strong>O sistema ainda não está implementado: este repositório é o plano, e você roda a implementação.</strong></p>
+      <span class="chip">Sistema pronto · v0.11.0 · 99/99 testes · código aberto</span>
+      <h1>O atendimento que faz o aluno <span class="amb">voltar</span> amanhã</h1>
+      <p class="lead">O atendimento de uma academia ou estúdio pequeno, pronto para rodar no seu ambiente: planos e matrícula, aulas com vagas e lista de espera, check-in, ficha de treino, exercícios animados e a equipe no Telegram. <strong>Implementado: v0.11.0, 99 de 99 testes, Docker para a VPS. Falta só o que é seu: credenciais, dados reais e o deploy.</strong></p>
       <div class="cta">
         <a class="btn" href="#guia">Começar o guia</a>
         <a class="btn ghost" href="https://github.com/inematds/atende-academia" target="_blank" rel="noopener">Ver no GitHub</a>
@@ -140,13 +140,13 @@
 
 <section id="oque"><div class="wrap">
   <span class="chip">O que é</span>
-  <h2>Um kit para pedir ao agente: do contrato aos 99 testes verdes</h2>
-  <p class="sub">Aqui não há aplicativo pronto. Há o contrato do que o aplicativo deve fazer, a bateria de testes que prova isso e as travas que impedem o agente de trapacear. Quem constrói é o Claude Code ou o Codex, rodando na sua máquina, pela sua assinatura. O irmão <a href="https://inematds.github.io/atende-fisioterapia/guia/" target="_blank" rel="noopener">Atende Fisioterapia</a> segue o mesmo molde, e o <code>atende-clinica</code>, que veio antes, foi feito exatamente assim e fechou 93 de 93 testes.</p>
+  <h2>Um sistema pronto, construído do contrato aos 99 testes verdes</h2>
+  <p class="sub">O repositório traz o aplicativo funcionando (<code>./atende</code>), o contrato do que ele faz, a bateria de testes que prova isso e as travas que impediram o agente de trapacear. Ele foi construído por um agente (Claude Code e Codex, pela assinatura) até 99 de 99 testes, <code>LIMITES OK</code> e a verificação independente aprovada. O irmão <a href="https://inematds.github.io/atende-fisioterapia/guia/" target="_blank" rel="noopener">Atende Fisioterapia</a> segue o mesmo molde, e o <code>atende-clinica</code>, que veio antes, foi feito exatamente assim e fechou 93 de 93 testes.</p>
   <figure style="margin:0 0 26px;border-radius:16px;overflow:hidden;border:1px solid var(--line);box-shadow:0 30px 80px -30px #000"><img src="assets/banner-grade.jpg" alt="Planos com status de pagamento manual, aulas coletivas com vagas e lista de espera, check-in e reativação com consentimento, ficha de treino, avaliação física como dado sensível e equipe no Telegram" loading="lazy" style="width:100%;display:block"></figure>
   <div class="grid g3">
-    <div class="card"><h3>🏋️ O sistema que sai do plano</h3><p>Alunos e planos, aulas coletivas com reserva, check-in e a ficha de treino do professor. No centro está a <strong>aula com vagas</strong>: reserva com limite, lista de espera com oferta automática e falta automática. Python 3 só com biblioteca padrão e SQLite, para uma academia por instalação.</p></div>
-    <div class="card"><h3>📦 O kit</h3><p>Especificação de 23 seções (0 a 22), 99 testes caixa-preta, 20 decisões já propostas, mapa para o Raio-X, prompts para <code>/goal</code> e para o loop headless, e as travas que congelam o contrato. Um validador adversarial já passou por tudo e achou 10 problemas, 2 deles travariam um implementador honesto.</p></div>
-    <div class="card"><h3>📈 Fonte: Raio-X de Margem</h3><p>Falta sem aviso, horário ocioso e aluno que some são os vazamentos que o plano ataca. O sistema devolve seis números do mês ao painel do <a href="https://inematds.github.io/raio-x-margem/guia/" target="_blank" rel="noopener">Raio-X de Margem</a>, que é a fonte das regras de negócio. Não existe pacote de academia lá: o kit usa o modelo genérico de serviços com agenda, e cada mapeamento é uma premissa.</p></div>
+    <div class="card"><h3>🏋️ O sistema</h3><p>Alunos e planos, aulas coletivas com reserva, check-in e a ficha de treino do professor. No centro está a <strong>aula com vagas</strong>: reserva com limite, lista de espera com oferta automática e falta automática. Python 3 só com biblioteca padrão e SQLite, para uma academia por instalação.</p></div>
+    <div class="card"><h3>📦 Como foi feito</h3><p>Especificação de 23 seções (0 a 22), 99 testes caixa-preta, 20 decisões propostas, mapa para o Raio-X, prompts para <code>/goal</code> e para o loop headless, e as travas que congelaram o contrato. Antes da implementação, um validador adversarial passou por tudo e achou 10 problemas, 2 deles travariam um implementador honesto. Tudo isso continua no repo para quem quiser refazer ou adaptar.</p></div>
+    <div class="card"><h3>📈 Fonte: Raio-X de Margem</h3><p>Falta sem aviso, horário ocioso e aluno que some são os vazamentos que o sistema ataca. O sistema devolve seis números do mês ao painel do <a href="https://inematds.github.io/raio-x-margem/guia/" target="_blank" rel="noopener">Raio-X de Margem</a>, que é a fonte das regras de negócio. Não existe pacote de academia lá: o sistema usa o modelo genérico de serviços com agenda, e cada mapeamento é uma premissa.</p></div>
   </div>
   <div class="grid g3" style="margin-top:16px">
     <div class="card"><h3>💳 Plano e matrícula, pagamento manual</h3><p>Planos mensal, trimestral, anual e aulas avulsas, com preço e vigência. A matrícula é <code>ativa</code>, <code>vencida</code>, <code>trancada</code> ou <code>cancelada</code>. O pagamento é só um <strong>status manual</strong> (<code>pago</code> ou <code>pendente</code>) marcado pela equipe, mais o aviso de vencimento. Nenhum Pix, cartão ou intermediário de pagamento no v1.</p></div>
@@ -158,7 +158,7 @@
 <section id="fluxo"><div class="wrap">
   <span class="chip">Como funciona</span>
   <h2>Da matrícula ao "cheguei" de cada dia</h2>
-  <p class="sub">Este é o fluxo do sistema planejado, o que o agente vai construir. Servidor Python sem dependências, SQLite numa pasta de dados e Docker para a VPS. Evolution e Telegram entram só por variáveis de ambiente; sem elas, a caixa de saída é simulada e nenhuma chamada de rede sai.</p>
+  <p class="sub">Este é o fluxo do sistema. Servidor Python sem dependências, SQLite numa pasta de dados e Docker para a VPS. Evolution e Telegram entram só por variáveis de ambiente; sem elas, a caixa de saída é simulada e nenhuma chamada de rede sai.</p>
   <div class="flow">
     <span>Chat do site ou WhatsApp (Evolution)</span><span class="arr">→</span>
     <span>Plano e matrícula</span><span class="arr">→</span>
@@ -200,21 +200,21 @@
       </svg></div>
     <div class="card"><h3>Os 12 exercícios do exemplo</h3>
       <p>Agachamento, flexão de braço, prancha, remada curvada, supino reto, levantamento terra com bastão, afundo, elevação pélvica, abdominal, desenvolvimento de ombros, puxada alta e polichinelo.</p>
-      <p style="margin-top:.8em">Cada um tem a página pública <code>/exercicios/&lt;id&gt;</code> com o SVG animado, os passos, os erros comuns e os cuidados. No WhatsApp vai um <strong>MP4</strong> de 4 s renderizado pelo HyperFrames, passo de build local (<code>tools/render-exercicios</code>); sem o MP4 (ou sem <code>PUBLIC_URL</code>), vai o link da página. Os 12 SVGs são desenhados pelo implementador, e o movimento é conferido no nível 4 pelo <code>verificar-independente.py</code>, que diz <code>PULADO</code> quando falta a ferramenta.</p></div>
+      <p style="margin-top:.8em">Cada um tem a página pública <code>/exercicios/&lt;id&gt;</code> com o SVG animado, os passos, os erros comuns e os cuidados. No WhatsApp vai um <strong>MP4</strong> de 4 s renderizado pelo HyperFrames, passo de build local (<code>tools/render-exercicios</code>); sem o MP4 (ou sem <code>PUBLIC_URL</code>), vai o link da página. Os 12 SVGs foram desenhados pelo agente implementador, e o movimento foi conferido no nível 4 pelo <code>verificar-independente.py</code> num Chromium. Os MP4 ainda não foram renderizados: é um passo opcional seu (passo 5 do guia).</p></div>
   </div>
 </div></section>
 
 <section id="pre"><div class="wrap">
   <span class="chip">Pré-requisitos</span>
   <h2>O que você precisa</h2>
-  <p class="sub">Para rodar o plano basta Python para os testes e um agente logado pela assinatura. Docker só entra na verificação final e no deploy; Evolution e Telegram são opcionais e seus. Para os vídeos dos exercícios, Node 22 ou mais novo, o HyperFrames e o <code>ffprobe</code>.</p>
+  <p class="sub">Para rodar o sistema basta Python 3.10 ou mais novo; o pytest serve para conferir os testes. Docker entra no deploy na VPS; Evolution e Telegram são opcionais e seus. Para os vídeos dos exercícios, Node 22 ou mais novo, o HyperFrames e o <code>ffprobe</code>. Um agente só é preciso se você quiser refazer ou adaptar o sistema pelo mesmo método.</p>
   <div class="grid g3">
-    <div class="card"><h3>Python 3.10+ e pytest</h3><p>Os testes usam pytest (ferramenta de desenvolvimento). A aplicação em si não terá dependências.</p><pre><span class="c"># conferir</span>
+    <div class="card"><h3>Python 3.10+ e pytest</h3><p>Os testes usam pytest (ferramenta de desenvolvimento). A aplicação em si não tem dependências.</p><pre><span class="c"># conferir</span>
 <span class="k">python3</span> --version
 <span class="k">python3</span> -m pip install pytest</pre></div>
-    <div class="card"><h3>Claude Code ou Codex</h3><p>Pela assinatura, sem API paga. Para o loop headless, clone o <a href="https://github.com/inematds/execucao-longa" target="_blank" rel="noopener">execucao-longa</a> em <code>~/projetos</code>.</p><pre><span class="c"># conferir</span>
+    <div class="card"><h3>Claude Code ou Codex (opcional)</h3><p>Só para refazer ou adaptar pelo método, pela assinatura, sem API paga. Para o loop headless, clone o <a href="https://github.com/inematds/execucao-longa" target="_blank" rel="noopener">execucao-longa</a> em <code>~/projetos</code>.</p><pre><span class="c"># conferir</span>
 <span class="k">codex</span> --version   <span class="c"># ou: claude --version</span></pre></div>
-    <div class="card"><h3>Docker, Evolution e Telegram</h3><p>Docker faz o build final da verificação independente. Uma instância Evolution e um bot do Telegram só se quiser os canais; as credenciais ficam no <code>.env</code>.</p><pre><span class="c"># conferir</span>
+    <div class="card"><h3>Docker, Evolution e Telegram</h3><p>Docker sobe o sistema na VPS (e faz o build da verificação independente). Uma instância Evolution e um bot do Telegram só se quiser os canais; as credenciais ficam no <code>.env</code>.</p><pre><span class="c"># conferir</span>
 <span class="k">docker</span> --version</pre></div>
   </div>
 </div></section>
@@ -222,68 +222,57 @@
 <section id="guia"><div class="wrap">
   <span class="chip">Guia de uso · passo a passo</span>
   <h2>Do clone ao sistema implementado, no seu ambiente</h2>
-  <p class="sub">Os comandos abaixo são os do repositório. O ciclo: responder as decisões, congelar o contrato, rodar o agente até <code>99 passed</code> e <code>LIMITES OK</code>, conferir com a verificação independente, gerar os vídeos e pedir a revisão de um profissional de educação física.</p>
+  <p class="sub">Os comandos abaixo são os do repositório. O ciclo: clonar e conferir os testes, configurar a sua academia, rodar localmente, subir na VPS com Docker, gerar os vídeos e pedir a revisão de um profissional de educação física. No fim, como o sistema foi construído, para quem quiser refazer ou adaptar.</p>
 
   <div class="step"><div class="b">1</div><div>
-    <h3>Clone o repositório</h3>
-    <p>Ainda não há <code>./atende</code>: o repositório só tem o plano. Confira que a suíte é coletada sem erro e que nada passa ainda (faltando a implementação, os testes falham ou dão erro, e isso é o esperado).</p>
+    <h3>Clone o repositório e confira os testes</h3>
+    <p>O sistema já está no repo (<code>./atende</code>, v0.11.0). Confira que a suíte inteira passa e que as travas estão intactas.</p>
 <pre><span class="k">git clone</span> <span class="s">https://github.com/inematds/atende-academia</span> && <span class="k">cd</span> atende-academia
-<span class="k">python3</span> -m pytest -q --collect-only | tail -n 1   <span class="c"># 99 tests collected</span>
-<span class="k">python3</span> -m pytest -q | tail -n 1                  <span class="c"># 30 failed, 69 errors (0 passed)</span></pre>
+<span class="k">python3</span> -m pytest -q tests/ | tail -n 1                          <span class="c"># 99 passed</span>
+<span class="k">bash</span> longrun/2026-10-05-academia-v1/verificar-limites.sh               <span class="c"># LIMITES OK</span></pre>
   </div></div>
 
   <div class="step"><div class="b">2</div><div>
-    <h3>Responda as decisões abertas</h3>
-    <p>Leia <code>docs/DECISOES-ABERTAS.md</code>: são 20 propostas padrão já aplicadas na especificação e nos testes. Responder "ok em tudo" destrava a execução. Se mudar algo marcado com ⚠ (por exemplo a reativação só com consentimento, a falta automática ou o prazo de cancelamento), edite <code>docs/ESPECIFICACAO.md</code> e <code>tests/</code> antes do passo 3 e confira a contagem. Para um piloto real, troque também <code>exemplos/academia.json</code> pela sua grade, planos, professores, FAQ e exercícios.</p>
-<pre><span class="k">less</span> docs/DECISOES-ABERTAS.md
-<span class="k">python3</span> -m pytest -q --collect-only | tail -n 1</pre>
+    <h3>Configure a sua academia</h3>
+    <p>Copie o exemplo para uma pasta de dados e edite nome, <strong>token</strong> da equipe, grade, planos, professores, FAQ e exercícios. As 20 decisões padrão (reativação só com consentimento, falta automática, prazo de cancelamento e outras) estão em <code>docs/DECISOES-ABERTAS.md</code>.</p>
+<pre><span class="k">mkdir</span> -p dados && <span class="k">cp</span> exemplos/academia.json dados/academia.json
+<span class="k">less</span> docs/DECISOES-ABERTAS.md</pre>
   </div></div>
 
   <div class="step"><div class="b">3</div><div>
-    <h3>Congele o contrato</h3>
-    <p>Com o <code>git status</code> limpo, o script grava o hash de <code>tests/</code>, <code>pytest.ini</code>, da especificação e dos verificadores em <code>hash-congelado.txt</code> e faz um commit. Daí em diante, qualquer mudança nos testes é detectada.</p>
-<pre><span class="k">git status</span>
-<span class="k">bash</span> longrun/2026-10-05-academia-v1/congelar.sh</pre>
+    <h3>Rode localmente</h3>
+    <p>Suba o servidor. O chat do aluno fica em <code>/</code>, a página da equipe em <code>/equipe</code> (header <code>X-Token</code>) e cada exercício em <code>/exercicios/&lt;id&gt;</code>. Sem as variáveis da Evolution e do Telegram, a caixa de saída é simulada e nenhuma chamada de rede sai. O <code>raiox</code> gera os números do mês para o Raio-X, e o <code>backup</code> pode rodar com o servidor ligado.</p>
+<pre><span class="k">./atende</span> serve --porta 8080 --dados dados
+<span class="k">./atende</span> raiox --dados dados --mes 2026-10 --acompanhamento acompanhamento.json
+<span class="k">./atende</span> backup --dados dados --saida backups/academia.zip</pre>
   </div></div>
 
   <div class="step"><div class="b">4</div><div>
-    <h3>Rode o agente (escolha um caminho)</h3>
-    <p><strong>a) Loop headless com o Codex (recomendado).</strong> O <code>loop.env</code> define 20 ciclos de 30 min, 8 GB por ciclo, parada após 3 ciclos sem avanço, modelo <code>gpt-6-astra</code> e <code>CODEX_ARGS="-c sandbox_workspace_write.network_access=true"</code>: sem isso o sandbox do Codex bloqueia o servidor local dos testes.</p>
-<pre><span class="k">~/projetos/execucao-longa/tools/loop-longrun.sh</span> longrun/2026-10-05-academia-v1</pre>
-    <p><strong>b) <code>/goal</code> no Claude Code.</strong> Abra uma sessão nova do Claude Code na pasta do projeto e siga <code>longrun/2026-10-05-academia-v1/prompt-goal-claude.md</code>: cole a condição de <code>/goal</code> (a saída precisa mostrar <code>99 passed</code> e <code>LIMITES OK</code>) e, como primeira mensagem, o bloco de <code>prompt-goal-codex.md</code>.</p>
-<pre><span class="k">claude</span>   <span class="c"># sessão nova, dentro de atende-academia</span></pre>
-    <p><strong>c) Codex TUI aberto.</strong> Cole o conteúdo de <code>longrun/2026-10-05-academia-v1/prompt-goal-codex.md</code> inteiro (ele começa com <code>/goal</code>).</p>
-<pre><span class="k">codex</span> -c sandbox_workspace_write.network_access=true</pre>
+    <h3>Suba na VPS com Docker</h3>
+    <p>Passo do dono, com a máquina e as credenciais dele: o sistema nunca faz isso sozinho. O serviço escuta só em <code>127.0.0.1:8080</code>, guarda tudo em <code>./dados</code> e tem healthcheck em <code>/api/saude</code>. Na frente, um proxy HTTPS (Caddy, Nginx ou Traefik) no domínio da academia, e no <code>.env</code> a <code>PUBLIC_URL</code>, as credenciais da Evolution (WhatsApp) com o <code>WEBHOOK_SEGREDO</code> e as do bot do Telegram com o <code>TELEGRAM_SEGREDO</code>. O passo a passo completo, com os webhooks e o backup diário no cron, está na seção "Deploy na VPS" do README.</p>
+<pre><span class="k">cp</span> .env.exemplo .env          <span class="c"># preencha PUBLIC_URL, EVOLUTION_*, TELEGRAM_*</span>
+<span class="k">docker compose</span> up -d --build
+<span class="k">docker compose</span> restart       <span class="c"># depois de editar dados/academia.json</span></pre>
   </div></div>
 
   <div class="step"><div class="b">5</div><div>
-    <h3>Acompanhe</h3>
-    <p>No loop, o <code>loop.log</code> mostra cada ciclo e <code>progress.md</code> traz uma linha por checkpoint; o <code>state.md</code> diz o que funciona, o que falta e como retomar. Teste em conflito com a especificação vai para <code>failures.md</code>: é portão humano, e o agente não deve ajustar teste nem especificação.</p>
-<pre><span class="k">tail</span> -f longrun/2026-10-05-academia-v1/loop.log
-<span class="k">cat</span> longrun/2026-10-05-academia-v1/state.md</pre>
-  </div></div>
-
-  <div class="step"><div class="b">6</div><div>
-    <h3>Confira com a verificação independente</h3>
-    <p>Quando o agente disser "concluído", rode os três comandos. O último o agente nunca viu: ele procura valores da fixture copiados no código, sobe uma academia que nunca apareceu (outra grade, outros planos e prazos, um feriado, outro relógio), abre 3 SVGs num Chromium para provar que se mexem, renderiza um exercício pelo HyperFrames e faz <code>docker build</code> com healthcheck. Sem Chromium, sem HyperFrames ou sem Docker, essas etapas saem como <code>PULADO</code>, nunca como OK. Depois, abra <code>/</code>, <code>/equipe</code> e <code>/exercicios/prancha</code> no navegador.</p>
-<pre><span class="k">python3</span> -m pytest -q tests/                                         <span class="c"># 99 passed</span>
-<span class="k">bash</span> longrun/2026-10-05-academia-v1/verificar-limites.sh               <span class="c"># LIMITES OK</span>
-<span class="k">python3</span> longrun/2026-10-05-academia-v1/verificar-independente.py      <span class="c"># INDEPENDENTE OK</span></pre>
-  </div></div>
-
-  <div class="step"><div class="b">7</div><div>
-    <h3>Gere os vídeos MP4 dos exercícios</h3>
-    <p>Passo humano, depois da implementação: o <code>tools/render-exercicios</code> (escrito pelo agente) usa só o HyperFrames já instalado, sem baixar nada, e precisa de Node 22 ou mais novo, Chromium e <code>ffprobe</code>. Ele gera <code>web/exercicios/&lt;id&gt;.mp4</code> (4 s, 720×720, sem áudio) a partir de cada SVG. Instale o HyperFrames <strong>depois</strong> que o loop fechar, porque o agente não deve baixar pacote. O WhatsApp baixa o vídeo pela URL pública, então o caminho do MP4 exige <code>PUBLIC_URL</code> com HTTPS.</p>
+    <h3>Gere os vídeos MP4 dos exercícios (opcional)</h3>
+    <p>O WhatsApp não mostra SVG. O <code>tools/render-exercicios</code> gera <code>web/exercicios/&lt;id&gt;.mp4</code> (4 s, 720×720, sem áudio) a partir de cada SVG com o HyperFrames, render local por Chromium, sem API. Precisa de Node 22 ou mais novo, HyperFrames instalado e <code>ffprobe</code>. Este render <strong>ainda não foi rodado</strong>: as animações SVG funcionam na web, e sem MP4 (ou sem <code>PUBLIC_URL</code>) o aluno recebe o link da página animada. Na VPS, copie os <code>.mp4</code> para a pasta de <code>EXERCICIOS_MP4_DIR</code>.</p>
 <pre><span class="k">npm</span> install hyperframes
 <span class="k">tools/render-exercicios</span> --ids agachamento,prancha --saida web/exercicios</pre>
   </div></div>
 
-  <div class="step"><div class="b">8</div><div>
-    <h3>Rode a sua academia</h3>
-    <p>Com o sistema implementado, copie o exemplo, troque o token e suba o servidor. O chat do aluno fica em <code>/</code>, a página da equipe em <code>/equipe</code> (header <code>X-Token</code>) e cada exercício em <code>/exercicios/&lt;id&gt;</code>. O deploy na VPS é seu, com as suas credenciais; o roteiro (Docker, webhooks da Evolution e do Telegram, backup) o agente escreve no README, seção 22 da especificação.</p>
-<pre><span class="k">mkdir</span> -p dados && <span class="k">cp</span> exemplos/academia.json dados/academia.json
-<span class="k">./atende</span> serve --porta 8080 --dados dados
-<span class="k">./atende</span> raiox --dados dados --mes 2026-10 --acompanhamento acompanhamento.json</pre>
+  <div class="step"><div class="b">6</div><div>
+    <h3>Confira com a verificação independente</h3>
+    <p>O verificador que o agente nunca viu procura valores da fixture copiados no código, sobe uma academia que nunca apareceu (outra grade, outros planos e prazos, um feriado, outro relógio), abre 3 SVGs num Chromium para provar que se mexem, renderiza um exercício pelo HyperFrames e faz <code>docker build</code> com healthcheck. Sem Chromium, sem HyperFrames ou sem Docker, essas etapas saem como <code>PULADO</code>, nunca como OK. Na entrega saiu <code>INDEPENDENTE OK (movimento: chromium, hyperframes: pulado, docker: ok)</code>.</p>
+<pre><span class="k">python3</span> longrun/2026-10-05-academia-v1/verificar-independente.py      <span class="c"># INDEPENDENTE OK</span></pre>
+  </div></div>
+
+  <div class="step"><div class="b">7</div><div>
+    <h3>Como foi construído (e como refazer ou adaptar)</h3>
+    <p>O sistema foi construído assim: as decisões foram respondidas, o contrato e os testes foram congelados por hash (<code>congelar.sh</code>) e um agente trabalhou em execução longa, pelo método <a href="https://inematds.github.io/execucao-longa/guia/" target="_blank" rel="noopener">execucao-longa</a>, até <code>99 passed</code> e <code>LIMITES OK</code>, com <code>state.md</code>, <code>progress.md</code> e <code>failures.md</code> registrando cada ciclo. Quer mudar uma regra marcada com ⚠ ou levar o molde para outro negócio? O método continua no repo: edite <code>docs/ESPECIFICACAO.md</code> e <code>tests/</code>, congele de novo e rode o loop headless do Codex ou o <code>/goal</code> no Claude Code, seguindo os prompts de <code>longrun/2026-10-05-academia-v1/</code>.</p>
+<pre><span class="k">bash</span> longrun/2026-10-05-academia-v1/congelar.sh
+<span class="k">~/projetos/execucao-longa/tools/loop-longrun.sh</span> longrun/2026-10-05-academia-v1   <span class="c"># ou /goal: prompt-goal-claude.md</span></pre>
   </div></div>
 
   <div class="card" style="border-color:var(--amb)"><h3>⚠️ Antes de usar com aluno real: revisão de um profissional de educação física</h3><p>Os 12 SVGs são figuras esquemáticas <strong>desenhadas pelo implementador</strong>, e os passos, erros comuns e cuidados de cada exercício foram escritos como exemplo: <strong>um profissional de educação física precisa revisar tudo</strong> antes de ir para aluno real, incluindo a lista de palavras de alerta de saúde. As regras do conselho (CREF/CONFEF) <strong>não foram pesquisadas</strong>: a trava de campanha é só o mínimo seguro (promessa de resultado e "antes e depois"), sem citar artigo, e o dono confirma as regras antes de publicar qualquer campanha (decisão 5). A base legal da avaliação física, dado sensível, também é do dono ou do advogado confirmar (decisão 6).</p></div>
@@ -292,7 +281,7 @@
 <section id="kit"><div class="wrap">
   <span class="chip">O que vem no kit</span>
   <h2>Contrato, testes e travas, com os números reais</h2>
-  <p class="sub">Tudo o que o agente precisa para construir, e tudo o que impede que ele finja ter construído.</p>
+  <p class="sub">Tudo o que o agente precisou para construir o sistema, e tudo o que impediu que ele fingisse ter construído. Continua no repo e roda a cada mudança.</p>
   <div class="grid g3">
     <div class="card"><h3>99 testes de aceitação</h3><p>Caixa-preta, por HTTP e por linha de comando, em 13 arquivos.</p><pre>test_integracoes.py           16
 test_exercicios_svg.py        14
@@ -310,7 +299,7 @@ test_lgpd_raiox.py             3</pre></div>
     <div class="card"><h3>Especificação de 23 seções</h3><p><code>docs/ESPECIFICACAO.md</code>, seções 0 a 22: execução, <code>academia.json</code>, alunos, planos e matrículas, aulas coletivas, check-in, treino, explicação animada, avaliação física, API HTTP, conversa, tarefas, campanhas e trava de publicidade, Raio-X, LGPD, Evolution, Telegram e Docker. Cobrança por Pix ou cartão, catraca, app do aluno, aulas particulares e várias academias no mesmo servidor estão explicitamente fora (seção 16).</p></div>
     <div class="card"><h3>Travas contra atalho</h3><p>Hash congelado de <code>tests/</code>, <code>pytest.ini</code>, da especificação e dos verificadores. Escopo de arquivos: o agente só mexe no código e nos próprios registros. Sem chave de API, sem URL externa no código, sem <code>0.0.0.0</code> e sem SMIL nem script nos SVGs. O <code>verificar-limites.sh</code> confere tudo isso e imprime <code>LIMITES OK</code>.</p></div>
     <div class="card"><h3>Verificação independente</h3><p>Nível 4, escondido do agente: procura valores da fixture no código, sobe uma academia nunca vista, confere o movimento dos SVGs e o MP4 quando as ferramentas existem, e faz <code>docker build</code> e healthcheck. Só assim "99 passed" prova uma lógica geral.</p></div>
-    <div class="card"><h3>20 decisões já propostas</h3><p>Linguagem, canais, cobrança só manual, trava de campanha, avaliação física como dado sensível, reativação com consentimento, falta automática, cancelamento tardio, check-in por código, os 12 exercícios com animação só CSS e o Raio-X. Só os itens marcados com ⚠ mudam o contrato.</p></div>
+    <div class="card"><h3>20 decisões propostas</h3><p>Linguagem, canais, cobrança só manual, trava de campanha, avaliação física como dado sensível, reativação com consentimento, falta automática, cancelamento tardio, check-in por código, os 12 exercícios com animação só CSS e o Raio-X. Só os itens marcados com ⚠ mudam o contrato.</p></div>
     <div class="card"><h3>Validado por um agente adversarial</h3><p>Um validador que não viu o planejamento conferiu teste contra especificação e tentou burlar as travas. Achou e corrigiu 10 problemas: 2 bloqueavam a execução, 5 atrapalhavam e 3 eram cosméticos. O principal: a especificação aceitava SMIL, e o render do HyperFrames não tem adaptador SMIL, medido em render real. O relato está em <code>docs/VALIDACAO.md</code> e cada correção tem uma linha em <code>FALHAS.md</code>.</p></div>
   </div>
   <div class="grid g2" style="margin-top:16px">
@@ -322,18 +311,18 @@ test_lgpd_raiox.py             3</pre></div>
 <section id="roadmap"><div class="wrap">
   <span class="chip">Roadmap</span>
   <h2>Onde está e para onde vai</h2>
-  <p class="sub">O plano está pronto e validado. A implementação ainda não existe: ela nasce quando você roda o <code>/goal</code> ou o loop, pelo método <a href="https://inematds.github.io/execucao-longa/guia/" target="_blank" rel="noopener">execucao-longa</a>. O <code>atende-clinica</code> seguiu o mesmo caminho e fechou 93 de 93.</p>
+  <p class="sub">O plano foi validado e a implementação está feita: v0.11.0, 99 de 99 testes, construída pelo método <a href="https://inematds.github.io/execucao-longa/guia/" target="_blank" rel="noopener">execucao-longa</a>. O <code>atende-clinica</code> seguiu o mesmo caminho e fechou 93 de 93. O que falta agora é do dono.</p>
   <div class="phase"><div class="tag">Plano ✅</div><div class="d"><strong>Especificação, testes e travas validados</strong><span>Contrato de 23 seções, 99 testes de aceitação, 20 decisões propostas, mapa para o Raio-X e validação adversarial concluída em 05/10/2026.</span></div></div>
-  <div class="phase"><div class="tag">Implementação</div><div class="d"><strong>Você roda o /goal ou o loop</strong><span>Responder as decisões, congelar o contrato e deixar o agente trabalhar até <code>99 passed</code> e <code>LIMITES OK</code>, depois a verificação independente. Hoje o sistema não está implementado.</span></div></div>
-  <div class="phase"><div class="tag">Vídeos</div><div class="d"><strong>MP4 dos exercícios, na sua máquina</strong><span>Rodar o <code>tools/render-exercicios</code> uma vez, com o HyperFrames instalado, e publicar os arquivos junto com <code>PUBLIC_URL</code>.</span></div></div>
-  <div class="phase"><div class="tag">Piloto</div><div class="d"><strong>Numa academia real</strong><span>Trocar o exemplo pela grade, planos e exercícios verdadeiros, ter a revisão de um profissional de educação física, confirmar as regras do CREF/CONFEF, publicar na VPS e acompanhar faltas, ocupação, renovação e frequência no Painel de Recuperação do Raio-X.</span></div></div>
+  <div class="phase"><div class="tag">Implementação ✅</div><div class="d"><strong>Sistema implementado e verificado</strong><span>Contrato congelado e agente em execução longa até <code>99 passed</code> e <code>LIMITES OK</code>. Verificação independente aprovada (movimento dos SVGs no Chromium, <code>docker build</code> e healthcheck). Telegram, páginas <code>/</code> e <code>/equipe</code>, Docker e <code>tools/render-exercicios</code> entregues em 19/10/2026.</span></div></div>
+  <div class="phase"><div class="tag">Vídeos</div><div class="d"><strong>MP4 dos exercícios, na sua máquina (opcional)</strong><span>O script está pronto, mas o render ainda não foi rodado. Rodar o <code>tools/render-exercicios</code> uma vez, com o HyperFrames instalado, e publicar os arquivos junto com <code>PUBLIC_URL</code>.</span></div></div>
+  <div class="phase"><div class="tag">Piloto</div><div class="d"><strong>Numa academia real</strong><span>Trocar o exemplo pela grade, planos e exercícios verdadeiros, configurar as credenciais reais da Evolution (WhatsApp) e do Telegram, ter a revisão de um profissional de educação física, confirmar as regras do CREF/CONFEF, publicar na VPS e acompanhar faltas, ocupação, renovação e frequência no Painel de Recuperação do Raio-X.</span></div></div>
   <div class="phase"><div class="tag">Depois</div><div class="d"><strong>Fora da v1</strong><span>Cobrança, catraca, app do aluno, aulas particulares, várias academias, login por usuário, LLM nas respostas e interface em EN/ES ficam para uma próxima versão, com portão humano.</span></div></div>
 </div></section>
 
 <footer>
   <div class="wrap">
     <div class="pill">Python 3 · biblioteca padrão</div><div class="pill">SQLite</div><div class="pill">Docker</div><div class="pill">Evolution API</div><div class="pill">Telegram</div><div class="pill">LGPD</div>
-    <p style="margin-top:18px">Atende Academia · kit de plano aberto ·
+    <p style="margin-top:18px">Atende Academia · sistema aberto · v0.11.0 ·
       <a href="https://github.com/inematds/atende-academia">inematds/atende-academia</a> ·
       <a href="https://inema.club">INEMA.CLUB</a></p>
   </div>

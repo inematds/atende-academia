@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Atende Academia — plan kit for a gym front desk: memberships, classes with spots, check-in, workout card and animated exercises</title>
-<meta name="description" content="Open plan kit for a gym or studio customer service system: specification, 99 acceptance tests, guardrails and prompts for an agent (Claude Code or Codex) to implement in your own environment. The system is not implemented yet.">
+<title>Atende Academia — open gym front desk system: memberships, classes with spots, check-in, workout card and animated exercises</title>
+<meta name="description" content="Open gym or studio customer service system, ready to run: v0.11.0, 99/99 acceptance tests, web chat, WhatsApp (Evolution) and staff on Telegram, Docker for a VPS. Built by an agent from a specification, frozen tests and long-running execution.">
 <link rel="alternate" hreflang="pt-BR" href="https://inematds.github.io/atende-academia/guia/">
 <link rel="alternate" hreflang="en" href="https://inematds.github.io/atende-academia/guia/en/">
 <link rel="alternate" hreflang="es" href="https://inematds.github.io/atende-academia/guia/es/">
@@ -126,9 +126,9 @@
   <div class="glow"></div>
   <div class="wrap">
     <div>
-      <span class="chip">Plan kit · gym and studio · open source</span>
-      <h1>The complete plan for the member to <span class="amb">come back</span> tomorrow</h1>
-      <p class="lead">Specification, 99 acceptance tests, guardrails and prompts so an agent can build, in your own environment, the front desk of a small gym or studio: memberships and enrollment, classes with spots and a waitlist, check-in, workout card, animated exercises and the staff on Telegram. <strong>The system is not implemented yet: this repository is the plan, and you run the implementation.</strong></p>
+      <span class="chip">System ready · v0.11.0 · 99/99 tests · open source</span>
+      <h1>The front desk that makes the member <span class="amb">come back</span> tomorrow</h1>
+      <p class="lead">The front desk of a small gym or studio, ready to run in your own environment: memberships and enrollment, classes with spots and a waitlist, check-in, workout card, animated exercises and the staff on Telegram. <strong>Implemented: v0.11.0, 99 of 99 tests, Docker for the VPS. Only what is yours is left: credentials, real data and the deploy.</strong></p>
       <div class="cta">
         <a class="btn" href="#guia">Start the guide</a>
         <a class="btn ghost" href="https://github.com/inematds/atende-academia" target="_blank" rel="noopener">View on GitHub</a>
@@ -140,13 +140,13 @@
 
 <section id="oque"><div class="wrap">
   <span class="chip">What it is</span>
-  <h2>A kit to hand to the agent: from the contract to 99 green tests</h2>
-  <p class="sub">There is no finished app here. There is the contract for what the app must do, the test battery that proves it and the guardrails that stop the agent from cheating. The builder is Claude Code or Codex, running on your machine, on your subscription. Its sibling <a href="https://inematds.github.io/atende-fisioterapia/guia/en/" target="_blank" rel="noopener">Atende Fisioterapia</a> follows the same mold, and <code>atende-clinica</code>, which came first, was built exactly this way and closed 93 of 93 tests.</p>
+  <h2>A ready system, built from the contract to 99 green tests</h2>
+  <p class="sub">The repository ships the working app (<code>./atende</code>), the contract for what it does, the test battery that proves it and the guardrails that stopped the agent from cheating. It was built by an agent (Claude Code and Codex, on the subscription) until 99 of 99 tests, <code>LIMITES OK</code> and a passing independent verification. Its sibling <a href="https://inematds.github.io/atende-fisioterapia/guia/en/" target="_blank" rel="noopener">Atende Fisioterapia</a> follows the same mold, and <code>atende-clinica</code>, which came first, was built exactly this way and closed 93 of 93 tests.</p>
   <figure style="margin:0 0 26px;border-radius:16px;overflow:hidden;border:1px solid var(--line);box-shadow:0 30px 80px -30px #000"><img src="../assets/banner-grade-en.jpg" alt="Memberships with a manual payment status, group classes with spots and a waitlist, check-in and win-back with consent, workout card, physical assessment as sensitive data and a Telegram staff desk" loading="lazy" style="width:100%;display:block"></figure>
   <div class="grid g3">
-    <div class="card"><h3>🏋️ The system the plan produces</h3><p>Members and plans, group classes with booking, check-in and the instructor's workout card. At the center is the <strong>class with spots</strong>: booking with a cap, a waitlist with an automatic offer and an automatic no-show. Python 3 with the standard library only and SQLite, one gym per installation.</p></div>
-    <div class="card"><h3>📦 The kit</h3><p>A 23-section specification (0 to 22), 99 black-box tests, 20 decisions already proposed, a map to Raio-X, prompts for <code>/goal</code> and for the headless loop, and the guardrails that freeze the contract. An adversarial validator went through all of it and found 10 problems, 2 of which would have stopped an honest implementer.</p></div>
-    <div class="card"><h3>📈 Source: Raio-X de Margem</h3><p>No-shows without notice, idle time slots and members who vanish are the leaks the plan attacks. The system hands six monthly numbers to the dashboard of <a href="https://inematds.github.io/raio-x-margem/guia/en/" target="_blank" rel="noopener">Raio-X de Margem</a>, the source of the business rules. It has no gym package: the kit uses the generic services-with-appointments model, and each mapping is an assumption.</p></div>
+    <div class="card"><h3>🏋️ The system</h3><p>Members and plans, group classes with booking, check-in and the instructor's workout card. At the center is the <strong>class with spots</strong>: booking with a cap, a waitlist with an automatic offer and an automatic no-show. Python 3 with the standard library only and SQLite, one gym per installation.</p></div>
+    <div class="card"><h3>📦 How it was built</h3><p>A 23-section specification (0 to 22), 99 black-box tests, 20 proposed decisions, a map to Raio-X, prompts for <code>/goal</code> and for the headless loop, and the guardrails that froze the contract. Before the implementation, an adversarial validator went through all of it and found 10 problems, 2 of which would have stopped an honest implementer. All of it stays in the repo for anyone who wants to redo or adapt it.</p></div>
+    <div class="card"><h3>📈 Source: Raio-X de Margem</h3><p>No-shows without notice, idle time slots and members who vanish are the leaks the system attacks. The system hands six monthly numbers to the dashboard of <a href="https://inematds.github.io/raio-x-margem/guia/en/" target="_blank" rel="noopener">Raio-X de Margem</a>, the source of the business rules. It has no gym package: the system uses the generic services-with-appointments model, and each mapping is an assumption.</p></div>
   </div>
   <div class="grid g3" style="margin-top:16px">
     <div class="card"><h3>💳 Plan and enrollment, manual payment</h3><p>Monthly, quarterly, annual and drop-in class plans, with price and validity. An enrollment is <code>ativa</code>, <code>vencida</code>, <code>trancada</code> or <code>cancelada</code> (active, expired, frozen, canceled). Payment is only a <strong>manual status</strong> (<code>pago</code> or <code>pendente</code>, paid or pending) set by the staff, plus an expiry notice. No Pix, card or payment processor in v1.</p></div>
@@ -158,7 +158,7 @@
 <section id="fluxo"><div class="wrap">
   <span class="chip">How it works</span>
   <h2>From enrollment to each day's "I'm here"</h2>
-  <p class="sub">This is the flow of the planned system, what the agent will build. A Python server with no dependencies, SQLite in a data folder and Docker for the VPS. Evolution and Telegram come in only through environment variables; without them the outbox is simulated and no network call goes out.</p>
+  <p class="sub">This is the flow of the system. A Python server with no dependencies, SQLite in a data folder and Docker for the VPS. Evolution and Telegram come in only through environment variables; without them the outbox is simulated and no network call goes out.</p>
   <div class="flow">
     <span>Site chat or WhatsApp (Evolution)</span><span class="arr">→</span>
     <span>Plan and enrollment</span><span class="arr">→</span>
@@ -200,21 +200,21 @@
       </svg></div>
     <div class="card"><h3>The 12 example exercises</h3>
       <p>Squat, push-up, plank, bent-over row, bench press, deadlift with a stick, lunge, hip raise, crunch, shoulder press, lat pulldown and jumping jack.</p>
-      <p style="margin-top:.8em">Each one has a public page <code>/exercicios/&lt;id&gt;</code> with the animated SVG, the steps, common mistakes and precautions. On WhatsApp a 4 s <strong>MP4</strong> rendered by HyperFrames goes out, a local build step (<code>tools/render-exercicios</code>); without the MP4 (or without <code>PUBLIC_URL</code>) the page link goes out instead. The 12 SVGs are drawn by the implementer, and the motion is checked at level 4 by <code>verificar-independente.py</code>, which says <code>PULADO</code> (skipped) when the tool is missing.</p></div>
+      <p style="margin-top:.8em">Each one has a public page <code>/exercicios/&lt;id&gt;</code> with the animated SVG, the steps, common mistakes and precautions. On WhatsApp a 4 s <strong>MP4</strong> rendered by HyperFrames goes out, a local build step (<code>tools/render-exercicios</code>); without the MP4 (or without <code>PUBLIC_URL</code>) the page link goes out instead. The 12 SVGs were drawn by the implementing agent, and the motion was checked at level 4 by <code>verificar-independente.py</code> in a Chromium. The MP4s have not been rendered yet: it is an optional step of yours (step 5 of the guide).</p></div>
   </div>
 </div></section>
 
 <section id="pre"><div class="wrap">
   <span class="chip">Prerequisites</span>
   <h2>What you need</h2>
-  <p class="sub">To run the plan you only need Python for the tests and an agent logged in through your subscription. Docker only comes in at the final check; Evolution and Telegram are optional and yours. For the exercise videos, Node 22 or newer, HyperFrames and <code>ffprobe</code>.</p>
+  <p class="sub">To run the system you only need Python 3.10 or newer; pytest is there to check the tests. Docker comes in for the VPS deploy; Evolution and Telegram are optional and yours. For the exercise videos, Node 22 or newer, HyperFrames and <code>ffprobe</code>. You only need an agent if you want to redo or adapt the system with the same method.</p>
   <div class="grid g3">
-    <div class="card"><h3>Python 3.10+ and pytest</h3><p>The tests use pytest (a development tool). The application itself will have no dependencies.</p><pre><span class="c"># check</span>
+    <div class="card"><h3>Python 3.10+ and pytest</h3><p>The tests use pytest (a development tool). The application itself has no dependencies.</p><pre><span class="c"># check</span>
 <span class="k">python3</span> --version
 <span class="k">python3</span> -m pip install pytest</pre></div>
-    <div class="card"><h3>Claude Code or Codex</h3><p>Through the subscription, no paid API. For the headless loop, clone <a href="https://github.com/inematds/execucao-longa" target="_blank" rel="noopener">execucao-longa</a> into <code>~/projetos</code>.</p><pre><span class="c"># check</span>
+    <div class="card"><h3>Claude Code or Codex (optional)</h3><p>Only to redo or adapt with the method, through the subscription, no paid API. For the headless loop, clone <a href="https://github.com/inematds/execucao-longa" target="_blank" rel="noopener">execucao-longa</a> into <code>~/projetos</code>.</p><pre><span class="c"># check</span>
 <span class="k">codex</span> --version   <span class="c"># or: claude --version</span></pre></div>
-    <div class="card"><h3>Docker, Evolution and Telegram</h3><p>Docker does the final build of the independent check. An Evolution instance and a Telegram bot only if you want the channels; the credentials live in <code>.env</code>.</p><pre><span class="c"># check</span>
+    <div class="card"><h3>Docker, Evolution and Telegram</h3><p>Docker brings the system up on the VPS (and does the build of the independent check). An Evolution instance and a Telegram bot only if you want the channels; the credentials live in <code>.env</code>.</p><pre><span class="c"># check</span>
 <span class="k">docker</span> --version</pre></div>
   </div>
 </div></section>
@@ -222,68 +222,57 @@
 <section id="guia"><div class="wrap">
   <span class="chip">User guide · step by step</span>
   <h2>From the clone to the implemented system, in your own environment</h2>
-  <p class="sub">The commands below are the repository's own. The cycle: answer the decisions, freeze the contract, run the agent until <code>99 passed</code> and <code>LIMITES OK</code>, check with the independent verification, generate the videos and ask a physical education professional to review.</p>
+  <p class="sub">The commands below are the repository's own. The cycle: clone and check the tests, configure your gym, run it locally, bring it up on the VPS with Docker, generate the videos and ask a physical education professional to review. At the end, how the system was built, for anyone who wants to redo or adapt it.</p>
 
   <div class="step"><div class="b">1</div><div>
-    <h3>Clone the repository</h3>
-    <p>There is no <code>./atende</code> yet: the repository only has the plan. Check that the suite is collected without errors and that nothing passes yet (without the implementation, the tests fail or error out, and that is expected).</p>
+    <h3>Clone the repository and check the tests</h3>
+    <p>The system is already in the repo (<code>./atende</code>, v0.11.0). Check that the whole suite passes and the guardrails are intact.</p>
 <pre><span class="k">git clone</span> <span class="s">https://github.com/inematds/atende-academia</span> && <span class="k">cd</span> atende-academia
-<span class="k">python3</span> -m pytest -q --collect-only | tail -n 1   <span class="c"># 99 tests collected</span>
-<span class="k">python3</span> -m pytest -q | tail -n 1                  <span class="c"># 30 failed, 69 errors (0 passed)</span></pre>
+<span class="k">python3</span> -m pytest -q tests/ | tail -n 1                          <span class="c"># 99 passed</span>
+<span class="k">bash</span> longrun/2026-10-05-academia-v1/verificar-limites.sh               <span class="c"># LIMITES OK</span></pre>
   </div></div>
 
   <div class="step"><div class="b">2</div><div>
-    <h3>Answer the open decisions</h3>
-    <p>Read <code>docs/DECISOES-ABERTAS.md</code>: 20 default proposals already applied in the specification and the tests. Answering "ok on everything" unlocks the run. If you change anything marked ⚠ (for example win-back only with consent, the automatic no-show or the cancellation window), edit <code>docs/ESPECIFICACAO.md</code> and <code>tests/</code> before step 3 and check the count. For a real pilot, also replace <code>exemplos/academia.json</code> with your own grid, plans, instructors, FAQ and exercises.</p>
-<pre><span class="k">less</span> docs/DECISOES-ABERTAS.md
-<span class="k">python3</span> -m pytest -q --collect-only | tail -n 1</pre>
+    <h3>Configure your gym</h3>
+    <p>Copy the example into a data folder and edit the name, the staff <strong>token</strong>, the grid, plans, instructors, FAQ and exercises. The 20 default decisions (win-back only with consent, automatic no-show, cancellation deadline and others) are in <code>docs/DECISOES-ABERTAS.md</code>.</p>
+<pre><span class="k">mkdir</span> -p dados && <span class="k">cp</span> exemplos/academia.json dados/academia.json
+<span class="k">less</span> docs/DECISOES-ABERTAS.md</pre>
   </div></div>
 
   <div class="step"><div class="b">3</div><div>
-    <h3>Freeze the contract</h3>
-    <p>With a clean <code>git status</code>, the script records the hash of <code>tests/</code>, <code>pytest.ini</code>, the specification and the verifiers in <code>hash-congelado.txt</code> and makes one commit. From then on, any change to the tests is detected.</p>
-<pre><span class="k">git status</span>
-<span class="k">bash</span> longrun/2026-10-05-academia-v1/congelar.sh</pre>
+    <h3>Run it locally</h3>
+    <p>Start the server. The member chat is at <code>/</code>, the staff page at <code>/equipe</code> (<code>X-Token</code> header) and each exercise at <code>/exercicios/&lt;id&gt;</code>. Without the Evolution and Telegram variables the outbox is simulated and no network call goes out. <code>raiox</code> produces the monthly numbers for Raio-X, and <code>backup</code> can run with the server on.</p>
+<pre><span class="k">./atende</span> serve --porta 8080 --dados dados
+<span class="k">./atende</span> raiox --dados dados --mes 2026-10 --acompanhamento acompanhamento.json
+<span class="k">./atende</span> backup --dados dados --saida backups/academia.zip</pre>
   </div></div>
 
   <div class="step"><div class="b">4</div><div>
-    <h3>Run the agent (pick one path)</h3>
-    <p><strong>a) Headless loop with Codex (recommended).</strong> The <code>loop.env</code> sets 20 cycles of 30 min, 8 GB per cycle, a stop after 3 cycles with no progress, model <code>gpt-6-astra</code> and <code>CODEX_ARGS="-c sandbox_workspace_write.network_access=true"</code>: without it the Codex sandbox blocks the tests' local server.</p>
-<pre><span class="k">~/projetos/execucao-longa/tools/loop-longrun.sh</span> longrun/2026-10-05-academia-v1</pre>
-    <p><strong>b) <code>/goal</code> in Claude Code.</strong> Open a new Claude Code session in the project folder and follow <code>longrun/2026-10-05-academia-v1/prompt-goal-claude.md</code>: paste the <code>/goal</code> condition (the output must show <code>99 passed</code> and <code>LIMITES OK</code>) and, as the first message, the block from <code>prompt-goal-codex.md</code>.</p>
-<pre><span class="k">claude</span>   <span class="c"># new session, inside atende-academia</span></pre>
-    <p><strong>c) Codex TUI already open.</strong> Paste the whole content of <code>longrun/2026-10-05-academia-v1/prompt-goal-codex.md</code> (it starts with <code>/goal</code>).</p>
-<pre><span class="k">codex</span> -c sandbox_workspace_write.network_access=true</pre>
+    <h3>Bring it up on the VPS with Docker</h3>
+    <p>The owner's step, with their machine and credentials: the system never does this on its own. The service listens only on <code>127.0.0.1:8080</code>, keeps everything in <code>./dados</code> and has a healthcheck at <code>/api/saude</code>. In front, an HTTPS proxy (Caddy, Nginx or Traefik) on the gym's domain, and in <code>.env</code> the <code>PUBLIC_URL</code>, the Evolution (WhatsApp) credentials with <code>WEBHOOK_SEGREDO</code> and the Telegram bot credentials with <code>TELEGRAM_SEGREDO</code>. The full walkthrough, with the webhooks and the daily cron backup, is in the "VPS deployment" section of the README.</p>
+<pre><span class="k">cp</span> .env.exemplo .env          <span class="c"># fill in PUBLIC_URL, EVOLUTION_*, TELEGRAM_*</span>
+<span class="k">docker compose</span> up -d --build
+<span class="k">docker compose</span> restart       <span class="c"># after editing dados/academia.json</span></pre>
   </div></div>
 
   <div class="step"><div class="b">5</div><div>
-    <h3>Follow along</h3>
-    <p>In the loop, <code>loop.log</code> shows each cycle and <code>progress.md</code> has one line per checkpoint; <code>state.md</code> says what works, what is missing and how to resume. A test in conflict with the specification goes to <code>failures.md</code>: it is a human gate, and the agent must not adjust tests or the specification.</p>
-<pre><span class="k">tail</span> -f longrun/2026-10-05-academia-v1/loop.log
-<span class="k">cat</span> longrun/2026-10-05-academia-v1/state.md</pre>
-  </div></div>
-
-  <div class="step"><div class="b">6</div><div>
-    <h3>Check with the independent verification</h3>
-    <p>When the agent says "done", run the three commands. The last one the agent has never seen: it looks for fixture values copied into the code, brings up a gym that never appeared (another grid, other plans and windows, a holiday, another clock), opens 3 SVGs in Chromium to prove they move, renders one exercise through HyperFrames and runs <code>docker build</code> with a healthcheck. Without Chromium, without HyperFrames or without Docker, those stages come out as <code>PULADO</code>, never as OK. Then open <code>/</code>, <code>/equipe</code> and <code>/exercicios/prancha</code> in the browser.</p>
-<pre><span class="k">python3</span> -m pytest -q tests/                                         <span class="c"># 99 passed</span>
-<span class="k">bash</span> longrun/2026-10-05-academia-v1/verificar-limites.sh               <span class="c"># LIMITES OK</span>
-<span class="k">python3</span> longrun/2026-10-05-academia-v1/verificar-independente.py      <span class="c"># INDEPENDENTE OK</span></pre>
-  </div></div>
-
-  <div class="step"><div class="b">7</div><div>
-    <h3>Generate the exercise MP4 videos</h3>
-    <p>A human step, after the implementation: <code>tools/render-exercicios</code> (written by the agent) uses only the HyperFrames already installed, downloads nothing, and needs Node 22 or newer, Chromium and <code>ffprobe</code>. It produces <code>web/exercicios/&lt;id&gt;.mp4</code> (4 s, 720×720, no audio) from each SVG. Install HyperFrames <strong>after</strong> the loop closes, because the agent must not download packages. WhatsApp fetches the video from the public URL, so the MP4 path requires <code>PUBLIC_URL</code> with HTTPS.</p>
+    <h3>Generate the exercise MP4 videos (optional)</h3>
+    <p>WhatsApp does not show SVG. <code>tools/render-exercicios</code> generates <code>web/exercicios/&lt;id&gt;.mp4</code> (4 s, 720×720, no audio) from each SVG with HyperFrames, a local render through Chromium, no API. It needs Node 22 or newer, HyperFrames installed and <code>ffprobe</code>. This render <strong>has not been run yet</strong>: the SVG animations work on the web, and without an MP4 (or without <code>PUBLIC_URL</code>) the member gets the link to the animated page. On the VPS, copy the <code>.mp4</code> files to the <code>EXERCICIOS_MP4_DIR</code> folder.</p>
 <pre><span class="k">npm</span> install hyperframes
 <span class="k">tools/render-exercicios</span> --ids agachamento,prancha --saida web/exercicios</pre>
   </div></div>
 
-  <div class="step"><div class="b">8</div><div>
-    <h3>Run your own gym</h3>
-    <p>With the system implemented, copy the example, change the token and start the server. The member chat is at <code>/</code>, the staff page at <code>/equipe</code> (header <code>X-Token</code>) and each exercise at <code>/exercicios/&lt;id&gt;</code>. The VPS deploy is yours, with your own credentials; the agent writes the playbook (Docker, Evolution and Telegram webhooks, backup) in the README, section 22 of the specification.</p>
-<pre><span class="k">mkdir</span> -p dados && <span class="k">cp</span> exemplos/academia.json dados/academia.json
-<span class="k">./atende</span> serve --porta 8080 --dados dados
-<span class="k">./atende</span> raiox --dados dados --mes 2026-10 --acompanhamento acompanhamento.json</pre>
+  <div class="step"><div class="b">6</div><div>
+    <h3>Check with the independent verification</h3>
+    <p>The verifier the agent never saw looks for fixture values copied into the code, brings up a gym that never appeared (another grid, other plans and deadlines, a holiday, another clock), opens 3 SVGs in a Chromium to prove they move, renders one exercise with HyperFrames and runs <code>docker build</code> with a healthcheck. Without Chromium, HyperFrames or Docker those stages come out as <code>PULADO</code> (skipped), never as OK. At delivery it printed <code>INDEPENDENTE OK (movimento: chromium, hyperframes: pulado, docker: ok)</code>.</p>
+<pre><span class="k">python3</span> longrun/2026-10-05-academia-v1/verificar-independente.py      <span class="c"># INDEPENDENTE OK</span></pre>
+  </div></div>
+
+  <div class="step"><div class="b">7</div><div>
+    <h3>How it was built (and how to redo or adapt it)</h3>
+    <p>The system was built like this: the decisions were answered, the contract and the tests were frozen by hash (<code>congelar.sh</code>) and an agent worked in long-running execution, with the <a href="https://inematds.github.io/execucao-longa/guia/en/" target="_blank" rel="noopener">execucao-longa</a> method, until <code>99 passed</code> and <code>LIMITES OK</code>, with <code>state.md</code>, <code>progress.md</code> and <code>failures.md</code> recording every cycle. Want to change a rule marked ⚠ or take the mold to another business? The method stays in the repo: edit <code>docs/ESPECIFICACAO.md</code> and <code>tests/</code>, freeze again and run the Codex headless loop or <code>/goal</code> in Claude Code, following the prompts in <code>longrun/2026-10-05-academia-v1/</code>.</p>
+<pre><span class="k">bash</span> longrun/2026-10-05-academia-v1/congelar.sh
+<span class="k">~/projetos/execucao-longa/tools/loop-longrun.sh</span> longrun/2026-10-05-academia-v1   <span class="c"># or /goal: prompt-goal-claude.md</span></pre>
   </div></div>
 
   <div class="card" style="border-color:var(--amb)"><h3>⚠️ Before using with a real member: review by a physical education professional</h3><p>The 12 SVGs are schematic figures <strong>drawn by the implementer</strong>, and the steps, common mistakes and precautions of each exercise were written as examples: <strong>a physical education professional must review everything</strong> before it reaches a real member, including the list of health alert words. The professional council rules (CREF/CONFEF, Brazil's physical education boards) <strong>were not researched</strong>: the campaign guardrail is only the safe minimum (promise of results and "before and after"), citing no article, and the owner confirms the rules before any campaign is published (decision 5). The legal basis for the physical assessment, sensitive data, is also for the owner or a lawyer to confirm (decision 6).</p></div>
@@ -292,7 +281,7 @@
 <section id="kit"><div class="wrap">
   <span class="chip">What's in the kit</span>
   <h2>Contract, tests and guardrails, with the real numbers</h2>
-  <p class="sub">Everything the agent needs to build, and everything that stops it from pretending it built.</p>
+  <p class="sub">Everything the agent needed to build the system, and everything that stopped it from pretending it built it. It stays in the repo and runs on every change.</p>
   <div class="grid g3">
     <div class="card"><h3>99 acceptance tests</h3><p>Black-box, over HTTP and the command line, in 13 files.</p><pre>test_integracoes.py           16
 test_exercicios_svg.py        14
@@ -310,7 +299,7 @@ test_lgpd_raiox.py             3</pre></div>
     <div class="card"><h3>A 23-section specification</h3><p><code>docs/ESPECIFICACAO.md</code>, sections 0 to 22: execution, <code>academia.json</code>, members, plans and enrollments, group classes, check-in, workouts, animated explanation, physical assessment, HTTP API, chat, tasks, campaigns and the advertising guardrail, Raio-X, LGPD, Evolution, Telegram and Docker. Pix or card billing, turnstiles, a member app, personal training and several gyms on one server are explicitly out (section 16).</p></div>
     <div class="card"><h3>Guardrails against shortcuts</h3><p>A frozen hash of <code>tests/</code>, <code>pytest.ini</code>, the specification and the verifiers. File scope: the agent only touches the code and its own logs. No API key, no external URL in the code, no <code>0.0.0.0</code> and no SMIL or script in the SVGs. <code>verificar-limites.sh</code> checks all of it and prints <code>LIMITES OK</code>.</p></div>
     <div class="card"><h3>Independent verification</h3><p>Level 4, hidden from the agent: it looks for fixture values in the code, brings up a gym never seen before, checks the SVG motion and the MP4 when the tools exist, and runs <code>docker build</code> and a healthcheck. Only that way does "99 passed" prove general logic.</p></div>
-    <div class="card"><h3>20 decisions already proposed</h3><p>Language, channels, manual billing only, the campaign guardrail, physical assessment as sensitive data, win-back with consent, automatic no-show, late cancellation, check-in by code, the 12 exercises with CSS-only animation and Raio-X. Only the items marked ⚠ change the contract.</p></div>
+    <div class="card"><h3>20 proposed decisions</h3><p>Language, channels, manual billing only, the campaign guardrail, physical assessment as sensitive data, win-back with consent, automatic no-show, late cancellation, check-in by code, the 12 exercises with CSS-only animation and Raio-X. Only the items marked ⚠ change the contract.</p></div>
     <div class="card"><h3>Validated by an adversarial agent</h3><p>A validator that did not see the planning checked tests against the specification and tried to get around the guardrails. It found and fixed 10 problems: 2 blocked the run, 5 got in the way and 3 were cosmetic. The main one: the specification allowed SMIL, and the HyperFrames render has no SMIL adapter, measured in a real render. The full account is in <code>docs/VALIDACAO.md</code> and each fix has a line in <code>FALHAS.md</code>.</p></div>
   </div>
   <div class="grid g2" style="margin-top:16px">
@@ -322,18 +311,18 @@ test_lgpd_raiox.py             3</pre></div>
 <section id="roadmap"><div class="wrap">
   <span class="chip">Roadmap</span>
   <h2>Where it stands and where it goes</h2>
-  <p class="sub">The plan is ready and validated. The implementation does not exist yet: it is born when you run <code>/goal</code> or the loop, using the <a href="https://inematds.github.io/execucao-longa/guia/en/" target="_blank" rel="noopener">execucao-longa</a> method. <code>atende-clinica</code> followed the same path and closed 93 of 93.</p>
+  <p class="sub">The plan was validated and the implementation is done: v0.11.0, 99 of 99 tests, built with the <a href="https://inematds.github.io/execucao-longa/guia/en/" target="_blank" rel="noopener">execucao-longa</a> method. <code>atende-clinica</code> followed the same path and closed 93 of 93. What is left now belongs to the owner.</p>
   <div class="phase"><div class="tag">Plan ✅</div><div class="d"><strong>Specification, tests and guardrails validated</strong><span>A 23-section contract, 99 acceptance tests, 20 proposed decisions, a map to Raio-X and an adversarial validation completed on 2026-10-05.</span></div></div>
-  <div class="phase"><div class="tag">Implementation</div><div class="d"><strong>You run the /goal or the loop</strong><span>Answer the decisions, freeze the contract and let the agent work until <code>99 passed</code> and <code>LIMITES OK</code>, then the independent verification. Today the system is not implemented.</span></div></div>
-  <div class="phase"><div class="tag">Videos</div><div class="d"><strong>Exercise MP4s, on your machine</strong><span>Run <code>tools/render-exercicios</code> once, with HyperFrames installed, and publish the files together with <code>PUBLIC_URL</code>.</span></div></div>
-  <div class="phase"><div class="tag">Pilot</div><div class="d"><strong>In a real gym</strong><span>Replace the example with the real grid, plans and exercises, get a review from a physical education professional, confirm the CREF/CONFEF rules, publish on the VPS and track no-shows, occupancy, renewal and attendance in the Raio-X Recovery Panel.</span></div></div>
+  <div class="phase"><div class="tag">Implementation ✅</div><div class="d"><strong>System implemented and verified</strong><span>Contract frozen and an agent in long-running execution until <code>99 passed</code> and <code>LIMITES OK</code>. Independent verification passed (SVG motion in Chromium, <code>docker build</code> and healthcheck). Telegram, the <code>/</code> and <code>/equipe</code> pages, Docker and <code>tools/render-exercicios</code> delivered on 2026-10-19.</span></div></div>
+  <div class="phase"><div class="tag">Videos</div><div class="d"><strong>Exercise MP4s, on your machine (optional)</strong><span>The script is ready, but the render has not been run yet. Run <code>tools/render-exercicios</code> once, with HyperFrames installed, and publish the files together with <code>PUBLIC_URL</code>.</span></div></div>
+  <div class="phase"><div class="tag">Pilot</div><div class="d"><strong>In a real gym</strong><span>Replace the example with the real grid, plans and exercises, set up the real Evolution (WhatsApp) and Telegram credentials, get a review from a physical education professional, confirm the CREF/CONFEF rules, publish on the VPS and track no-shows, occupancy, renewal and attendance in the Raio-X Recovery Panel.</span></div></div>
   <div class="phase"><div class="tag">Later</div><div class="d"><strong>Out of v1</strong><span>Billing, turnstiles, a member app, personal training, several gyms, per-user login, an LLM in the answers and an EN/ES interface are left for a next version, behind a human gate.</span></div></div>
 </div></section>
 
 <footer>
   <div class="wrap">
     <div class="pill">Python 3 · standard library</div><div class="pill">SQLite</div><div class="pill">Docker</div><div class="pill">Evolution API</div><div class="pill">Telegram</div><div class="pill">LGPD</div>
-    <p style="margin-top:18px">Atende Academia · open plan kit ·
+    <p style="margin-top:18px">Atende Academia · open system · v0.11.0 ·
       <a href="https://github.com/inematds/atende-academia">inematds/atende-academia</a> ·
       <a href="https://inema.club">INEMA.CLUB</a></p>
   </div>
