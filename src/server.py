@@ -2,10 +2,12 @@
 import argparse
 import hmac
 import json
+import os
 import re
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlsplit
 
+from .evolution import webhook
 from .backup import backup, restore
 from .catalogs import catalog
 from .privacy import Privacy
@@ -22,7 +24,7 @@ from .store import ROOT, Store
 
 def public(method, path, query):
     if method == 'POST':
-        return path == '/api/mensagens'
+        return path == '/api/mensagens' or path.startswith('/webhook/evolution/')
     if method != 'GET':
         return False
     return (path in ('/', '/equipe', '/api/saude', '/api/planos', '/api/modalidades',
@@ -33,6 +35,8 @@ def public(method, path, query):
 
 def route(app, method, path, query, body):
     store = app.store
+    if method == 'POST' and path.startswith('/webhook/evolution/'):
+        return 200, webhook(app, body)
     match = re.fullmatch(r'/api/(professores|grade|faq|modalidades|salas)(?:/([\w-]+))?', path)
     if match:
         return catalog(app, match[1], match[2], method, body)
@@ -181,6 +185,11 @@ def handler(app):
             try:
                 parts = urlsplit(self.path)
                 query = parse_qs(parts.query)
+                if parts.path.startswith('/webhook/evolution/'):
+                    secret = os.environ.get('WEBHOOK_SEGREDO', '')
+                    supplied = parts.path.removeprefix('/webhook/evolution/')
+                    if not secret or not hmac.compare_digest(secret.encode(), supplied.encode()):
+                        raise Error(404, 'rota_inexistente')
                 if not public(self.command, parts.path, query):
                     expected = str(app.store.config['token']).encode()
                     actual = self.headers.get('X-Token', '').encode()

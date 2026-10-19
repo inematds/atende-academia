@@ -19,3 +19,5 @@
 | 2026-10-19 14:15 -0300 | Ciclo 8: campanhas, LGPD e Raio-X API/CLI, v0.8.0; pytest 74 passed / 25 failed (54.83s); foco 8 passed; HTTP/reinício/anonimização e LIMITES OK | sem commit (loop externo) | parcial | — | 0 |
 
 | 2026-10-19 14:20 -0300 | Ciclo 9: cadastros restantes e backup/restauração com configuração, v0.9.0; pytest 78 passed / 21 failed (55.22s); foco 6 passed; HTTP/restauração em diretório novo e LIMITES OK | sem commit (loop externo) | parcial | — | 0 |
+
+| 2026-10-19 14:25 -0300 | Ciclo 10: Evolution webhook/sendText/sendMedia/reenvio e proteções LGPD, v0.10.0; pytest 84 passed / 15 failed (64.97s); foco 7 passed; HTTP adicional e LIMITES OK | sem commit (loop externo) | parcial | — | 0 |

@@ -23,3 +23,5 @@
 | 2026-10-19 14:15 -0300 | Suíte ainda falha em cadastros, backup, integrações, páginas e entrega ausentes → implementar campanhas/LGPD/Raio-X → 74 passed / 25 failed; sem conflito teste/spec | infra |
 
 | 2026-10-19 14:20 -0300 | Suíte ainda falha em integrações, páginas e entrega ausentes → implementar cadastros e backup/restauração → 78 passed / 21 failed; sem conflito teste/spec | infra |
+
+| 2026-10-19 14:25 -0300 | Integrações/entrega ainda incompletas → implementar Evolution e verificar suíte completa → 84 passed / 15 failed; faltam Telegram e entrega, sem conflito teste/spec | infra |

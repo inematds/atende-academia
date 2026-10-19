@@ -1,6 +1,7 @@
 """Check-ins e tarefas locais; o relógio da rodada não altera o do processo."""
 import datetime as dt
 
+from .evolution import retry
 from .classes import Classes, filtered
 from .domain import Error, now, require
 
@@ -38,6 +39,7 @@ class Attendance:
         instant = dt.datetime.fromisoformat(body['agora']) if 'agora' in body else now()
         if instant.tzinfo is not None:
             raise Error(400, 'agora_sem_fuso_obrigatorio')
+        resent = retry(self.store)
         today = instant.date()
         classes = Classes(self.app)
         created = marked = 0
@@ -94,4 +96,4 @@ class Attendance:
             message = classes.message(student['id'], 'reativacao',
                                       'Sentimos sua falta! Vamos voltar a treinar?', enrollment['id'], instant)
             created += message is not None
-        return dict(enviadas=created, reenviadas=0, presencas=marked)
+        return dict(enviadas=created, reenviadas=resent, presencas=marked)

@@ -2,6 +2,7 @@
 
 | data | o que quebrou | menor correção | prompt \| infra |
 |---|---|---|---|
+| 2026-10-19 14:25 -0300 | Webhook Evolution ausente e saída sem transporte/reenvio | adicionar transporte central e segredo/idempotência, respeitando LGPD no reenvio; 7 testes específicos aprovados | infra |
 | 2026-10-19 | Cadastros de professores/grade/FAQ e backup ausentes | implementar cadastros transacionais e backup SQLite com configuração; suíte passou de 74 para 78 aprovados | infra |
 | 2026-10-19 | Campanhas, exportação/anonimização e Raio-X ausentes | implementar Privacy e cálculo mensal compartilhado API/CLI; suíte passou de 63 para 74 aprovados | infra |
 | 2026-10-19 | Conversa ausente bloqueava reservas/espera/treino pelo chat | implementar Conversation persistente reutilizando domínios; suíte passou de 45 para 63 aprovados | infra |

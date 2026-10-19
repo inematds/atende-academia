@@ -1,6 +1,7 @@
 """Ocorrências semanais, reservas e espera; chamadas sob a transação do servidor."""
 import datetime as dt
 
+from .evolution import deliver
 from .domain import Error, now, require
 
 ACTIVE = ('reservada', 'presente', 'falta')
@@ -99,7 +100,7 @@ class Classes:
         student = self.app.get('alunos', student_id)
         if student['nao_contatar']:
             return None
-        return self.store.save('saida', dict(id=self.store.next_id('saida'), tipo=kind, aluno_id=student_id,
+        return deliver(self.store, dict(id=self.store.next_id('saida'), tipo=kind, aluno_id=student_id,
                                telefone=student['telefone'], texto=text, referencia_id=reference,
                                quando=(instant or now()).isoformat(timespec='minutes'), status='simulado'))
 

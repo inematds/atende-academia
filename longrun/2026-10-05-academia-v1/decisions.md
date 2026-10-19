@@ -20,3 +20,5 @@
 | 2026-10-19 14:15 -0300 | Privacy separa exportação/anonimização; Raio-X usa report único na API/CLI e substituição de arquivo temporário | preservar agregados e campos não medidos, limpar cópias operacionais sem ofertas de espera | duplicar cálculo CLI ou chamar cancelamento comum com oferta automática |
 
 | 2026-10-19 14:20 -0300 | Backup ZIP com snapshot SQLite e academia.json; restauração lê apenas membros conhecidos e valida antes de substituir | cópia consistente online e recuperação da configuração em diretório novo sem extração de caminhos arbitrários | copiar SQLite/WAL em uso ou restaurar sem configuração |
+
+| 2026-10-19 14:25 -0300 | Transporte Evolution isolado, envio síncrono com timeout 3 s e sem redirects; exercício identificado pela decisão da conversa | manter status da saída definido antes do HTTP e sendMedia fiel à resposta, com segredo só no destino configurado | inferir exercício do texto enviado ou duplicar a decisão do chat |

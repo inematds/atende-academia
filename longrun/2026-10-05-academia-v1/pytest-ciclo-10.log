@@ -1,0 +1,288 @@
+............................F..........................FFFFF............ [ 72%]
+......F...FFFFFFFF.........                                              [100%]
+=================================== FAILURES ===================================
+_________________________________ test_paginas _________________________________
+
+api = <conftest.Cliente object at 0xef38a82c0230>
+
+    def test_paginas(api):
+        st, html = api.get("/", token=None)
+>       assert st == 200 and 'id="chat"' in html
+E       assert (404 == 200)
+
+tests/test_basico.py:42: AssertionError
+_______________________________ test_dockerfile ________________________________
+
+    def test_dockerfile():
+>       d = ler("Dockerfile")
+            ^^^^^^^^^^^^^^^^^
+
+tests/test_docker.py:15: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+nome = 'Dockerfile'
+
+    def ler(nome):
+        p = RAIZ / nome
+>       assert p.exists(), f"falta {nome}"
+E       AssertionError: falta Dockerfile
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/home/nmaldaner/projetos/atende-academia/Dockerfile').exists
+
+tests/test_docker.py:10: AssertionError
+_________________________________ test_compose _________________________________
+
+    def test_compose():
+>       c = ler("docker-compose.yml")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_docker.py:24: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+nome = 'docker-compose.yml'
+
+    def ler(nome):
+        p = RAIZ / nome
+>       assert p.exists(), f"falta {nome}"
+E       AssertionError: falta docker-compose.yml
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/home/nmaldaner/projetos/atende-academia/docker-compose.yml').exists
+
+tests/test_docker.py:10: AssertionError
+_________ test_env_exemplo_tem_todas_as_variaveis_sem_segredo_nem_url __________
+
+    def test_env_exemplo_tem_todas_as_variaveis_sem_segredo_nem_url():
+>       e = ler(".env.exemplo")
+            ^^^^^^^^^^^^^^^^^^^
+
+tests/test_docker.py:30: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+nome = '.env.exemplo'
+
+    def ler(nome):
+        p = RAIZ / nome
+>       assert p.exists(), f"falta {nome}"
+E       AssertionError: falta .env.exemplo
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/home/nmaldaner/projetos/atende-academia/.env.exemplo').exists
+
+tests/test_docker.py:10: AssertionError
+________________ test_readme_explica_deploy_e_mantem_como_rodar ________________
+
+    def test_readme_explica_deploy_e_mantem_como_rodar():
+        r = ler("README.md")
+        assert "Como rodar no seu ambiente" in r      # seção do dono: o implementador acrescenta o deploy sem removê-la
+>       assert "Deploy na VPS" in r
+E       AssertionError: assert 'Deploy na VPS' in '# atende-academia\n\n**🇧🇷 [Português](README.md) · 🇺🇸 [English](README.en.md) · 🇪🇸 [Español](README.es.md)**\n\n[![At...ificar-independente.py`.\n- `FALHAS.md` — uma linha por falha (data, o que quebrou, menor correção, prompt | infra).\n'
+
+tests/test_docker.py:41: AssertionError
+_______________________ test_ferramenta_de_render_existe _______________________
+
+    def test_ferramenta_de_render_existe():
+        p = RAIZ / "tools" / "render-exercicios"
+>       assert p.exists(), "falta tools/render-exercicios (seção 7.4)"
+E       AssertionError: falta tools/render-exercicios (seção 7.4)
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/home/nmaldaner/projetos/atende-academia/tools/render-exercicios').exists
+
+tests/test_docker.py:49: AssertionError
+_____________________ test_whatsapp_reserva_e_avisa_equipe _____________________
+
+api_int = <conftest.Cliente object at 0xef38a7948e90>
+externo = <conftest.Externo object at 0xef38a836f470>
+
+    def test_whatsapp_reserva_e_avisa_equipe(api_int, externo):
+        api_int.ativo("Maria Lima", TEL)
+    
+        def tem(trecho):
+            return esperar(lambda: any(trecho in norm(t) for t in textos_whats(externo)))
+    
+        evo(api_int, "quero reservar uma aula")
+        assert tem("1) 07/10 09:00 pilates com carla")
+        evo(api_int, "1")
+        assert tem("reservad")
+        [x] = api_int.get("/api/reservas?data=2026-10-07")[1]["reservas"]
+        assert (x["telefone"], x["aula_id"], x["status"]) == ("+" + NUM, "pil-qua-9", "reservada")
+>       assert esperar(lambda: any("Nova reserva: 07/10 09:00 Maria Lima — Pilates" in p["json"]["text"] for p in externo.telegram()))
+E       assert False
+E        +  where False = esperar(<function test_whatsapp_reserva_e_avisa_equipe.<locals>.<lambda> at 0xef38a793d8a0>)
+
+tests/test_integracoes.py:97: AssertionError
+__________________________ test_abertura_vai_ao_grupo __________________________
+
+api_int = <conftest.Cliente object at 0xef38a7949e20>
+externo = <conftest.Externo object at 0xef38a79485c0>
+
+    def test_abertura_vai_ao_grupo(api_int, externo):
+>       at, abertura = abre_atendimento(api_int, externo)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_integracoes.py:154: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+api = <conftest.Cliente object at 0xef38a7949e20>
+externo = <conftest.Externo object at 0xef38a79485c0>
+
+    def abre_atendimento(api, externo):
+        api.msg(TEL, "quero falar com um atendente")
+>       assert esperar(lambda: len(externo.telegram()) >= 1)
+E       assert False
+E        +  where False = esperar(<function abre_atendimento.<locals>.<lambda> at 0xef38a793f100>)
+
+tests/test_integracoes.py:50: AssertionError
+____________________________ test_alerta_marca_alta ____________________________
+
+api_int = <conftest.Cliente object at 0xef38a7949d60>
+externo = <conftest.Externo object at 0xef38a7949be0>
+
+    def test_alerta_marca_alta(api_int, externo):
+        api_int.msg(TEL, "estou com dor forte no joelho")
+>       assert esperar(lambda: any("ALTA" in p["json"]["text"] for p in externo.telegram()))
+E       assert False
+E        +  where False = esperar(<function test_alerta_marca_alta.<locals>.<lambda> at 0xef38a793d580>)
+
+tests/test_integracoes.py:163: AssertionError
+________________ test_atendimento_aberto_silencia_bot_e_repassa ________________
+
+api_int = <conftest.Cliente object at 0xef38a794a960>
+externo = <conftest.Externo object at 0xef38a7949820>
+
+    def test_atendimento_aberto_silencia_bot_e_repassa(api_int, externo):
+>       at, abertura = abre_atendimento(api_int, externo)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_integracoes.py:167: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+api = <conftest.Cliente object at 0xef38a794a960>
+externo = <conftest.Externo object at 0xef38a7949820>
+
+    def abre_atendimento(api, externo):
+        api.msg(TEL, "quero falar com um atendente")
+>       assert esperar(lambda: len(externo.telegram()) >= 1)
+E       assert False
+E        +  where False = esperar(<function abre_atendimento.<locals>.<lambda> at 0xef38a793f7e0>)
+
+tests/test_integracoes.py:50: AssertionError
+__________________ test_equipe_responde_em_cima_e_pela_pagina __________________
+
+api_int = <conftest.Cliente object at 0xef38a794bb30>
+externo = <conftest.Externo object at 0xef38a794a5d0>
+
+    def test_equipe_responde_em_cima_e_pela_pagina(api_int, externo):
+>       at, abertura = abre_atendimento(api_int, externo)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_integracoes.py:177: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+api = <conftest.Cliente object at 0xef38a794bb30>
+externo = <conftest.Externo object at 0xef38a794a5d0>
+
+    def abre_atendimento(api, externo):
+        api.msg(TEL, "quero falar com um atendente")
+>       assert esperar(lambda: len(externo.telegram()) >= 1)
+E       assert False
+E        +  where False = esperar(<function abre_atendimento.<locals>.<lambda> at 0xef38a793fba0>)
+
+tests/test_integracoes.py:50: AssertionError
+_______________________ test_webhook_telegram_protegido ________________________
+
+api_int = <conftest.Cliente object at 0xef38a82c1fd0>
+externo = <conftest.Externo object at 0xef38a82c37d0>
+
+    def test_webhook_telegram_protegido(api_int, externo):
+>       at, abertura = abre_atendimento(api_int, externo)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_integracoes.py:190: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+api = <conftest.Cliente object at 0xef38a82c1fd0>
+externo = <conftest.Externo object at 0xef38a82c37d0>
+
+    def abre_atendimento(api, externo):
+        api.msg(TEL, "quero falar com um atendente")
+>       assert esperar(lambda: len(externo.telegram()) >= 1)
+E       assert False
+E        +  where False = esperar(<function abre_atendimento.<locals>.<lambda> at 0xef38a793f060>)
+
+tests/test_integracoes.py:50: AssertionError
+____________________ test_comandos_responder_encerrar_fila _____________________
+
+api_int = <conftest.Cliente object at 0xef38a828ef00>
+externo = <conftest.Externo object at 0xef38a82c23c0>
+
+    def test_comandos_responder_encerrar_fila(api_int, externo):
+>       at, _ = abre_atendimento(api_int, externo)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_integracoes.py:198: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+api = <conftest.Cliente object at 0xef38a828ef00>
+externo = <conftest.Externo object at 0xef38a82c23c0>
+
+    def abre_atendimento(api, externo):
+        api.msg(TEL, "quero falar com um atendente")
+>       assert esperar(lambda: len(externo.telegram()) >= 1)
+E       assert False
+E        +  where False = esperar(<function abre_atendimento.<locals>.<lambda> at 0xef38a87de3e0>)
+
+tests/test_integracoes.py:50: AssertionError
+______________________________ test_comando_aulas ______________________________
+
+api_int = <conftest.Cliente object at 0xef38a794a8a0>
+externo = <conftest.Externo object at 0xef38a828e540>
+
+    def test_comando_aulas(api_int, externo):
+        aid = api_int.ativo("Maria Lima", "41999990001")
+        api_int.reserva(aid, "pil-qua-9", "2026-10-07")
+        tg(api_int, "/aulas 2026-10-07")
+    
+        def achou():
+            ts = [p["json"]["text"] for p in externo.telegram()]
+            return any("09:00 Pilates (Carla) — 1/2" in t and "19:00 Spinning (Diego) — 0/2" in t for t in ts)
+>       assert esperar(achou)
+E       assert False
+E        +  where False = esperar(<function test_comando_aulas.<locals>.achou at 0xef38a793fce0>)
+
+tests/test_integracoes.py:217: AssertionError
+___________________ test_cancelamento_pelo_chat_avisa_equipe ___________________
+
+api_int = <conftest.Cliente object at 0xef38a794aed0>
+externo = <conftest.Externo object at 0xef38a7949a90>
+
+    def test_cancelamento_pelo_chat_avisa_equipe(api_int, externo):
+        aid = api_int.ativo("Maria", TEL)
+        api_int.reserva(aid, "pil-qua-9", "2026-10-07")
+        assert "1) 07/10 09:00 Pilates" in api_int.msg(TEL, "cancelar")
+        assert "cancelad" in norm(api_int.msg(TEL, "1"))
+>       assert esperar(lambda: any(p["json"]["text"].startswith("Cancelada:") and "07/10 09:00" in p["json"]["text"]
+                                   for p in externo.telegram()))
+E       assert False
+E        +  where False = esperar(<function test_cancelamento_pelo_chat_avisa_equipe.<locals>.<lambda> at 0xef38a793f6a0>)
+
+tests/test_integracoes.py:228: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_basico.py::test_paginas - assert (404 == 200)
+FAILED tests/test_docker.py::test_dockerfile - AssertionError: falta Dockerfile
+FAILED tests/test_docker.py::test_compose - AssertionError: falta docker-comp...
+FAILED tests/test_docker.py::test_env_exemplo_tem_todas_as_variaveis_sem_segredo_nem_url
+FAILED tests/test_docker.py::test_readme_explica_deploy_e_mantem_como_rodar
+FAILED tests/test_docker.py::test_ferramenta_de_render_existe - AssertionErro...
+FAILED tests/test_integracoes.py::test_whatsapp_reserva_e_avisa_equipe - asse...
+FAILED tests/test_integracoes.py::test_abertura_vai_ao_grupo - assert False
+FAILED tests/test_integracoes.py::test_alerta_marca_alta - assert False
+FAILED tests/test_integracoes.py::test_atendimento_aberto_silencia_bot_e_repassa
+FAILED tests/test_integracoes.py::test_equipe_responde_em_cima_e_pela_pagina
+FAILED tests/test_integracoes.py::test_webhook_telegram_protegido - assert False
+FAILED tests/test_integracoes.py::test_comandos_responder_encerrar_fila - ass...
+FAILED tests/test_integracoes.py::test_comando_aulas - assert False
+FAILED tests/test_integracoes.py::test_cancelamento_pelo_chat_avisa_equipe - ...
+15 failed, 84 passed in 64.97s (0:01:04)

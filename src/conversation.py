@@ -3,6 +3,7 @@ import datetime as dt
 import os
 import re
 
+from .evolution import deliver, send
 from .attendance import Attendance
 from .classes import Classes
 from .domain import Error, norm, now, phone, require
@@ -45,7 +46,8 @@ class Conversation:
                         aluno_id=student['id'] if student else None, texto=text,
                         direcao=direction, quando=now().isoformat(timespec='minutes')))
 
-    def receive(self, body):
+    def receive(self, body, whatsapp=False):
+        self.response_exercise = None
         require(body, {'telefone': str, 'texto': str})
         telephone, text = phone(body['telefone']), body['texto']
         student = next((a for a in self.store.all('alunos') if a['telefone'] == telephone), None)
@@ -62,6 +64,8 @@ class Conversation:
                     self.store.save('mensagens', entry)
         for response in result:
             self.record(telephone, student, response, 'saida')
+            if whatsapp:
+                send(telephone, response, self.response_exercise)
         return {'respostas': result}
 
     def reserve(self, student, option):
@@ -182,6 +186,7 @@ class Conversation:
                 matches.append((size, exercise))
         if matches:
             exercise = max(matches, key=lambda pair: pair[0])[1]
+            self.response_exercise = exercise['id']
             lines = [exercise['nome']] + [f'{i}. {step}' for i, step in enumerate(exercise['passos'], 1)]
             if exercise['cuidados']:
                 lines.append('Cuidado: ' + exercise['cuidados'][0])
@@ -215,7 +220,7 @@ class Conversation:
         else:
             require(body, {'texto': str})
             student = next((a for a in self.store.all('alunos') if a['telefone'] == item['telefone']), None)
-            self.store.save('saida', dict(id=self.store.next_id('saida'), tipo='humano', telefone=item['telefone'],
+            deliver(self.store, dict(id=self.store.next_id('saida'), tipo='humano', telefone=item['telefone'],
                             aluno_id=student['id'] if student else None, texto=body['texto'], referencia_id=identifier,
                             quando=now().isoformat(timespec='minutes'), status='simulado'))
         return {'status': item['status']}
