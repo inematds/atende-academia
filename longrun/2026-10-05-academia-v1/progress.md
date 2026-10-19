@@ -15,3 +15,5 @@
 | 2026-10-19 14:07 -0300 | Ciclo 6: avaliação física, conflitos/agenda/resultados protegidos, v0.6.0; pytest 45 passed / 54 failed (18.85s); LIMITES OK; concorrência/auth/reinício/lembretes verificados por HTTP | sem commit (loop externo) | parcial | — | 0 |
 
 | 2026-10-19 14:11 -0300 | Ciclo 7: conversa persistente e fila humana local, v0.7.0; pytest 63 passed / 36 failed (54.13s); LIMITES OK; HTTP/reinício/suspensão/saúde/encerramento verificados | sem commit (loop externo) | parcial | — | 0 |
+
+| 2026-10-19 14:15 -0300 | Ciclo 8: campanhas, LGPD e Raio-X API/CLI, v0.8.0; pytest 74 passed / 25 failed (54.83s); foco 8 passed; HTTP/reinício/anonimização e LIMITES OK | sem commit (loop externo) | parcial | — | 0 |

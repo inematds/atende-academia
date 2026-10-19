@@ -16,3 +16,5 @@
 | 2026-10-19 14:07 -0300 | Evaluations separado, usando transação HTTP e Classes.occurrence; conflitos semiabertos e escolha por id | reutilizar agenda real e garantir exclusividade concorrente sem nova infraestrutura | duplicar grade ou criar chat parcial para testes transversais |
 
 | 2026-10-19 14:11 -0300 | Conversation reutiliza domínios e transação HTTP, guarda fluxo/opções por telefone e histórico separado da caixa automática | persistência e confirmação usam regras reais; suspensão humana segue §21, com exceção de saúde | duplicar regras de reserva ou misturar respostas diretas em /saida |
+
+| 2026-10-19 14:15 -0300 | Privacy separa exportação/anonimização; Raio-X usa report único na API/CLI e substituição de arquivo temporário | preservar agregados e campos não medidos, limpar cópias operacionais sem ofertas de espera | duplicar cálculo CLI ou chamar cancelamento comum com oferta automática |

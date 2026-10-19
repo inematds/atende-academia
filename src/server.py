@@ -6,6 +6,8 @@ import re
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlsplit
 
+from .privacy import Privacy
+from .raiox import report, update
 from .conversation import Conversation
 from .classes import Classes, filtered
 from .attendance import Attendance
@@ -33,6 +35,18 @@ def route(app, method, path, query, body):
         return 200, exercise_resource(app, path)
     if method == 'GET' and path == '/api/saude':
         return 200, {'ok': True, 'versao': (ROOT / 'VERSION').read_text().strip()}
+    privacy = Privacy(app)
+    if path == '/api/campanhas' and method == 'POST':
+        return privacy.campaign(body)
+    if path == '/api/raiox' and method == 'GET':
+        return 200, report(app, query.get('mes', [''])[0])
+    match = re.fullmatch(r'/api/alunos/(\d+)/dados', path)
+    if match and method == 'GET':
+        return 200, privacy.export(int(match[1]))
+    match = re.fullmatch(r'/api/alunos/(\d+)', path)
+    if match and method == 'DELETE':
+        privacy.anonymize(int(match[1]))
+        return 204, None
     conversation = Conversation(app)
     if path == "/api/mensagens" and method == "POST":
         return 200, conversation.receive(body)
@@ -197,8 +211,19 @@ def main():
     serve.add_argument('--porta', type=int, default=8080)
     serve.add_argument('--host', default='127.0.0.1')
     serve.add_argument('--dados', required=True)
+    raiox = commands.add_parser('raiox')
+    raiox.add_argument('--dados', required=True)
+    raiox.add_argument('--mes', required=True)
+    raiox.add_argument('--acompanhamento', required=True)
     args = parser.parse_args()
     app = Academia(Store(args.dados))
+    if args.command == 'raiox':
+        try:
+            with app.store.lock, app.store.db:
+                update(app, args.mes, args.acompanhamento)
+        finally:
+            app.store.db.close()
+        return
     server = ThreadingHTTPServer((args.host, args.porta), handler(app))
     print(f'PORTA={server.server_address[1]}', flush=True)
     try:
