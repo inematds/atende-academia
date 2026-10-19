@@ -2,6 +2,8 @@
 
 | data | o que quebrou | menor correção | prompt \| infra |
 |---|---|---|---|
+| 2026-10-19 | Escrita inicial de FALHAS.md substituiu histórico | restaurar conteúdo do HEAD e inserir linhas novas no topo | prompt |
+| 2026-10-19 | Leitura de tests/test_base.py inexistente | usar nome tests/test_basico.py encontrado por rg --files | prompt |
 | 2026-10-05 | validação: §7.1 aceitava SMIL, mas o render do HyperFrames não tem adaptador SMIL (só `document.getAnimations()`/CSS — `dist/hyperframe-runtime.js` 0.7.109 e 0.8.86) → MP4 sairia fora de fase; a fisio já proibia | §7.1/§7.4 só CSS (durações 1/2/4 s, composição sem GSAP/CDN), teste de SVG espelha a fisio, `verificar-limites.sh` sem exceção do GSAP + grep de SMIL em `web/exercicios` | prompt |
 | 2026-10-05 | validação: `verificar-independente.py` daria falha falsa ou traceback nesta máquina: glob `chrome-linux/chrome` não casa `chrome-linux-arm64`; screenshot em `/tmp` com o chromium do snap = PNG vazio; `docker`/`npx` ausentes ou `subir()` falhando = traceback | candidatos calibrados (SVG estático + animado) numa pasta dentro do repo (`.verif-svg-*`), glob `chrome-linux*`, guardas `shutil.which` + try → `PULADO` explícito na última linha | infra |
 | 2026-10-05 | validação (regressão minha): README mandava `npm install hyperframes` na raiz → `package.json`/`package-lock.json` não rastreados → `verificar-limites.sh` acusaria "fora do escopo" | os dois no `.gitignore`; README/§7.4: instalar depois do loop ou `-g`; provado no clone (`LIMITES OK`) | prompt |

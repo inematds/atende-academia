@@ -1,22 +1,25 @@
-# Estado — atualizado 2026-10-05 (planejamento validado)
+# Estado — atualizado 2026-10-19, ciclo 1
 
 ## Funciona
-- Nada implementado ainda (por desenho: este repo contém só contrato, testes e a pasta de execução longa).
-- Validação adversarial feita em 05/10 (`docs/VALIDACAO.md`): 9 problemas corrigidos — o principal: SVGs **só CSS** (`@keyframes`, durações 1/2/4 s), sem SMIL, porque o render do HyperFrames não tem adaptador SMIL (conferido no código do pacote, 0.7.109 e 0.8.86); spec/teste/travas/prompts coerentes com o atende-fisioterapia.
-- `python3 -m pytest -q --collect-only` → 99 coletados sem erro; `python3 -m pytest -q` → 0 passed (30 failed, 69 errors: `./atende` não existe).
-- Harness conferido com stub temporário (apagado): `./atende` que só imprime `PORTA=<n>` e responde `/api/saude` faz `test_saude_traz_versao_do_arquivo` passar e é derrubado no teardown; teste que falha depois de subir o servidor não deixa processo (fixture `autouse`).
-- Travas conferidas em clone temporário: `congelar.sh` grava hash e nº de testes; stub honesto (`EVOLUTION_API_KEY`, `apikey`, `@s.whatsapp.net`, `http://127.0.0.1:8080`, SVG CSS com xmlns do W3C, `tools/render-exercicios` sem CDN) → `LIMITES OK`; `https://api.telegram.org` no código, CDN do GSAP em `tools/`, SMIL em `web/exercicios/` e teste alterado → `LIMITE VIOLADO`.
-- `verificar-independente.py` roda ponta a ponta com o stub sem traceback: `PULADO` explícito para HyperFrames/docker ausentes, prova de movimento calibrada (pasta dentro do repo; chrome completo).
+- Base executável `./atende serve --porta 0 --dados DIR`: ThreadingHTTPServer, bind padrão em 127.0.0.1, primeira linha PORTA=<n>, saúde com VERSION e JSON UTF-8.
+- Diretório de dados criado automaticamente; academia.json copiado do exemplo se ausente. SQLite com WAL, semente dos sete catálogos somente uma vez e transações protegidas por RLock.
+- Autenticação X-Token antes de ler/validar o corpo; classificação das rotas públicas segundo §9. Rotas ainda não implementadas retornam 404 (não há respostas simulando implementação).
+- Alunos: criação, telefone normalizado/deduplicado, código único, busca sem acento, edição e conflito de telefone.
+- Planos: listagem pública, criação, edição e desativação. Matrículas: vigência inclusiva, créditos iniciais, status calculado, pagamento manual, trancar/destrancar/cancelar e listagem por aluno.
+- `python3 -m pytest -q tests/`: **9 passed / 90 failed**, 18.00s. Saída completa em `pytest-ciclo-1.log` nesta pasta.
+- `bash longrun/2026-10-05-academia-v1/verificar-limites.sh`: **LIMITES OK**, hash a768b39fe2101c18, 99 testes.
+- Verificação adicional real pelo harness: pasta/configuração criadas, pedido sem token rejeitado antes de validar corpo, aluno/código/matrícula preservados depois de reiniciar o servidor.
 
 ## Falta
-- Tudo da seção "Resultado" do `goal.md`: implementação em `atende` + `src/` + `web/` (inclusive os 12 SVGs) + `tools/render-exercicios` + entrega Docker + README "Deploy na VPS".
+- Aulas/ocorrências, reservas concorrentes, cancelamento, espera, créditos e presença.
+- Check-in/reativação; biblioteca/ficha/meu treino; 12 SVGs e páginas de exercícios; avaliação física.
+- Conversa completa na ordem §11; tarefas/rodar e avisos de vencimento (a parte automática de matrículas está pendente).
+- Campanhas, LGPD (inclusive /dados), Raio-X; demais cadastros e backup.
+- Evolution/Telegram apenas contra servidores falsos; Docker, .env.exemplo, README Deploy na VPS, tools/render-exercicios sem executar; páginas / e /equipe.
+- Teste de deduplicação de aluno ainda falha ao chegar em /dados (LGPD não implementada); persistência de reservas e teste de semente completo aguardam respectivas rotas. Não confundir com falha da persistência básica já verificada.
 
-## Como retomar (comandos exatos)
-```
-cd ~/projetos/atende-academia
-cat longrun/2026-10-05-academia-v1/goal.md          # critérios
-python3 -m pytest -q tests/ | tail -n 3             # progresso = nº de passed
-bash longrun/2026-10-05-academia-v1/verificar-limites.sh
-```
-
-Ao retomar/após compactação: ler goal.md → state.md → plan.md → canal.md → fim de progress.md e failures.md. Na primeira vez, ler `docs/ESPECIFICACAO.md` inteiro e `tests/conftest.py`.
+## Como retomar
+1. Ler goal → state → plan → canal → fim de progress/failures. Spec e conftest já foram lidos neste ciclo.
+2. Ler `src/store.py`, `src/domain.py`, `src/server.py` e tests/test_aulas.py; implementar ocorrências/reservas primeiro, usando Academia.ativa para autorização de matrícula na data da aula.
+3. Rodar `python3 -m pytest -q tests/ > longrun/2026-10-05-academia-v1/pytest-ciclo-2.log 2>&1` e ler só `tail -n 30` desse log; depois verificar-limites.sh.
+4. Atualizar registros, sem commit. Não executar render-exercicios, nem APIs reais/rede externa.

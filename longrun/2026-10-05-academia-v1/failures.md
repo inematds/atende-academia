@@ -2,3 +2,6 @@
 
 | data | o que quebrou | tentativa | resultado | prompt \| infra |
 |---|---|---|---|---|
+| 2026-10-19 | Leitura inicial tentou tests/test_base.py inexistente | localizar com rg --files e ler tests/test_basico.py | leitura corrigida, sem alteração de testes | prompt |
+| 2026-10-19 | Suíte completa: 90 failed, funcionalidades ainda ausentes | implementar base/alunos/planos/matrículas primeiro | 9 passed, 90 failed; próximas rotas no plan.md, sem conflito identificado entre contrato e testes | infra |
+| 2026-10-19 | Escrita de FALHAS.md substituiu histórico | recuperar HEAD e inserir novos registros no topo | histórico preservado antes do fim do ciclo | prompt |
