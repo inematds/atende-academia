@@ -27,66 +27,25 @@ Contrato completo: `docs/ESPECIFICACAO.md` (22 seções). Fora do v1: seção 16
 
 ## Como rodar no seu ambiente
 
-O projeto está **planejado, não implementado**: contrato e testes congelados, um agente implementa até os 99 testes passarem. Qualquer pessoa pode rodar no próprio ambiente.
+O sistema está **implementado**: v0.11.0, 99/99 testes, `LIMITES OK` e verificação independente aprovada. Qualquer pessoa pode rodar no próprio ambiente.
 
 ### Pré-requisitos
 
-- Linux/macOS com `git`, `python3` ≥ 3.10 e `pytest` (`pip install pytest`; é ferramenta de desenvolvimento, a aplicação não depende dela).
-- Um agente pela **assinatura**: Codex CLI (`codex`) ou Claude Code (`claude`). Nenhuma API é chamada.
-- Para a verificação independente final: `docker`; opcionalmente um Chromium (Playwright ou binário) para a prova de movimento dos SVGs e Node 22 + HyperFrames + `ffprobe` para conferir o MP4 — sem eles o verificador imprime `PULADO` para aquela etapa (nunca "ok" silencioso). O verificador e o `tools/render-exercicios` só usam o HyperFrames já instalado (`npx --no-install hyperframes`); para instalar uma vez: `npm install hyperframes` na raiz do repo (`node_modules/`, `package.json` e `package-lock.json` estão no `.gitignore`, então o `verificar-limites.sh` não os vê) ou `npm install -g hyperframes`. Instale **depois** que o loop fechar (antes da verificação independente): o agente não precisa dele e não deve baixar pacote.
-- Método e ferramentas de execução longa: clone de `~/projetos/execucao-longa` (`tools/loop-longrun.sh`, `docs/PLANO-EXECUCAO-LONGA.md`). Se não tiver, a rota `/goal` interativa (abaixo) não precisa dele.
+- Linux/macOS com `git` e `python3` ≥ 3.10. A aplicação não tem dependências; `pytest` (`pip install pytest`) só serve para conferir os testes.
+- Para o deploy: `docker` (com `docker compose`).
+- Opcional, para os MP4 dos exercícios: Node 22 + HyperFrames + `ffprobe`. O `tools/render-exercicios` e o verificador só usam o HyperFrames já instalado (`npx --no-install hyperframes`); para instalar uma vez: `npm install hyperframes` na raiz do repo (`node_modules/`, `package.json` e `package-lock.json` estão no `.gitignore`, então o `verificar-limites.sh` não os vê) ou `npm install -g hyperframes`.
 
-### 1. Responder as decisões e congelar o contrato
-
-```sh
-cd atende-academia
-# leia docs/DECISOES-ABERTAS.md; "ok em tudo" = nada a mudar
-python3 -m pytest -q --collect-only | tail -n 1     # 99 tests collected
-bash longrun/2026-10-05-academia-v1/congelar.sh     # grava hash-congelado.txt e faz 1 commit
-```
-
-Se mudar algo marcado ⚠ nas decisões, edite `docs/ESPECIFICACAO.md` e os testes **antes** de congelar. Depois de congelado, contrato, testes e os dois verificadores são protegidos: o agente não os altera; se um teste contradizer a spec, ele registra em `failures.md` e para (portão humano).
-
-### 2a. Loop headless (Codex `gpt-6-astra`)
+### 1. Clonar e conferir
 
 ```sh
-~/projetos/execucao-longa/tools/loop-longrun.sh longrun/2026-10-05-academia-v1
+git clone https://github.com/inematds/atende-academia && cd atende-academia
+python3 -m pytest -q tests/ | tail -n 1                          # 99 passed
+bash longrun/2026-10-05-academia-v1/verificar-limites.sh          # LIMITES OK
 ```
 
-Configuração em `longrun/2026-10-05-academia-v1/loop.env` (teste rápido/final, arquivos protegidos, 20 ciclos × 30 min, 8 GB, parada após 3 ciclos sem avanço, `CODEX_ARGS` liberando socket local no sandbox). O loop faz `flock`, `timeout`, `MemoryMax`, reverte ciclo que mexer em arquivo protegido, commita checkpoint por ciclo e para sozinho quando o teste final passa.
+`LIMITES OK` = hash do contrato intacto, nº de testes igual, só arquivos do escopo, sem dependência externa, sem URL externa no código, sem chave, sem `0.0.0.0` no código, nada de MP4/`node_modules` commitado.
 
-### 2b. `/goal` no Codex TUI
-
-```sh
-cd atende-academia && codex -c sandbox_workspace_write.network_access=true
-```
-
-Cole `longrun/2026-10-05-academia-v1/prompt-goal-codex.md` inteiro (começa com `/goal`). Acompanhe com `/goals`; `/goal pause|resume`.
-
-### 2c. `/goal` no Claude Code
-
-Sessão **nova** do Claude Code aberta na pasta do projeto; siga `longrun/2026-10-05-academia-v1/prompt-goal-claude.md` (condição do `/goal` + o bloco de `prompt-goal-codex.md` como primeira mensagem).
-
-### 3. Acompanhar
-
-```sh
-tail -n 20 longrun/2026-10-05-academia-v1/loop.log        # headless
-cat longrun/2026-10-05-academia-v1/state.md               # Funciona / Falta / Como retomar
-tail -n 5 longrun/2026-10-05-academia-v1/progress.md
-python3 -m pytest -q tests/ | tail -n 3
-```
-
-Pronto = `python3 -m pytest -q tests/` → **99 passed** e `bash longrun/2026-10-05-academia-v1/verificar-limites.sh` → **LIMITES OK** (hash do contrato intacto, nº de testes igual, só arquivos do escopo, sem dependência externa, sem URL externa no código, sem chave, sem `0.0.0.0` no código, nada de MP4/`node_modules` commitado).
-
-### 4. Verificação independente (nível 4, humano)
-
-```sh
-python3 longrun/2026-10-05-academia-v1/verificar-independente.py   # INDEPENDENTE OK
-```
-
-Procura valores do fixture copiados no código; sobe uma academia **nunca vista** (outra grade, planos, prazos, feriado, relógio) e confere regras que só passam se a lógica for geral; abre 3 SVGs num Chromium headless e exige que dois quadros em instantes diferentes sejam diferentes (prova de movimento; sem Chromium que passe na calibração → `PULADO`); se o HyperFrames estiver instalado, renderiza um exercício com `tools/render-exercicios` e confere 720×720, ~4 s, sem áudio com `ffprobe` (senão → `PULADO`); faz `docker build` e testa o healthcheck do container (sem `docker` → `PULADO`). A última linha diz `INDEPENDENTE OK (movimento: ..., hyperframes: ..., docker: ...)` para você ver o que foi de fato conferido. Depois abra `/`, `/equipe` e `/exercicios/prancha` no navegador.
-
-## Executar (depois de implementado)
+### 2. Executar
 
 ```sh
 mkdir -p dados && cp exemplos/academia.json dados/academia.json   # edite nome, token, grade, planos
@@ -95,9 +54,27 @@ mkdir -p dados && cp exemplos/academia.json dados/academia.json   # edite nome, 
 ./atende backup --dados dados --saida backups/academia.zip
 ```
 
-Chat do aluno em `/`, equipe em `/equipe` (token de `academia.json` no header `X-Token`), animação de cada exercício em `/exercicios/<id>`. `PUBLIC_URL` (endereço público, HTTPS, sem barra final) entra nos links enviados ao aluno; sem ela os links são relativos.
+Chat do aluno em `/`, equipe em `/equipe` (token de `academia.json` no header `X-Token`), animação de cada exercício em `/exercicios/<id>`. `PUBLIC_URL` (endereço público, HTTPS, sem barra final) entra nos links enviados ao aluno; sem ela os links são relativos. Sem as variáveis da Evolution e do Telegram, a caixa de saída é simulada e nenhuma chamada de rede sai. As 20 decisões padrão estão em `docs/DECISOES-ABERTAS.md`.
 
-**MP4 dos exercícios (WhatsApp não mostra SVG):** `tools/render-exercicios [--ids a,b] [--saida DIR]` gera `web/exercicios/<id>.mp4` (720×720, 4 s em loop, sem áudio) a partir de cada SVG com o HyperFrames — render local por Chromium, sem API nem conta. Precisa de Node 22+, HyperFrames instalado (`npm install hyperframes` na raiz; o script não baixa nada sozinho) e `ffprobe`. A composição é **só CSS** (o SVG inline dentro de `data-width="720" data-height="720" data-duration="4"`, sem GSAP nem CDN): o render busca cada quadro pelos adaptadores CSS/WAAPI, por isso os SVGs usam `@keyframes` com durações de 1, 2 ou 4 s e nunca SMIL. É um passo de build: roda uma vez na máquina de quem publica, não no servidor nem nos testes. Com o MP4 presente e `PUBLIC_URL` definida, o bot envia o vídeo por `sendMedia`; senão manda o link da página.
+**MP4 dos exercícios (WhatsApp não mostra SVG):** `tools/render-exercicios [--ids a,b] [--saida DIR]` gera `web/exercicios/<id>.mp4` (720×720, 4 s em loop, sem áudio) a partir de cada SVG com o HyperFrames — render local por Chromium, sem API nem conta. Precisa de Node 22+, HyperFrames instalado (`npm install hyperframes` na raiz; o script não baixa nada sozinho) e `ffprobe`. A composição é **só CSS** (o SVG inline dentro de `data-width="720" data-height="720" data-duration="4"`, sem GSAP nem CDN): o render busca cada quadro pelos adaptadores CSS/WAAPI, por isso os SVGs usam `@keyframes` com durações de 1, 2 ou 4 s e nunca SMIL. É um passo de build: roda uma vez na máquina de quem publica, não no servidor nem nos testes. **Este render ainda não foi rodado** (as animações SVG funcionam na web). Com o MP4 presente e `PUBLIC_URL` definida, o bot envia o vídeo por `sendMedia`; senão manda o link da página.
+
+### 3. Verificação independente (nível 4)
+
+```sh
+python3 longrun/2026-10-05-academia-v1/verificar-independente.py   # INDEPENDENTE OK
+```
+
+Procura valores do fixture copiados no código; sobe uma academia **nunca vista** (outra grade, planos, prazos, feriado, relógio) e confere regras que só passam se a lógica for geral; abre 3 SVGs num Chromium headless e exige que dois quadros em instantes diferentes sejam diferentes (prova de movimento; sem Chromium que passe na calibração → `PULADO`); se o HyperFrames estiver instalado, renderiza um exercício com `tools/render-exercicios` e confere 720×720, ~4 s, sem áudio com `ffprobe` (senão → `PULADO`); faz `docker build` e testa o healthcheck do container (sem `docker` → `PULADO`). Na entrega saiu `INDEPENDENTE OK (movimento: chromium, hyperframes: pulado, docker: ok)`. Depois abra `/`, `/equipe` e `/exercicios/prancha` no navegador.
+
+### 4. Como foi construído (para refazer ou adaptar)
+
+O sistema foi construído pelo método de execução longa (`~/projetos/execucao-longa`: `tools/loop-longrun.sh`, `docs/PLANO-EXECUCAO-LONGA.md`), por um agente pela **assinatura** (Codex CLI e Claude Code, nenhuma API chamada):
+
+1. As decisões de `docs/DECISOES-ABERTAS.md` foram respondidas e o contrato foi congelado com `bash longrun/2026-10-05-academia-v1/congelar.sh` (grava `hash-congelado.txt`). Contrato, testes e os dois verificadores ficaram protegidos: o agente não os alterava; teste em conflito com a spec ia para `failures.md` (portão humano).
+2. O agente trabalhou em loop headless (`~/projetos/execucao-longa/tools/loop-longrun.sh longrun/2026-10-05-academia-v1`, Codex `gpt-6-astra`, configuração em `loop.env`: 20 ciclos × 30 min, 8 GB, parada após 3 ciclos sem avanço, `flock`, `timeout`, `MemoryMax`, reversão de ciclo que mexesse em arquivo protegido, checkpoint por ciclo) e foi concluído pelo Claude Code, até **99 passed** e **LIMITES OK**.
+3. O acompanhamento ficou em `longrun/2026-10-05-academia-v1/` (`loop.log`, `state.md`, `progress.md`).
+
+Quer mudar uma regra marcada ⚠ ou levar o molde para outro negócio? Edite `docs/ESPECIFICACAO.md` e os testes, congele de novo e rode o loop headless, ou o `/goal` no Codex TUI (`codex -c sandbox_workspace_write.network_access=true` + `longrun/2026-10-05-academia-v1/prompt-goal-codex.md`) ou no Claude Code (`longrun/2026-10-05-academia-v1/prompt-goal-claude.md`).
 
 ## Deploy na VPS
 
