@@ -1,7 +1,7 @@
 # Plano — próximos 3 passos
 
-1. Implementar biblioteca de exercícios, CRUD de fichas e cálculo do treino do dia (§6); seguir para os 12 SVGs CSS manuais e páginas (§7), sem executar render-exercicios. Validar com suíte completa.
-2. Implementar avaliação física (§8), horários/conflitos/resultados e verificar os lembretes já preparados; implementar conversa na ordem exata §11, reutilizando check-in/reservas/fichas.
-3. Completar tarefas com reenvio, campanhas, LGPD, Raio-X, cadastros/backup, Evolution e Telegram falsos, Docker/.env.exemplo/README/render-exercicios e páginas na sequência autorizada.
+1. Desenhar à mão os 12 SVGs CSS com movimento próprio (durações 1/2/4 s), implementar páginas /exercicios/<id> e arquivos SVG/MP4 com caminhos restritos; validar suíte completa.
+2. Implementar avaliação física (§8), conflitos/horários/resultados e lembretes; implementar conversa na ordem §11 reutilizando Training.today, Attendance e Classes.
+3. Completar tarefas/reenvio, campanhas, LGPD, Raio-X, cadastros/backup, Evolution/Telegram falsos e entrega Docker/README/render-exercicios/páginas conforme sequência autorizada.
 
-Só marcar concluído após suíte inteira aprovada e LIMITES OK. Build MP4 e deploy são passos do humano. Sem commit neste loop.
+Só marcar concluído com pytest inteiro aprovado e LIMITES OK. Render MP4 e deploy são passos do humano. Sem commit neste loop.

@@ -22,3 +22,4 @@ When I correct you, or you catch yourself making a mistake: before continuing, a
 - Prova de movimento com Chromium headless: screenshot numa pasta **dentro do repo** (o chromium do snap não grava em `/tmp`); o chrome do Playwright neste host está em `chromium-*/chrome-linux-arm64/chrome` (glob `chrome-linux*`); só `--disable-threaded-animation` faz `transform` seguir `--virtual-time-budget`; calibrar cada candidato com um SVG estático + um CSS animado conhecido antes de julgar os SVGs do repo. Ferramenta ausente (docker, npx, ffprobe) = `PULADO`, nunca traceback nem "ok". (05/10/2026)
 - Antes de ler teste pelo nome presumido, conferir o caminho com `rg --files tests` (base se chama `test_basico.py`).
 - Ler registros existentes antes de editar; em FALHAS.md inserir linhas no topo sem substituir histórico.
+- Verificação manual com Cliente/Servidor de tests/conftest.py precisa copiar o fixture ou ajustar o token do cliente; a configuração de exemplo tem outro token.

@@ -48,6 +48,10 @@ class Store:
                         (collection, str(item['id']), json.dumps(item, ensure_ascii=False)))
         return item
 
+    def delete(self, collection, identifier):
+        self.db.execute('DELETE FROM registros WHERE colecao=? AND id=?',
+                        (collection, str(identifier)))
+
     def next_id(self, collection):
         key = 'sequencia:' + collection
         row = self.db.execute('SELECT valor FROM metadados WHERE chave=?', (key,)).fetchone()

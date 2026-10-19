@@ -1,23 +1,22 @@
-# Estado — atualizado 2026-10-19, ciclo 3
+# Estado — ciclo 4
 
 ## Funciona
-- Base HTTP concorrente em 127.0.0.1, PORTA=<n>, auth, JSON UTF-8, SQLite/WAL e semente única; alunos/planos/matrículas e aulas/reservas/espera do ciclo anterior preservados.
-- Check-in por código: matrícula ativa, código inexistente 404, um por aluno/dia com mesmo id/horário no segundo pedido; listagem por período/aluno, nome atual e ordem por quando/id. Não consome créditos.
-- Tarefas locais: presença/falta ao término gravado na reserva; avisos de vencimento uma vez por matrícula; reativação com consentimento, 14 dias inclusivos e comparação estrita da mensagem com o último check-in. Tudo persiste.
-- Relógio de tarefas recebido em agora vale apenas para a rodada e grava o horário correto nas mensagens. nao_contatar impede criação de avisos. Lembretes de avaliação preparados, ainda dependentes do módulo de avaliação.
-- Versão 0.3.0. Novo domínio src/attendance.py sob a transação/trava do dispatcher; Classes.message aceita instante explícito.
-- Suíte completa: **26 passed / 73 failed**; pytest-ciclo-3.log. Seis testes adicionais passam. Verificador: **LIMITES OK** (hash a768b39fe2101c18, 99 testes).
-- Verificação HTTP adicional: 10 check-ins simultâneos → um 201 + nove 200 com mesmo id; fronteira do vencimento, idempotência, nao_contatar e isolamento do relógio aprovados.
+- Base HTTP concorrente, auth, JSON, SQLite/WAL, semente única, alunos/planos/matrículas, aulas/reservas/espera, check-in e tarefas locais preservados.
+- Catálogo de exercícios: lista pública dos ativos, consulta inclusive inativos, criação/edição/desativação com validação; svg calculado pela existência real do arquivo (ainda false, SVGs pendentes).
+- Fichas: PUT/GET/DELETE autenticados, substituição atômica, validação dos itens e exercícios ativos; desativação preserva fichas existentes. DELETE responde 204 sem corpo.
+- Training.today seleciona treino pelos dias de check-in anteriores a hoje e formata séries, repetições, carga e descanso; verifica plano antes da ficha. Ainda não conectado ao chat.
+- Versão 0.4.0. Suíte completa: **28 passed / 71 failed** (pytest-ciclo-4.log). **LIMITES OK**, hash a768b39fe2101c18 e 99 testes preservados.
+- Verificação adicional HTTP/domínio aprovada: auth, validação atômica, persistência após reinício, exercício inativo em ficha existente, rotação A/B e ordem plano/ficha.
 
 ## Falta
-- Biblioteca/ficha/meu treino; 12 SVGs CSS manuais e páginas; avaliação física e verificação integrada de seus lembretes.
-- Conversa completa na ordem §11, inclusive check-in, parar, confirmação de oferta e treino do dia. Teste de vencimento ainda para no chat parar, ausente; não criar atalho fora da ordem.
-- Reenvio pendente no início das tarefas depende da Evolution: reenviadas permanece zero no modo simulado atual. Integrações somente com servidores falsos.
-- Campanhas, LGPD, Raio-X, cadastros restantes/backup; Evolution/Telegram; Docker/.env.exemplo/README Deploy na VPS/render-exercicios e páginas / e /equipe.
-- Ainda não concluído: 73 falhas por funcionalidades pendentes. Nenhum conflito teste/spec identificado neste ciclo.
+- Os 12 SVGs manuais CSS e páginas/rotas públicas de exercícios; biblioteca só passará seu teste completo quando os arquivos existirem.
+- Avaliação física e seus lembretes integrados; conversa completa na ordem §11, incluindo treino, explicação e fluxos de reserva/cancelamento.
+- Reenvio pendente nas tarefas; campanhas, LGPD, Raio-X, demais cadastros/backup, Evolution/Telegram com servidores falsos.
+- Docker/.env.exemplo/README Deploy na VPS, tools/render-exercicios (escrever sem executar), páginas / e /equipe.
+- Não concluído: 71 falhas por funcionalidades pendentes; nenhum conflito teste/spec identificado.
 
 ## Como retomar
-1. Ler goal → state → plan → canal → fim de progress/failures; spec completa e conftest já lidos neste ciclo.
-2. Implementar biblioteca/ficha e seleção do treino do dia (§6), depois SVGs/páginas (§7) e avaliação (§8). Deixar envio do treino pelo chat para o dispatcher completo da seção 11.
-3. Reutilizar Attendance.checkin, Classes.reserve/change e Classes.message; conectar reenvio real simulado pela Evolution no início de Attendance.run quando chegar à integração.
-4. Rodar suíte inteira para arquivo (tail -n 30), verificar-limites e atualizar registros; sem commit/rede externa e sem executar render-exercicios.
+1. Ler goal → state → plan → canal → fim de progress/failures. Spec completa e conftest lidos no ciclo 4.
+2. Começar pelos 12 SVGs CSS em web/exercicios e suas rotas/páginas (§7); depois avaliação (§8), então conversa na ordem exata §11.
+3. Usar Training(app).catalog/exercise/edit_exercise/ficha/today; Store.delete agora remove entidades dentro da transação. Não duplicar seleção/formatação do treino no chat.
+4. Rodar pytest completo para arquivo com tail -n 30; verificar limites e atualizar registros. Sem commit, rede externa ou execução do render.

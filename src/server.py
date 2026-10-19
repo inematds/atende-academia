@@ -8,6 +8,7 @@ from urllib.parse import parse_qs, urlsplit
 
 from .classes import Classes, filtered
 from .attendance import Attendance
+from .training import Training
 from .domain import Academia, Error, norm, require
 from .store import ROOT, Store
 
@@ -29,6 +30,17 @@ def route(app, method, path, query, body):
         return 200, {'ok': True, 'versao': (ROOT / 'VERSION').read_text().strip()}
     classes = Classes(app)
     attendance = Attendance(app)
+    training = Training(app)
+    match = re.fullmatch(r'/api/exercicios(?:/([\w-]+))?', path)
+    if match:
+        identifier = match[1]
+        if method == 'GET':
+            return 200, training.exercise(identifier) if identifier else {'exercicios': training.catalog()}
+        if (method == 'POST' and identifier is None) or (method in ('PUT', 'DELETE') and identifier is not None):
+            return training.edit_exercise(method, body, identifier)
+    match = re.fullmatch(r'/api/alunos/(\d+)/ficha', path)
+    if match and method in ('GET', 'PUT', 'DELETE'):
+        return training.ficha(int(match[1]), method, body)
     if path == '/api/checkins':
         if method == 'POST':
             return attendance.checkin(body)
@@ -113,7 +125,7 @@ def route(app, method, path, query, body):
 def handler(app):
     class Handler(BaseHTTPRequestHandler):
         def respond(self, status, value):
-            data = json.dumps(value, ensure_ascii=False).encode('utf-8')
+            data = b'' if status == 204 else json.dumps(value, ensure_ascii=False).encode('utf-8')
             self.send_response(status)
             self.send_header('Content-Type', 'application/json; charset=utf-8')
             self.send_header('Content-Length', str(len(data)))

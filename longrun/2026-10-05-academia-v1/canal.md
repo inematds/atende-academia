@@ -15,3 +15,5 @@ Formato: `- AAAA-MM-DD HH:MM · fato|aprendizado|glossário|armadilha · texto`
 - 2026-10-19 13:54 -0300 · fato · 20 passed / 79 failed e LIMITES OK. Restam em aulas os testes que atravessam chat e check-in/tarefas; caixa de saída é simulada até implementação da Evolution.
 
 - 2026-10-19 13:56 -0300 · fato · Attendance.checkin/listing/run em src/attendance.py; tasks grava quando com instante da rodada via Classes.message(..., instant). Reativação compara mensagem > último check-in (não >=); presença usa fim persistido da reserva. Reenvio ainda falta; lembretes de avaliação preparados mas sem API de avaliação. Suíte 26 passed / 73 failed, LIMITES OK; check-in concorrente adicional aprovado.
+
+- 2026-10-19 14:00 -0300 · fato · Training em src/training.py fornece catálogo/ficha/today; today conta datas distintas de check-in anteriores a hoje, verifica plano primeiro e permite exercício desativado em ficha existente. Store.delete remove por coleção/id. Nenhum SVG criado neste ciclo; svg=false é real. Suíte 28 passed / 71 failed, LIMITES OK.
