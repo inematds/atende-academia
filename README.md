@@ -40,7 +40,7 @@ O sistema está **implementado**: v0.11.0, 99/99 testes, `LIMITES OK` e verifica
 ```sh
 git clone https://github.com/inematds/atende-academia && cd atende-academia
 python3 -m pytest -q tests/ | tail -n 1                          # 99 passed
-bash longrun/2026-10-05-academia-v1/verificar-limites.sh          # LIMITES OK
+bash longrun/2026-10-05-academia-v1/verificar-limites.sh          # LIMITES OK no fechamento; hoje acusa só guia/ e README.en/es (docs posteriores)
 ```
 
 `LIMITES OK` = hash do contrato intacto, nº de testes igual, só arquivos do escopo, sem dependência externa, sem URL externa no código, sem chave, sem `0.0.0.0` no código, nada de MP4/`node_modules` commitado.

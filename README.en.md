@@ -40,7 +40,7 @@ The system is **implemented**: v0.11.0, 99/99 tests, `LIMITES OK` and independen
 ```sh
 git clone https://github.com/inematds/atende-academia && cd atende-academia
 python3 -m pytest -q tests/ | tail -n 1                          # 99 passed
-bash longrun/2026-10-05-academia-v1/verificar-limites.sh          # LIMITES OK
+bash longrun/2026-10-05-academia-v1/verificar-limites.sh          # LIMITES OK at close; now flags only guia/ and README.en/es (docs added later)
 ```
 
 `LIMITES OK` = contract hash intact, same number of tests, only files within scope, no external dependency, no external URL in the code, no key, no `0.0.0.0` in the code, no MP4/`node_modules` committed.
