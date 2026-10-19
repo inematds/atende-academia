@@ -2,6 +2,7 @@
 
 | data | o que quebrou | menor correção | prompt \| infra |
 |---|---|---|---|
+| 2026-10-19 | Rotas de aulas e reservas ainda ausentes no checkpoint anterior | implementar ocorrências, reserva transacional, créditos, cancelamento, presença manual e oferta de espera; suíte passou de 9 para 20 aprovados | infra |
 | 2026-10-19 | Escrita inicial de FALHAS.md substituiu histórico | restaurar conteúdo do HEAD e inserir linhas novas no topo | prompt |
 | 2026-10-19 | Leitura de tests/test_base.py inexistente | usar nome tests/test_basico.py encontrado por rg --files | prompt |
 | 2026-10-05 | validação: §7.1 aceitava SMIL, mas o render do HyperFrames não tem adaptador SMIL (só `document.getAnimations()`/CSS — `dist/hyperframe-runtime.js` 0.7.109 e 0.8.86) → MP4 sairia fora de fase; a fisio já proibia | §7.1/§7.4 só CSS (durações 1/2/4 s, composição sem GSAP/CDN), teste de SVG espelha a fisio, `verificar-limites.sh` sem exceção do GSAP + grep de SMIL em `web/exercicios` | prompt |

@@ -6,6 +6,7 @@ import re
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlsplit
 
+from .classes import Classes, filtered
 from .domain import Academia, Error, norm, require
 from .store import ROOT, Store
 
@@ -25,6 +26,27 @@ def route(app, method, path, query, body):
     store = app.store
     if method == 'GET' and path == '/api/saude':
         return 200, {'ok': True, 'versao': (ROOT / 'VERSION').read_text().strip()}
+    classes = Classes(app)
+    if path == '/api/aulas' and method == 'GET':
+        return 200, {'aulas': classes.occurrences(query)}
+    if path == '/api/reservas':
+        if method == 'POST':
+            return 201, classes.reserve(body)
+        if method == 'GET':
+            return 200, {'reservas': classes.reservations(query)}
+    match = re.fullmatch(r'/api/reservas/(\d+)/(cancelar|presenca)', path)
+    if match and method == 'POST':
+        return 200, classes.change(int(match[1]), match[2], body)
+    match = re.fullmatch(r'/api/aulas/([\w-]+)/ocorrencias/([0-9-]+)/cancelar', path)
+    if match and method == 'POST':
+        return 200, classes.cancel_occurrence(match[1], match[2], body)
+    if path == '/api/espera':
+        if method == 'POST':
+            return 201, classes.wait(body)
+        if method == 'GET':
+            return 200, {'espera': filtered(store.all('espera'), query)}
+    if path == '/api/saida' and method == 'GET':
+        return 200, {'mensagens': store.all('saida')}
     if path == '/api/alunos':
         if method == 'POST':
             status, aluno = app.aluno(body)

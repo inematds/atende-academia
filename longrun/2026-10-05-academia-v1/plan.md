@@ -1,7 +1,7 @@
 # Plano — próximos 3 passos
 
-1. Implementar aulas/ocorrências e reservas (§4): datas/feriados, antecedência, matrícula, concorrência, cancelamento/espera, devolução de créditos e presença; validar com suíte completa.
-2. Implementar check-in/reativação e biblioteca/fichas/meu treino (§5–6), depois os 12 SVGs manuais CSS e páginas (§7); preservar separação entre domínio, armazenamento e transporte.
-3. Implementar avaliação física e conversa na ordem exata §11; avançar tarefas, campanhas, LGPD, Raio-X, cadastros/backup, integrações falsas, entrega Docker/README/render e páginas conforme a ordem do pedido. Reescrever este plano a cada ciclo.
+1. Implementar check-in/reativação (§5), incluindo presença automática (§4.6) e aviso de vencimento (§3.3) no núcleo de tarefas; preservar idempotência, relógio da rodada e consentimento. Validar com suíte inteira.
+2. Implementar biblioteca/fichas/meu treino (§6), 12 SVGs CSS manuais e páginas (§7), depois avaliação física (§8). Não executar render-exercicios.
+3. Implementar conversa na ordem exata §11, conectando oferta de espera às reservas existentes; completar tarefas, campanhas, LGPD, Raio-X, cadastros/backup, integrações falsas, Docker/README/render e páginas na sequência autorizada.
 
-Não marcar concluído até 99 passed e LIMITES OK na mesma entrega. Build de MP4 e deploy são passos do humano.
+Só marcar concluído após suíte inteira aprovada e LIMITES OK. Build de MP4 e deploy são passos do humano. Sem commit neste loop.
