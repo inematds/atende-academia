@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Equipe · Atendimento</title>
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; background: #f5f7f8; color: #193f50; font: 1rem/1.5 system-ui, sans-serif; }
+header { background: #193f50; color: #fff; padding: .9rem 1rem; display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; }
+header h1 { font-size: 1.25rem; margin: 0; flex: 1; }
+main { max-width: 76rem; margin: auto; padding: 1rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr)); gap: 1rem; }
+section { background: #fff; border: 1px solid #d7e1e5; border-radius: .75rem; padding: 1rem; min-width: 0; }
+h2 { font-size: 1.1rem; margin: 0 0 .6rem; }
+input, select, textarea { font: inherit; padding: .4rem .55rem; border: 1px solid #b7c6cd; border-radius: .4rem; background: #fff; color: inherit; max-width: 100%; }
+textarea { width: 100%; min-height: 4rem; }
+button { font: inherit; padding: .4rem .8rem; border: 0; border-radius: .4rem; background: #bd5b16; color: #fff; cursor: pointer; }
+button.sec { background: #e8eff2; color: #193f50; }
+:focus-visible { outline: 3px solid #bd5b16; outline-offset: 2px; }
+form { display: flex; flex-wrap: wrap; gap: .4rem; margin: .4rem 0; }
+table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+th, td { text-align: left; padding: .3rem .35rem; border-bottom: 1px solid #e8eff2; vertical-align: top; }
+.lista { max-height: 22rem; overflow: auto; }
+.aviso { color: #9a3412; font-size: .9rem; min-height: 1.2em; }
+.alta { color: #b91c1c; font-weight: 700; }
+pre { white-space: pre-wrap; font-size: .85rem; background: #f5f7f8; padding: .5rem; border-radius: .4rem; }
+</style>
+</head>
+<body>
+<header>
+<h1>Equipe da academia</h1>
+<label for="token">Token</label>
+<input id="token" type="password" autocomplete="current-password">
+<button id="entrar" type="button">Entrar</button>
+<input id="dia" type="date" aria-label="Dia">
+</header>
+<p class="aviso" id="geral" role="status" style="padding:0 1rem"></p>
+<main>
+<section id="grade"><h2>Grade do dia</h2><div class="lista"><table><thead><tr><th>Hora</th><th>Aula</th><th>Professor</th><th>Vagas</th><th></th></tr></thead><tbody></tbody></table></div></section>
+
+<section id="reservas"><h2>Reservas do dia</h2>
+<form data-acao="reservar"><input name="aluno_id" placeholder="id do aluno" size="8" required><input name="aula_id" placeholder="id da aula" size="12" required><button>Reservar</button></form>
+<div class="lista"><table><thead><tr><th>Hora</th><th>Aluno</th><th>Aula</th><th>Status</th><th></th></tr></thead><tbody></tbody></table></div></section>
+
+<section id="checkins"><h2>Check-in</h2>
+<form data-acao="checkin"><input name="codigo" placeholder="código do aluno" inputmode="numeric" required><button>Registrar</button></form>
+<div class="lista"><table><thead><tr><th>Quando</th><th>Aluno</th></tr></thead><tbody></tbody></table></div></section>
+
+<section id="alunos"><h2>Alunos e matrículas</h2>
+<form data-acao="buscar"><input name="busca" placeholder="nome, telefone ou código"><button class="sec">Buscar</button></form>
+<form data-acao="aluno"><input name="nome" placeholder="nome" required><input name="telefone" placeholder="telefone" required><label><input type="checkbox" name="consentimento_marketing"> aceita campanhas</label><button>Cadastrar</button></form>
+<form data-acao="matricula"><input name="aluno_id" placeholder="id do aluno" size="8" required><select name="plano"></select><button>Matricular</button></form>
+<div class="lista"><table><thead><tr><th>Id</th><th>Nome</th><th>Telefone</th><th>Código</th></tr></thead><tbody></tbody></table></div></section>
+
+<section id="planos"><h2>Planos</h2><div class="lista"><table><thead><tr><th>Plano</th><th>Preço</th><th>Vigência</th><th>Aulas</th></tr></thead><tbody></tbody></table></div></section>
+
+<section id="fichas"><h2>Fichas de treino</h2>
+<form data-acao="ficha-ver"><input name="aluno_id" placeholder="id do aluno" size="8" required><button class="sec">Abrir ficha</button></form>
+<textarea name="ficha" aria-label="Ficha em JSON" placeholder='{"treinos": [{"nome": "A", "itens": [{"exercicio": "agachamento", "series": 3, "repeticoes": 12}]}]}'></textarea>
+<button type="button" data-acao="ficha-salvar">Salvar ficha</button></section>
+
+<section id="biblioteca"><h2>Biblioteca de exercícios</h2><div class="lista"><table><thead><tr><th>Exercício</th><th>Grupo</th><th>Animação</th></tr></thead><tbody></tbody></table></div></section>
+
+<section id="fila-humano"><h2>Atendimento humano</h2><div class="lista"><table><thead><tr><th>#</th><th>Aluno</th><th>Motivo</th><th></th></tr></thead><tbody></tbody></table></div></section>
+
+<section id="saida"><h2>Caixa de saída</h2><div class="lista"><table><thead><tr><th>Tipo</th><th>Telefone</th><th>Texto</th><th>Status</th></tr></thead><tbody></tbody></table></div></section>
+
+<section id="campanhas"><h2>Campanha</h2>
+<form data-acao="campanha"><textarea name="texto" required placeholder="Só vai para quem aceitou campanhas."></textarea><button>Enviar campanha</button></form></section>
+
+<section id="raiox"><h2>Raio-X do mês</h2>
+<form data-acao="raiox"><input name="mes" type="month" required><button class="sec">Calcular</button></form><pre></pre></section>
+</main>
+<script>
+(function () {
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var tokenEl = $('#token'), diaEl = $('#dia'), geral = $('#geral');
+  try { tokenEl.value = sessionStorage.getItem('atende-token') || ''; } catch (e) {}
+  diaEl.value = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  function api(metodo, rota, corpo) {
+    var op = { method: metodo, headers: { 'X-Token': tokenEl.value } };
+    if (corpo !== undefined) { op.headers['Content-Type'] = 'application/json'; op.body = JSON.stringify(corpo); }
+    return fetch(rota, op).then(function (r) {
+      if (r.status === 401) { geral.textContent = 'Token inválido.'; throw new Error('401'); }
+      if (r.status === 204) return {};
+      return r.json().then(function (j) { if (r.status >= 400) { geral.textContent = 'Erro ' + r.status + ': ' + (j.motivo || JSON.stringify(j)); throw new Error(r.status); } return j; });
+    });
+  }
+  function linhas(sel, itens, cols) {
+    var tb = $(sel + ' tbody'); tb.textContent = '';
+    itens.forEach(function (it) {
+      var tr = document.createElement('tr');
+      cols.forEach(function (c) {
+        var td = document.createElement('td'), v = c(it);
+        if (v instanceof Node) td.appendChild(v); else td.textContent = v == null ? '' : v;
+        tr.appendChild(td);
+      });
+      tb.appendChild(tr);
+    });
+  }
+  function botao(rotulo, fn, sec) { var b = document.createElement('button'); b.type = 'button'; b.textContent = rotulo; if (sec) b.className = 'sec'; b.onclick = fn; return b; }
+  function grupo() { var s = document.createElement('span'); for (var i = 0; i < arguments.length; i++) s.appendChild(arguments[i]); return s; }
+  function hora(i) { return (i || '').slice(11, 16); }
+
+  function carregar() {
+    geral.textContent = '';
+    try { sessionStorage.setItem('atende-token', tokenEl.value); } catch (e) {}
+    var d = diaEl.value;
+    api('GET', '/api/aulas?de=' + d + '&ate=' + d).then(function (j) {
+      linhas('#grade', j.aulas, [function (a) { return hora(a.inicio); }, function (a) { return a.modalidade + (a.cancelada ? ' (cancelada)' : ''); },
+        function (a) { return a.professor; }, function (a) { return a.reservadas + '/' + a.vagas; },
+        function (a) { return a.cancelada ? '' : botao('Cancelar aula', function () { if (confirm('Cancelar esta aula e avisar os alunos?')) api('POST', '/api/aulas/' + a.aula_id + '/ocorrencias/' + a.data + '/cancelar', {}).then(carregar); }, true); }]);
+    }).catch(function () {});
+    api('GET', '/api/reservas?data=' + d).then(function (j) {
+      linhas('#reservas', j.reservas, [function (r) { return hora(r.inicio); }, function (r) { return r.nome; }, function (r) { return r.modalidade; }, function (r) { return r.status; },
+        function (r) { return r.status === 'reservada' ? grupo(botao('Presente', function () { api('POST', '/api/reservas/' + r.id + '/presenca', { compareceu: true }).then(carregar); }, true),
+          botao('Cancelar', function () { api('POST', '/api/reservas/' + r.id + '/cancelar', {}).then(carregar); }, true)) : ''; }]);
+    }).catch(function () {});
+    api('GET', '/api/checkins?de=' + d + '&ate=' + d).then(function (j) {
+      linhas('#checkins', j.checkins, [function (c) { return hora(c.quando); }, function (c) { return c.nome; }]);
+    }).catch(function () {});
+    buscar('');
+    api('GET', '/api/planos').then(function (j) {
+      linhas('#planos', j.planos, [function (p) { return p.nome; }, function (p) { return 'R$ ' + Number(p.preco).toFixed(2).replace('.', ','); },
+        function (p) { return p.vigencia_dias + ' dias'; }, function (p) { return p.aulas == null ? 'ilimitado' : p.aulas; }]);
+      var sel = $('#alunos select'); sel.textContent = '';
+      j.planos.forEach(function (p) { var o = document.createElement('option'); o.value = p.id; o.textContent = p.nome; sel.appendChild(o); });
+    }).catch(function () {});
+    api('GET', '/api/exercicios').then(function (j) {
+      linhas('#biblioteca', j.exercicios, [function (e) { return e.nome; }, function (e) { return e.grupo; },
+        function (e) { var a = document.createElement('a'); a.href = '/exercicios/' + e.id; a.textContent = e.svg ? 'ver animação' : 'ver passos'; a.target = '_blank'; return a; }]);
+    }).catch(function () {});
+    api('GET', '/api/atendimento-humano').then(function (j) {
+      linhas('#fila-humano', j.fila, [function (f) { var s = document.createElement('span'); s.textContent = '#' + f.id; if (f.prioridade === 'alta') { s.className = 'alta'; s.textContent += ' ALTA'; } return s; },
+        function (f) { return (f.nome || '') + ' ' + f.telefone; }, function (f) { return f.motivo; },
+        function (f) { return grupo(botao('Responder', function () { var t = prompt('Resposta para o aluno:'); if (t) api('POST', '/api/atendimento-humano/' + f.id + '/responder', { texto: t }).then(carregar); }),
+          botao('Encerrar', function () { api('POST', '/api/atendimento-humano/' + f.id + '/encerrar').then(carregar); }, true)); }]);
+    }).catch(function () {});
+    api('GET', '/api/saida').then(function (j) {
+      linhas('#saida', j.mensagens.slice(-100).reverse(), [function (m) { return m.tipo; }, function (m) { return m.telefone; }, function (m) { return m.texto; }, function (m) { return m.status; }]);
+    }).catch(function () {});
+  }
+  function buscar(t) {
+    api('GET', '/api/alunos' + (t ? '?busca=' + encodeURIComponent(t) : '')).then(function (j) {
+      linhas('#alunos', j.alunos.slice(-200), [function (a) { return a.id; }, function (a) { return a.nome; }, function (a) { return a.telefone; }, function (a) { return a.codigo; }]);
+    }).catch(function () {});
+  }
+  function campos(f) { var o = {}; new FormData(f).forEach(function (v, k) { o[k] = v; }); return o; }
+  var acoes = {
+    reservar: function (o) { return api('POST', '/api/reservas', { aluno_id: Number(o.aluno_id), aula_id: o.aula_id, data: diaEl.value }); },
+    checkin: function (o) { return api('POST', '/api/checkins', { codigo: o.codigo }).then(function (c) { geral.textContent = 'Check-in: ' + c.nome; }); },
+    buscar: function (o) { buscar(o.busca); return Promise.resolve(); },
+    aluno: function (o) { return api('POST', '/api/alunos', { nome: o.nome, telefone: o.telefone, consentimento_marketing: !!o.consentimento_marketing }).then(function (a) { geral.textContent = 'Aluno ' + a.id + ', código ' + a.codigo; }); },
+    matricula: function (o) { return api('POST', '/api/matriculas', { aluno_id: Number(o.aluno_id), plano: o.plano }).then(function (m) { geral.textContent = 'Matrícula até ' + m.fim; }); },
+    'ficha-ver': function (o) { return api('GET', '/api/alunos/' + o.aluno_id + '/ficha').then(function (f) { $('#fichas textarea').value = JSON.stringify(f, null, 2); }); },
+    campanha: function (o) { return api('POST', '/api/campanhas', { texto: o.texto }).then(function (r) { geral.textContent = 'Campanha enviada para ' + r.enviadas; }); },
+    raiox: function (o) { return api('GET', '/api/raiox?mes=' + o.mes).then(function (r) { $('#raiox pre').textContent = JSON.stringify(r, null, 2); }); }
+  };
+  document.querySelectorAll('form[data-acao]').forEach(function (f) {
+    f.addEventListener('submit', function (e) { e.preventDefault(); acoes[f.dataset.acao](campos(f)).then(carregar).catch(function () {}); });
+  });
+  $('[data-acao="ficha-salvar"]').addEventListener('click', function () {
+    var id = $('#fichas input[name="aluno_id"]').value, corpo;
+    try { corpo = JSON.parse($('#fichas textarea').value); } catch (e) { geral.textContent = 'Ficha não é JSON válido.'; return; }
+    api('PUT', '/api/alunos/' + id + '/ficha', corpo).then(function () { geral.textContent = 'Ficha salva.'; }).catch(function () {});
+  });
+  $('#entrar').addEventListener('click', carregar);
+  diaEl.addEventListener('change', carregar);
+  if (tokenEl.value) carregar();
+})();
+</script>
+</body>
+</html>

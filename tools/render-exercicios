@@ -1,0 +1,123 @@
+#!/usr/bin/env python3
+"""Gera <saida>/<id>.mp4 (720x720, 4 s, sem áudio) de cada web/exercicios/<id>.svg com o HyperFrames local (seção 7.4).
+
+Uso: tools/render-exercicios [--ids a,b] [--saida DIR]
+
+- Nunca baixa pacote: usa `npx --no-install hyperframes`. Sem ele (ou sem ffprobe) sai com código 2 e "pulado: ...".
+- A composição é só CSS (sem GSAP, sem <script>, sem CDN): o render avança as animações CSS do SVG inline quadro a quadro.
+- Imprime "ok <id> <duração>s" ou "falhou <id> <motivo>" por exercício; código 0 só se todos passaram, 1 se algum falhou.
+"""
+import argparse
+import json
+import pathlib
+import re
+import shutil
+import subprocess
+import sys
+import tempfile
+
+RAIZ = pathlib.Path(__file__).resolve().parent.parent
+SVGS = RAIZ / 'web' / 'exercicios'
+LADO = 720
+DURACAO = 4
+
+COMPOSICAO = """<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<style>
+html, body {{ margin:0; background:#fff; width:{lado}px; height:{lado}px; overflow:hidden; }}
+#root {{ position:relative; width:{lado}px; height:{lado}px; background:#fff; }}
+#root svg {{ position:absolute; inset:0; width:100%; height:100%; }}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="exercicio" data-start="0" data-width="{lado}" data-height="{lado}" data-duration="{duracao}">
+{svg}
+</div>
+</body>
+</html>
+"""
+
+
+def tem(cmd):
+    try:
+        return subprocess.run(cmd, capture_output=True, timeout=120).returncode == 0
+    except (OSError, subprocess.TimeoutExpired):
+        return False
+
+
+def conferir(mp4):
+    """Confere com ffprobe: 720x720, duração entre 3,5 e 4,5 s, sem áudio. Devolve (duração, motivo|None)."""
+    r = subprocess.run(['ffprobe', '-v', 'error', '-print_format', 'json', '-show_format', '-show_streams', str(mp4)],
+                       capture_output=True, text=True, timeout=120)
+    if r.returncode != 0:
+        return None, 'ffprobe não leu o arquivo'
+    info = json.loads(r.stdout or '{}')
+    streams = info.get('streams', [])
+    video = [s for s in streams if s.get('codec_type') == 'video']
+    if any(s.get('codec_type') == 'audio' for s in streams):
+        return None, 'tem stream de áudio'
+    if not video:
+        return None, 'sem stream de vídeo'
+    w, h = video[0].get('width'), video[0].get('height')
+    if (w, h) != (LADO, LADO):
+        return None, f'tamanho {w}x{h} (esperado {LADO}x{LADO})'
+    try:
+        duracao = float(info.get('format', {}).get('duration') or video[0].get('duration'))
+    except (TypeError, ValueError):
+        return None, 'duração ilegível'
+    if not 3.5 <= duracao <= 4.5:
+        return None, f'duração {duracao:.2f}s fora de 3,5–4,5 s'
+    return duracao, None
+
+
+def renderizar(ident, saida):
+    svg = SVGS / f'{ident}.svg'
+    if not re.fullmatch(r'[\w-]+', ident) or not svg.is_file():
+        return None, 'sem web/exercicios/' + ident + '.svg'
+    conteudo = svg.read_text(encoding='utf-8')
+    if conteudo.lstrip().startswith('<?xml'):
+        conteudo = conteudo.split('?>', 1)[1]
+    destino = saida / f'{ident}.mp4'
+    with tempfile.TemporaryDirectory(prefix=f'render-{ident}-') as tmp:
+        pasta = pathlib.Path(tmp)
+        (pasta / 'index.html').write_text(COMPOSICAO.format(lado=LADO, duracao=DURACAO, svg=conteudo.strip()), encoding='utf-8')
+        try:
+            r = subprocess.run(['npx', '--no-install', 'hyperframes', 'render', str(pasta), '--output', str(destino), '--fps', '30'],
+                               capture_output=True, text=True, timeout=900, cwd=RAIZ)
+        except subprocess.TimeoutExpired:
+            return None, 'render passou de 15 min'
+    if r.returncode != 0 or not destino.is_file():
+        motivo = (r.stderr or r.stdout).strip().splitlines()[-1:] or ['sem saída']
+        return None, f'render rc={r.returncode}: {motivo[0][:200]}'
+    return conferir(destino)
+
+
+def main():
+    p = argparse.ArgumentParser(description='Renderiza os MP4 dos exercícios com o HyperFrames instalado localmente.')
+    p.add_argument('--ids', help='ids separados por vírgula (padrão: todos os SVGs de web/exercicios)')
+    p.add_argument('--saida', default=str(SVGS), help='pasta dos MP4 (padrão web/exercicios)')
+    a = p.parse_args()
+    if not shutil.which('npx') or not tem(['npx', '--no-install', 'hyperframes', '--version']):
+        print('pulado: hyperframes não instalado (instale com `npm install hyperframes` na raiz do repo)')
+        return 2
+    if not shutil.which('ffprobe'):
+        print('pulado: ffprobe não instalado')
+        return 2
+    ids = [i.strip() for i in a.ids.split(',') if i.strip()] if a.ids else sorted(s.stem for s in SVGS.glob('*.svg'))
+    saida = pathlib.Path(a.saida).resolve()
+    saida.mkdir(parents=True, exist_ok=True)
+    falhou = False
+    for ident in ids:
+        duracao, motivo = renderizar(ident, saida)
+        if motivo:
+            falhou = True
+            print(f'falhou {ident} {motivo}', flush=True)
+        else:
+            print(f'ok {ident} {duracao:.2f}s', flush=True)
+    return 1 if falhou else 0
+
+
+if __name__ == '__main__':
+    sys.exit(main())

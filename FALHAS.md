@@ -2,6 +2,7 @@
 
 | data | o que quebrou | menor correção | prompt \| infra |
 |---|---|---|---|
+| 2026-10-19 | Loop Codex interrompido no ciclo 11 (Telegram/páginas/entrega ausentes, 15 falhas); comentário do Dockerfile com "pip install" reprovou test_dockerfile | src/telegram.py + páginas + Docker/render; comentário sem o termo proibido | infra \| prompt |
 | 2026-10-19 14:25 -0300 | Webhook Evolution ausente e saída sem transporte/reenvio | adicionar transporte central e segredo/idempotência, respeitando LGPD no reenvio; 7 testes específicos aprovados | infra |
 | 2026-10-19 | Cadastros de professores/grade/FAQ e backup ausentes | implementar cadastros transacionais e backup SQLite com configuração; suíte passou de 74 para 78 aprovados | infra |
 | 2026-10-19 | Campanhas, exportação/anonimização e Raio-X ausentes | implementar Privacy e cálculo mensal compartilhado API/CLI; suíte passou de 63 para 74 aprovados | infra |

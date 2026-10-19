@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atendimento ao aluno</title>
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; background: #f5f7f8; color: #193f50; font: 1.05rem/1.55 system-ui, sans-serif; }
+main { max-width: 42rem; margin: auto; padding: 1.5rem 1rem 2rem; display: flex; flex-direction: column; min-height: 100vh; }
+h1 { font-size: 1.6rem; margin: 0 0 .25rem; }
+p.dica { margin: 0 0 1rem; color: #455d69; font-size: .95rem; }
+label { font-size: .9rem; color: #455d69; }
+input { font: inherit; padding: .6rem .75rem; border: 1px solid #b7c6cd; border-radius: .5rem; width: 100%; background: #fff; color: inherit; }
+input:focus-visible, button:focus-visible { outline: 3px solid #bd5b16; outline-offset: 2px; }
+#chat { flex: 1; background: #fff; border: 1px solid #d7e1e5; border-radius: .75rem; padding: 1rem; overflow-y: auto; min-height: 50vh; margin: .75rem 0; }
+.msg { max-width: 85%; padding: .55rem .8rem; border-radius: .75rem; margin: .4rem 0; white-space: pre-wrap; word-wrap: break-word; }
+.aluno { background: #174f68; color: #fff; margin-left: auto; border-bottom-right-radius: .2rem; }
+.bot { background: #e8eff2; border-bottom-left-radius: .2rem; }
+.bot a { color: #174f68; }
+form { display: flex; gap: .5rem; }
+button { font: inherit; padding: .6rem 1.1rem; border: 0; border-radius: .5rem; background: #bd5b16; color: #fff; cursor: pointer; }
+.atalhos { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .6rem; }
+.atalhos button { background: #e8eff2; color: #193f50; padding: .35rem .7rem; font-size: .9rem; }
+</style>
+</head>
+<body><main>
+<h1>Fale com a academia</h1>
+<p class="dica">Reserve aulas, faça check-in, veja seu treino e peça a explicação de um exercício. Digite PARAR para não receber avisos.</p>
+<label for="telefone">Seu telefone (com DDD)</label>
+<input id="telefone" type="tel" autocomplete="tel" placeholder="(DDD) número">
+<div id="chat" role="log" aria-live="polite" aria-label="Conversa"></div>
+<form id="envio">
+<label for="texto" class="sr" hidden>Mensagem</label>
+<input id="texto" autocomplete="off" placeholder="Escreva sua mensagem" required>
+<button type="submit">Enviar</button>
+</form>
+<div class="atalhos" aria-label="Atalhos">
+<button type="button">aulas de hoje</button><button type="button">reservar</button><button type="button">cheguei</button>
+<button type="button">meu treino</button><button type="button">meu plano</button><button type="button">falar com atendente</button>
+</div>
+</main>
+<script>
+(function () {
+  var chat = document.getElementById('chat'), tel = document.getElementById('telefone'), texto = document.getElementById('texto');
+  try { tel.value = localStorage.getItem('atende-telefone') || ''; } catch (e) {}
+  function linha(t, quem) {
+    var d = document.createElement('div');
+    d.className = 'msg ' + quem;
+    t.split('\n').forEach(function (l, i) {
+      if (i) d.appendChild(document.createElement('br'));
+      var m = l.match(/^(.*?)(\/exercicios\/[\w-]+|\S+\/exercicios\/[\w-]+)$/);
+      if (quem === 'bot' && m) {
+        d.appendChild(document.createTextNode(m[1]));
+        var a = document.createElement('a'); a.href = m[2]; a.textContent = m[2]; a.target = '_blank'; d.appendChild(a);
+      } else d.appendChild(document.createTextNode(l));
+    });
+    chat.appendChild(d); chat.scrollTop = chat.scrollHeight;
+  }
+  function enviar(t) {
+    if (!tel.value.trim()) { tel.focus(); linha('Informe seu telefone primeiro.', 'bot'); return; }
+    try { localStorage.setItem('atende-telefone', tel.value.trim()); } catch (e) {}
+    linha(t, 'aluno');
+    fetch('/api/mensagens', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ telefone: tel.value.trim(), texto: t }) })
+      .then(function (r) { return r.json().then(function (j) { return [r.status, j]; }); })
+      .then(function (x) {
+        if (x[0] === 400) { linha('Telefone inválido. Use DDD + número.', 'bot'); return; }
+        (x[1].respostas || []).forEach(function (r) { linha(r, 'bot'); });
+        if (x[0] === 200 && !(x[1].respostas || []).length) linha('Mensagem entregue à equipe. Aguarde a resposta.', 'bot');
+      })
+      .catch(function () { linha('Sem conexão. Tente de novo.', 'bot'); });
+  }
+  document.getElementById('envio').addEventListener('submit', function (e) {
+    e.preventDefault(); var t = texto.value.trim(); if (t) { enviar(t); texto.value = ''; }
+  });
+  document.querySelectorAll('.atalhos button').forEach(function (b) { b.addEventListener('click', function () { enviar(b.textContent); }); });
+})();
+</script>
+</body>
+</html>

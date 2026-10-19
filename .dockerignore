@@ -1,0 +1,17 @@
+.git
+.gitignore
+.env
+dados/
+backups/
+longrun/
+tests/
+docs/
+guia/
+capa/
+node_modules/
+renders/
+__pycache__/
+*.pyc
+*.sqlite*
+*.db
+.verif-svg-*/

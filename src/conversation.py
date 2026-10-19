@@ -7,6 +7,7 @@ from .evolution import deliver, send
 from .attendance import Attendance
 from .classes import Classes
 from .domain import Error, norm, now, phone, require
+from . import telegram
 from .training import Training
 
 STOPWORDS = set('que qual quais quem como onde quando para com sem por dos das nos nas uma uns umas voce voces vcs tem ter sao esta estao ele ela eles elas isso isto aqui ali ai'.split())
@@ -36,10 +37,19 @@ class Conversation:
             item = dict(id=self.store.next_id('atendimentos'), telefone=telephone,
                         nome=student['nome'] if student else None, motivo=text,
                         prioridade=priority, status='aberto', ultima_mensagem=text)
-        elif priority == 'alta':
+            self.store.save('atendimentos', item)
+            telegram.remember(self.store, item, telegram.send(telegram.opening(item, text)))
+            return item
+        if priority == 'alta':
             item.update(prioridade='alta', motivo=text, ultima_mensagem=text)
         self.store.save('atendimentos', item)
+        self.relay(item, student, text)
         return item
+
+    def relay(self, item, student, text):
+        first = (item.get('telegram_ids') or [None])[0]
+        label = item.get('nome') or (student['nome'] if student else None) or item['telefone']
+        telegram.remember(self.store, item, telegram.send(f"#{item['id']} {label}: {text}", first))
 
     def record(self, telephone, student, text, direction):
         self.store.save('mensagens', dict(id=self.store.next_id('mensagens'), telefone=telephone,
@@ -71,6 +81,7 @@ class Conversation:
     def reserve(self, student, option):
         try:
             result = self.classes.reserve(dict(aluno_id=student['id'], aula_id=option['aula_id'], data=option['data']))
+            telegram.send(f"Nova reserva: {stamp(result['inicio'])} {student['nome']} — {result['modalidade']}")
             return 'Aula reservada: ' + stamp(result['inicio'])
         except Error as exc:
             if 'matricula' in exc.motivo:
@@ -85,7 +96,9 @@ class Conversation:
             self.human(telephone, student, text, 'alta')
             return ['Pare o exercício, avise o professor e procure ajuda: 192.']
         # §21 suspende o bot durante atendimento humano, exceto alerta de saúde.
-        if self.opened(telephone):
+        item = self.opened(telephone)
+        if item:
+            self.relay(item, student, text)
             return []
         if t in ('parar', 'sair', 'pare'):
             state['nao_contatar'] = True
@@ -108,6 +121,8 @@ class Conversation:
                 return [self.reserve(student, option)]
             try:
                 result = self.classes.change(option['id'], 'cancelar', {})
+                telegram.send(f"Cancelada: {stamp(option['inicio'])} {student['nome']} — {option['modalidade']}"
+                              + (' (fora do prazo)' if result['status'] == 'cancelada_tarde' else ''))
                 return ['Reserva cancelada' + (' fora do prazo.' if result['status'] == 'cancelada_tarde' else '.')]
             except Error as exc:
                 return [exc.motivo.replace('_', ' ')]

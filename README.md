@@ -10,7 +10,7 @@ Landing e guia passo a passo (PT/EN/ES): **https://inematds.github.io/atende-aca
 
 Atendimento ao aluno de uma academia ou estúdio pequeno, em Python 3 só com biblioteca padrão (HTTP + SQLite): alunos e planos, aulas coletivas com reserva e lista de espera, check-in e reativação, ficha de treino, **explicação animada de exercícios**, avaliação física, conversa por chat web e WhatsApp (Evolution API), equipe pelo Telegram, LGPD e exportação para o Painel de Recuperação do Raio-X de Margem.
 
-**Estado (19/10/2026): implementação parcial v0.10.0 — módulos locais, cadastros, backup e Evolution com texto/MP4/reenvio; 84/99 testes passam. Faltam Telegram, páginas e entrega Docker/render.** Ver "Como rodar no seu ambiente".
+**Estado (19/10/2026): v0.11.0 — implementação completa; 99/99 testes, `LIMITES OK`. Telegram, páginas `/` e `/equipe`, Docker e `tools/render-exercicios` entregues.** Ver "Como rodar no seu ambiente".
 
 ## O que o sistema faz (v1)
 
@@ -98,6 +98,18 @@ mkdir -p dados && cp exemplos/academia.json dados/academia.json   # edite nome, 
 Chat do aluno em `/`, equipe em `/equipe` (token de `academia.json` no header `X-Token`), animação de cada exercício em `/exercicios/<id>`. `PUBLIC_URL` (endereço público, HTTPS, sem barra final) entra nos links enviados ao aluno; sem ela os links são relativos.
 
 **MP4 dos exercícios (WhatsApp não mostra SVG):** `tools/render-exercicios [--ids a,b] [--saida DIR]` gera `web/exercicios/<id>.mp4` (720×720, 4 s em loop, sem áudio) a partir de cada SVG com o HyperFrames — render local por Chromium, sem API nem conta. Precisa de Node 22+, HyperFrames instalado (`npm install hyperframes` na raiz; o script não baixa nada sozinho) e `ffprobe`. A composição é **só CSS** (o SVG inline dentro de `data-width="720" data-height="720" data-duration="4"`, sem GSAP nem CDN): o render busca cada quadro pelos adaptadores CSS/WAAPI, por isso os SVGs usam `@keyframes` com durações de 1, 2 ou 4 s e nunca SMIL. É um passo de build: roda uma vez na máquina de quem publica, não no servidor nem nos testes. Com o MP4 presente e `PUBLIC_URL` definida, o bot envia o vídeo por `sendMedia`; senão manda o link da página.
+
+## Deploy na VPS
+
+Passo do dono, com as credenciais e a máquina dele (o sistema nunca faz isso sozinho).
+
+1. **Subir o compose.** Na VPS, com Docker: clone o repo, `cp .env.exemplo .env`, preencha as variáveis e rode `docker compose up -d --build`. O serviço `atende` escuta só em `127.0.0.1:8080`, guarda tudo em `./dados` (volume `/dados`) e tem healthcheck em `/api/saude`. Na primeira subida, `dados/academia.json` é copiado do exemplo: edite nome, **token**, grade e planos e reinicie (`docker compose restart`).
+2. **Proxy HTTPS.** Coloque um proxy reverso (Caddy, Nginx ou Traefik) com certificado na frente de `127.0.0.1:8080`, no domínio da academia. Nunca publique a porta 8080 direto.
+3. **`PUBLIC_URL`.** No `.env`, `PUBLIC_URL` = o endereço HTTPS do domínio, sem barra final. É o que entra nos links de exercício e no `sendMedia` do MP4.
+4. **Webhook da Evolution.** Preencha `EVOLUTION_URL` (endereço interno da Evolution), `EVOLUTION_API_KEY`, `EVOLUTION_INSTANCIA` e um `WEBHOOK_SEGREDO` longo e aleatório. No painel da Evolution, aponte o webhook da instância para `<PUBLIC_URL>/webhook/evolution/<WEBHOOK_SEGREDO>` com o evento `MESSAGES_UPSERT`. Segredo errado responde 404.
+5. **Webhook do Telegram.** Crie o bot no BotFather, coloque-o no grupo da equipe e preencha `TELEGRAM_API_URL` (endereço da API do Telegram), `TELEGRAM_TOKEN`, `TELEGRAM_CHAT_ID` (id do grupo) e `TELEGRAM_SEGREDO`. Registre o webhook chamando `setWebhook` da API do bot com `url=<PUBLIC_URL>/webhook/telegram` e `secret_token=<TELEGRAM_SEGREDO>` — o sistema recusa (401) update sem esse cabeçalho e ignora outros chats. No grupo: responder em cima da mensagem `#id`, `/responder <id> <texto>`, `/encerrar <id>`, `/fila`, `/aulas [AAAA-MM-DD]`.
+6. **Gerar os MP4.** Numa máquina com Node 22+, `npm install hyperframes` e `ffprobe`, rode `tools/render-exercicios` (ou `--ids prancha,agachamento --saida DIR`) e copie os `.mp4` para a pasta apontada por `EXERCICIOS_MP4_DIR` (ex.: `/dados/mp4` dentro do container = `./dados/mp4` na VPS). Sem MP4 o WhatsApp recebe o link da página animada.
+7. **Backup diário.** No cron do host, por exemplo às 3 h: `docker compose exec -T atende ./atende backup --dados /dados --saida /dados/backups/academia-$(date +\%F).zip` (o `./atende backup` pode rodar com o servidor ligado). Para restaurar: pare o serviço, rode `./atende restaurar --dados /dados --entrada <arquivo>` e suba de novo. Guarde cópias fora da VPS.
 
 ## Arquivos
 

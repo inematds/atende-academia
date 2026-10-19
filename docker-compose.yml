@@ -1,0 +1,9 @@
+services:
+  atende:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./dados:/dados
+    ports:
+      - "127.0.0.1:8080:8080"

@@ -21,3 +21,5 @@
 | 2026-10-19 14:20 -0300 | Ciclo 9: cadastros restantes e backup/restauração com configuração, v0.9.0; pytest 78 passed / 21 failed (55.22s); foco 6 passed; HTTP/restauração em diretório novo e LIMITES OK | sem commit (loop externo) | parcial | — | 0 |
 
 | 2026-10-19 14:25 -0300 | Ciclo 10: Evolution webhook/sendText/sendMedia/reenvio e proteções LGPD, v0.10.0; pytest 84 passed / 15 failed (64.97s); foco 7 passed; HTTP adicional e LIMITES OK | sem commit (loop externo) | parcial | — | 0 |
+
+| 2026-10-19 (Claude, retomada após ciclo 11 interrompido) | Telegram §21 (src/telegram.py: abertura/repasse/comandos/avisos, webhook com segredo), páginas / e /equipe, Dockerfile/compose/.env.exemplo/.dockerignore, tools/render-exercicios, README "Deploy na VPS", v0.11.0; pytest 99 passed; LIMITES OK; INDEPENDENTE OK (movimento: chromium, hyperframes: pulado, docker: ok) | commit local, sem push | concluído | — | 0 |
